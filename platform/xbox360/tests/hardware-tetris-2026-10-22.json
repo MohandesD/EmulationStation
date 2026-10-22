@@ -58,8 +58,12 @@
     "general_game_launch_enabled": false,
     "single_game_exception_enabled": true,
     "frontend_opened": true,
-    "result": "awaiting user report",
+    "result": "Tetris game screen independently observed via XBDM framebuffer; user control/exit report pending",
     "return_target": "Aurora",
-    "direct_return_to_es_implemented": false
+    "direct_return_to_es_implemented": false,
+    "nestopia_running_observed": true,
+    "game_screen_observed": true,
+    "controller_playability_user_confirmed": false,
+    "raw_framebuffer_kept_private": true
   }
 }

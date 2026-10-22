@@ -11,8 +11,9 @@ diagnostic app handoff have been verified on a Trinity console.
 **Development status:** controller navigation, menu return to Aurora and restoration
 of the selected system have passed a user-operated console test. The first
 manual Tetris handoff reached the emulator and then crashed. A Salvia system
-selection mismatch was found; the candidate correction passed a no-game console
-check, but gameplay/return and restoring a selected game remain unverified.
+selection mismatch was found and corrected. A follow-up capture now shows Tetris
+rendering a game. Controller playability, emulator return and restoring a selected
+game still need verification.
 Game launching is disabled by default. This is not a finished replacement dashboard; do not set it as the
 console's startup application.
 

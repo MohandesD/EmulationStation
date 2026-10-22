@@ -23,9 +23,10 @@ Later user-operated tests passed controller navigation, menu return to Aurora
 and restoration of the selected system. The source is published on the
 [Xbox branch of the maintained fork](https://github.com/MohandesD/EmulationStation/tree/xbox360).
 The first manual Tetris handoff crashed after the emulator appeared. The candidate
-Salvia context correction below passed a no-game console check; its gameplay
-result is still pending. This is **not a finished game frontend yet**: emulator
-gameplay/return, restoring a selected game after it exits, and audio remain unverified.
+Salvia context correction below passed a no-game console check. A subsequent
+read-only XBDM capture shows Tetris rendering a game. User confirmation of controls,
+emulator return, selected-game restoration and audio remain pending. This is
+**not a finished game frontend yet**.
 
 `es_gl.c` implements the 26 fixed-function GL calls used in the upstream source.
 It preserves the existing renderer/components and implements column-major model
@@ -214,7 +215,11 @@ also passed. ESSalviaContextProbe exercised the same helper on the console witho
 launching a core or ROM, verified NES selection and exact backup/readback, and
 returned to Aurora. Its executable was disabled afterward. The updated app and
 five commands passed full FTP readback; saved boot settings are unchanged. Only
-Tetris was then re-enabled for a user-operated check; its result remains pending.
+Tetris was then re-enabled for a user-operated check. XBDM subsequently reported
+Nestopia.xex, and a private 1280x720 framebuffer showed the Tetris playfield, pieces,
+score and line counter. This proves the game now renders past startup; it does
+not establish controller response, sustained stability or emulator return. The
+user report is still pending, and the game was left running.
 See [sanitized evidence](tests/hardware-tetris-2026-10-22.json).
 
 The native launcher checks that the chosen core is a regular XEX2 file and the
