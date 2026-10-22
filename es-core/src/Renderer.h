@@ -25,6 +25,9 @@ namespace Renderer
 
 	//graphics commands
 	void swapBuffers();
+#ifdef __XSDK__
+	void captureNextFrame(const std::string& path);
+#endif
 
 	void pushClipRect(Eigen::Vector2i pos, Eigen::Vector2i dim);
 	void popClipRect();

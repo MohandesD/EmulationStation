@@ -16,6 +16,9 @@ The full C/C++ toolchain and real es-core/es-app now cross-build successfully.
 The native application has loaded five system lists (43 existing games), rendered
 the upstream Simple theme's system carousel at 1280x720 and returned cleanly to
 Aurora after a bounded 600-frame test. Its own fenced capture was visually checked.
+An additional 1,200-frame diagnostic visited all five real game lists. Native
+captures show their system headers, game names and selected cover art; all counts
+match the installed library. This automated rendering check does not prove input.
 This is **not a finished game frontend yet**: controller navigation, audio,
 emulator launch/return and publication remain unfinished. No controller was
 connected during these display tests, so input is not verified.
@@ -139,6 +142,13 @@ The default is zero, which leaves the frontend open normally. Game launching
 remains gated by `XboxLaunchEnabled=false`. Hotplugged Xbox pads receive defaults;
 an unplugged controller no longer strands startup in the desktop setup wizard.
 Physical navigation and the menu's Return to Aurora action still need testing.
+
+`XboxDiagnosticBrowse=true`, together with a positive diagnostic frame limit,
+visits successive system game lists every 180 frames starting at frame 180 and
+captures each list after its transition settles. It calls view navigation only;
+no controller events or ROM launches are injected. A 1,200-frame five-system run
+passed. Both diagnostic options are now disabled in the installed package, so a
+normal manual launch stays open. The console was left in Aurora.
 
 Rollback: while Aurora is running, remove only the separately added app folder
 if desired. Existing emulators, ROMs, assets and startup settings are independent.

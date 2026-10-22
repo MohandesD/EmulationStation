@@ -7,10 +7,13 @@
 
 namespace Renderer {
 static unsigned frameCount;
+static std::string capturePath;
+void captureNextFrame(const std::string& path) { capturePath=path; }
 unsigned int getScreenWidth() { return 1280; }
 unsigned int getScreenHeight() { return 720; }
 bool init(int, int) {
     frameCount=0;
+    capturePath.clear();
     if(!esGpuOpen()) return false;
     glMatrixMode(GL_PROJECTION);
     glOrtho(0,1280,720,0,-1,1);
@@ -27,6 +30,10 @@ void swapBuffers() {
     }
     if(++frameCount == 120 && Settings::getInstance()->getInt("XboxDiagnosticFrames") > 0)
         LOG(LogInfo) << "Native diagnostic capture: " << esGpuCapture("game:/es-frame.raw");
+    if(!capturePath.empty()) {
+        LOG(LogInfo) << "Native view capture: " << esGpuCapture(capturePath.c_str());
+        capturePath.clear();
+    }
     glClear(GL_COLOR_BUFFER_BIT);
 }
 void deinit() { ES_CloseTextInput(); esGpuClose(); }

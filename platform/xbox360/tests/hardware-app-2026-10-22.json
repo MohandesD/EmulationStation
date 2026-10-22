@@ -1,7 +1,7 @@
 {
   "date": "2026-10-22",
   "upstream_commit": "9cc42adff67946175d2b7e25c6ae69cc374e98a0",
-  "xex_sha256": "ab08548c131341984051098daff0e65c342e1c00bf4934a46ceb33f097c74c7f",
+  "xex_sha256": "9e009ead7de3add50cb4338807da216691a0689e345ba654eb27e5672c2710be",
   "xex_bytes": 10100736,
   "full_cross_build": true,
   "systems": {
@@ -19,7 +19,7 @@
     720
   ],
   "native_capture_visually_verified": "system carousel with NES selected, Nintendo system logos, themed background, game count and help prompts",
-  "diagnostic_frames": 600,
+  "diagnostic_frames": 1200,
   "clean_shutdown_logged": true,
   "aurora_observed_after_exit": true,
   "controller_connected": false,
@@ -34,5 +34,23 @@
     "address",
     "undefined"
   ],
-  "xenia_skipped_instructions": 160
+  "xenia_skipped_instructions": 160,
+  "system_lists_visually_verified": [
+    "NES",
+    "SNES",
+    "Arcade",
+    "Game Boy",
+    "Nintendo 64"
+  ],
+  "selected_covers_visually_verified": [
+    "Dr. Mario",
+    "Kirby Super Star",
+    "NBA Jam",
+    "Kirby's Block Ball",
+    "Kirby 64"
+  ],
+  "input_injected": false,
+  "installed_diagnostic_frames": 0,
+  "installed_diagnostic_browse": false,
+  "installed_game_launch_enabled": false
 }

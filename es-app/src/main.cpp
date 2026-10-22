@@ -342,6 +342,23 @@ int main(int argc, char* argv[])
 #ifdef __XSDK__
         if(diagnosticLimit > 0) {
             ++diagnosticFrames;
+            if(errorMsg == nullptr && Settings::getInstance()->getBool("XboxDiagnosticBrowse")) {
+                // Visit each real list and allow its transition to finish. This
+                // tests rendering only; it neither injects input nor launches ROMs.
+                if(diagnosticFrames >= 180) {
+                    const unsigned index=(diagnosticFrames-180)/180;
+                    const unsigned phase=(diagnosticFrames-180)%180;
+                    if(index < SystemData::sSystemVector.size()) {
+                        if(phase == 0) {
+                            auto system=SystemData::sSystemVector[index];
+                            ViewController::get()->goToGameList(system);
+                            LOG(LogInfo) << "Diagnostic list " << index << ": " << system->getGameCount() << " games";
+                        }
+                        if(phase == 120)
+                            Renderer::captureNextFrame("game:/es-list-"+std::to_string(index)+".raw");
+                    }
+                }
+            }
             if(diagnosticFrames >= static_cast<unsigned>(diagnosticLimit)) running = false;
         }
 #endif
