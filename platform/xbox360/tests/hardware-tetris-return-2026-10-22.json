@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-22",
+  "console": "Trinity / 17559 / temporary XeUnshackle",
+  "installed_source_commit": "d94d2fac6ed7cfaac6184831ce069b67e9fda9bb",
+  "installed_app_sha256": "a860c391eca0b1e24cbe4e7e5f5d1d06785050bf104c2f644488c87176503fbb",
+  "installed_test_configuration": {
+    "session_return": true,
+    "general_game_launch_enabled": false,
+    "single_game": "Tetris (NES)"
+  },
+  "user_confirmation": {
+    "launched_from_emulationstation": true,
+    "tetris_starts_and_plays": true,
+    "exit_action": "Xbox Guide -> Y",
+    "guide_button_label": "Xbox Home",
+    "returned_to_emulationstation": true,
+    "selected_game_restored": "Tetris (NES)"
+  },
+  "independent_observation": {
+    "method": "read-only XBDM",
+    "running_application": "EmulationStation",
+    "establishes_controller_actions_or_selected_game": false
+  },
+  "return_behavior": "The Guide label stays Xbox Home; temporary runtime Default/BUT_Y settings route that action to EmulationStation.",
+  "manual_return_to_aurora_after_gameplay": "pending",
+  "current_session_runtime_restoration_after_gameplay": "pending",
+  "earlier_no_game_restoration_evidence": "hardware-session-return-2026-10-22.json",
+  "other_core_roundtrips_verified": false,
+  "sustained_stability_verified": false,
+  "font_tv_verified": false,
+  "newer_offline_candidate_covered_by_this_result": false,
+  "raw_runtime_snapshots_kept_private": true
+}

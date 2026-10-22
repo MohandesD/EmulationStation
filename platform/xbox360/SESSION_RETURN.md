@@ -1,10 +1,12 @@
-# Temporary emulator return: offline candidate
+# Temporary emulator return: Tetris roundtrip confirmed
 
 Status on 2026-10-22: cross-built and PC-tested; a no-game console arm/restore
 check now passes on Trinity/17559 with temporary XeUnshackle. All 76 exposed
-options were restored and the saved boot file stayed unchanged. The user has
-authorised console work again. The updated app is installed for a single manual
-Tetris launch/return check; gameplay return is still pending.
+options were restored and the saved boot file stayed unchanged. The user has now
+confirmed ES -> NES Tetris plays -> Xbox Guide/Y -> ES, with Tetris still selected.
+An independent read-only XBDM observation confirmed ES running afterward. Manual
+Return to Aurora and verification of the current session's runtime restoration
+remain pending; the earlier no-game restoration result is a separate check.
 
 ## Behavior
 
@@ -57,7 +59,9 @@ can retry recovery. This closes the diagnostic-only exit path that previously
 bypassed the restoration used by the menu; the installed manual test has
 diagnostics disabled.
 
-The intended game exit is **Xbox Guide -> Y**, followed by releasing Y. Salvia's
+The tested game exit is **Xbox Guide -> Y**, followed by releasing Y. The Guide
+still labels Y **Xbox Home**: the label is unchanged while the temporary
+`Default`/`BUT_Y` settings route that action to EmulationStation. Salvia's
 **Back+Start** is an internal return to its own browser and remains unchanged.
 This code does not intercept that emulator shortcut, alter Salvia binaries or
 establish disc/native Xbox 360 game support. Those are separate acceptance items.
@@ -81,12 +85,20 @@ confirmed only Default/BUT_Y differ between staged INIs and that the root boot
 file is unchanged. The probe was returned to inspect mode and renamed .checked.
 See [console evidence](tests/hardware-session-return-2026-10-22.json).
 
-The updated app has been read-back verified with XboxSessionReturn=true,
-XboxLaunchEnabled=false and the single Tetris exception. Only ES was remotely
-opened. The user was asked to play briefly, use Guide -> Y, release Y and confirm
-ES restores the selected game. Then test Return to Aurora and original runtime
-restoration. Repeat launch/return separately for other cores before enabling them.
-Font appearance still needs the user's TV check.
+The installed app has been read-back verified with XboxSessionReturn=true,
+XboxLaunchEnabled=false and the single Tetris exception. Its source revision is
+`d94d2fac6ed7cfaac6184831ce069b67e9fda9bb`; XEX SHA-256 is
+`a860c391eca0b1e24cbe4e7e5f5d1d06785050bf104c2f644488c87176503fbb`.
+The user operated the game and confirmed it played, Guide/Y returned to ES, and
+Tetris was selected. Read-only XBDM independently confirmed the frontend running;
+it does not establish which controls the user pressed or the selected entry.
+See [Tetris return evidence](tests/hardware-tetris-return-2026-10-22.json).
+
+Next verify manual Return to Aurora and original runtime restoration after this
+gameplay roundtrip. Repeat launch/return separately for other cores before
+enabling them. Font appearance still needs the user's TV check. Newer offline
+safeguards and grouped-source changes have not been installed or hardware-tested
+by this result.
 
 ## Source basis
 
@@ -98,7 +110,8 @@ Reviewed DashLaunch revision `f57eca9ba6dbba15dbdb226059fa94ad0dfaee98`:
 - [INI parser](https://github.com/XeFreedom/DashLaunch/blob/f57eca9ba6dbba15dbdb226059fa94ad0dfaee98/dll/iniparse.c): global key lookup, boolean/hex values and restricted path character set.
 
 The loaded temporary environment may differ from this upstream revision; that is
-why the successful no-game reload check does not establish gameplay exit or
-compatibility with other softmods.
+why the successful no-game reload check alone does not establish gameplay exit.
+The user-confirmed gameplay result covers the installed NES Tetris configuration;
+compatibility with other cores and softmods remains unverified.
 
 Plugin marker constants: [`_common.h`](https://github.com/XeFreedom/DashLaunch/blob/f57eca9ba6dbba15dbdb226059fa94ad0dfaee98/_common.h).

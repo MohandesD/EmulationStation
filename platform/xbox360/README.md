@@ -25,9 +25,12 @@ and restoration of the selected system. The source is published on the
 The first manual Tetris handoff crashed after the emulator appeared. The candidate
 Salvia context correction below passed a no-game console check. A subsequent
 read-only XBDM capture shows Tetris rendering a game, and the user confirmed it
-starts and plays. Emulator return, selected-game restoration and audio acceptance
-remain pending. A no-game session arm/restore check passed on the console; the
-installed Tetris-only gameplay-return test is awaiting the user's result. This is
+starts and plays. The user has also confirmed Guide/Y returns from Tetris to ES
+with Tetris selected; read-only XBDM independently confirmed ES running afterward.
+The Guide still labels Y "Xbox Home" while the temporary session routes it to ES.
+A no-game session arm/restore check passed earlier. Manual Return to Aurora and
+runtime restoration after gameplay, other cores and audio acceptance remain pending.
+See [the installed-build evidence](tests/hardware-tetris-return-2026-10-22.json). This is
 **not a finished game frontend yet**.
 
 `es_gl.c` implements the 26 fixed-function GL calls used in the upstream source.
@@ -59,8 +62,9 @@ sent to a shell. Salvia ROM data uses its own
 `Hdd:`/`Usb0:` mounts. `XboxLaunchEnabled` remains false during initial frontend
 bring-up; it must be removed as a bring-up gate or deliberately enabled and
 hardware-tested before claiming the port works as a general game frontend.
-Session return is implemented and its no-game console check passes; an actual
-emulator exit and selected-game restoration remain unverified.
+Session return is implemented; its no-game console check and a user-operated NES
+Tetris roundtrip with selected-game restoration pass. Other cores and restoration
+of the original runtime destination after gameplay still need verification.
 
 The hardware probe caught an actual backend defect: the vertex-stream API
 expects the complete buffer byte length, not the per-vertex stride. The adapter
@@ -342,8 +346,9 @@ Restoration rechecks runtime state after staging its private file; failed
 handoffs show recovery errors in the UI. Nine host test groups and the full
 Xbox cross-build pass. The package helper also passes four offline tests with
 fake FTP, including duplicate filenames and source-specific artwork. This
-candidate is not deployed. The installed Tetris return test remains unchanged,
-and game exit, selected-game restoration and TV font acceptance remain pending.
+candidate is not deployed. The installed Tetris build remains unchanged; its game
+exit and selected-game restoration are now user-confirmed. Return to Aurora after
+gameplay and TV font acceptance remain pending.
 
 The subsequent offline check adds the optional production-model test above.
 All ten enabled host test groups pass, including independent scan-only and
