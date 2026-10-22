@@ -15,6 +15,7 @@
 #ifdef __XSDK__
 #include "guis/GuiMsgBox.h"
 #include "LaunchCommand.h"
+#include "SalviaLaunch.h"
 #include "FrontendState.h"
 #endif
 
@@ -133,12 +134,17 @@ void SystemData::launchGame(Window* window, FileData* game)
         window->pushGui(new GuiMsgBox(window,"THIS GAME HAS NOT BEEN ENABLED FOR TESTING YET."));
         return;
     }
-    if(!validateXboxLaunchFiles(parsed,launchError)) {
+    if(!validateXboxLaunchFiles(parsed,launchError) || !validateSalviaLaunch(parsed,launchError)) {
         window->pushGui(new GuiMsgBox(window,launchError));
         return;
     }
     if(!rememberXboxSelection(game)) {
         window->pushGui(new GuiMsgBox(window,"COULD NOT SAVE THE RETURN POSITION. CHECK THE APPLICATION FOLDER."));
+        return;
+    }
+    if(!prepareSalviaLaunch(parsed,launchError)) {
+        LOG(LogError)<<launchError;
+        window->pushGui(new GuiMsgBox(window,launchError));
         return;
     }
 #endif

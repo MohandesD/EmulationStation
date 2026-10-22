@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-22",
+  "console": "Trinity / 17559 / temporary XeUnshackle",
+  "initial_test": {
+    "frontend_sha256": "8594af17f8569adf5e2a8a4ae71e5f9c93e94f14aea50ce114393f9e87ef53b3",
+    "title": "Tetris (NES)",
+    "user_report": "Emulator tried to load ROM, then fatal crash intercepted; similar to earlier launcher failure",
+    "frontend_handoff_logged": true,
+    "crash_helper_observed": true,
+    "exception_address_captured": false,
+    "gameplay_verified": false
+  },
+  "recovery": {
+    "aurora_remotely_recovered": true,
+    "ftp_recovered": true,
+    "test_exception_cleared_and_readback_verified": true,
+    "private_logs_preserved": true,
+    "no_console_reboot": true
+  },
+  "diagnosis": {
+    "saved_salvia_system": "Arcade",
+    "saved_system_index": 2,
+    "arcade_no_uncompress": true,
+    "nes_no_uncompress": false,
+    "nestopia_requires_memory_input": true,
+    "system_context_mismatch_confirmed": true,
+    "mismatch_is_proven_crash_site": false,
+    "missing_file_log_explained_by_upstream_logger": true
+  },
+  "candidate": {
+    "frontend_sha256": "f61b54af8b28160d8f48118c995d656f44500edb9546f77859d1205ef6761b25",
+    "frontend_bytes": 10166272,
+    "host_tests_passed": 5,
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "captured_configuration_local_test_passed": true,
+    "full_application_built": true,
+    "console_context_probe": {
+      "prepared_while_no_rom_loaded": true,
+      "before_system": "Arcade",
+      "after_system": "NES",
+      "backup_matches_prior_bytes": true,
+      "menu_readback_matches_exact_expected_change": true,
+      "all_game_launches_disabled": true,
+      "saved_boot_unchanged": true,
+      "probe_disabled_after_test": true
+    },
+    "aurora_observed_after_probe": true,
+    "app_and_five_commands_full_ftp_readback": true,
+    "saved_boot_configuration_changed": false,
+    "emulator_binaries_changed": false,
+    "game_remotely_launched": false
+  },
+  "followup_manual_test": {
+    "title": "Tetris (NES)",
+    "general_game_launch_enabled": false,
+    "single_game_exception_enabled": true,
+    "frontend_opened": true,
+    "result": "awaiting user report",
+    "return_target": "Aurora",
+    "direct_return_to_es_implemented": false
+  }
+}

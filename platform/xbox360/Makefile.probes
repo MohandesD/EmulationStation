@@ -7,14 +7,18 @@ CXXFLAGS := -std=c++17 -O2 -mcpu=cell -fno-pic -Wall -Wextra -Werror -I$(SDK)/in
 LINK := -static -nostdlib -T $(SDK)/src/xsdk.ld
 LIBS := -Wl,--start-group -lstdc++ $(SDK)/build/libxsdk.a -lc -lm -lgcc -Wl,--end-group
 .PHONY: all
-all: $(BUILD)/ESHandoffReceiver.xex $(BUILD)/ESReturnProbe.xex
+all: $(BUILD)/ESHandoffReceiver.xex $(BUILD)/ESReturnProbe.xex $(BUILD)/ESSalviaContextProbe.xex
 $(BUILD):
 	mkdir -p $@
 $(BUILD)/ESHandoffReceiver.elf: tests/handoff_receiver.cpp $(SDK)/build/libxsdk.a | $(BUILD)
 	$(CXX) $(CXXFLAGS) $(LINK) $< $(LIBS) -o $@
 $(BUILD)/ESReturnProbe.elf: tests/return_probe.cpp $(SDK)/build/libxsdk.a | $(BUILD)
 	$(CXX) $(CXXFLAGS) $(LINK) $< $(LIBS) -o $@
+$(BUILD)/ESSalviaContextProbe.elf: tests/salvia_context_probe.cpp SalviaLaunch.cpp LaunchCommand.cpp $(SDK)/build/libxsdk.a | $(BUILD)
+	$(CXX) $(CXXFLAGS) -I. $(LINK) tests/salvia_context_probe.cpp SalviaLaunch.cpp LaunchCommand.cpp $(LIBS) -o $@
 $(BUILD)/ESHandoffReceiver.xex: $(BUILD)/ESHandoffReceiver.elf
 	python3 $(SDK)/tools/elf2xex.py --title-id 0xF3600007 --title-name ESHandoffReceiver $< $@
 $(BUILD)/ESReturnProbe.xex: $(BUILD)/ESReturnProbe.elf
 	python3 $(SDK)/tools/elf2xex.py --title-id 0xF3600006 --title-name ESReturnProbe $< $@
+$(BUILD)/ESSalviaContextProbe.xex: $(BUILD)/ESSalviaContextProbe.elf
+	python3 $(SDK)/tools/elf2xex.py --title-id 0xF3600008 --title-name ESSalviaContextProbe $< $@

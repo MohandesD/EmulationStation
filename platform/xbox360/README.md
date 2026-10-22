@@ -22,8 +22,10 @@ match the installed library. This automated rendering check does not prove input
 Later user-operated tests passed controller navigation, menu return to Aurora
 and restoration of the selected system. The source is published on the
 [Xbox branch of the maintained fork](https://github.com/MohandesD/EmulationStation/tree/xbox360).
-This is **not a finished game frontend yet**: emulator launch/return, restoring
-a selected game after it exits, and audio behavior remain unverified.
+The first manual Tetris handoff crashed after the emulator appeared. The candidate
+Salvia context correction below passed a no-game console check; its gameplay
+result is still pending. This is **not a finished game frontend yet**: emulator
+gameplay/return, restoring a selected game after it exits, and audio remain unverified.
 
 `es_gl.c` implements the 26 fixed-function GL calls used in the upstream source.
 It preserves the existing renderer/components and implements column-major model
@@ -91,11 +93,11 @@ The source inventory fails if upstream adds an unimplemented GL entry point.
 Compiled shader fetch records must match POSITION0/COLOR0/TEXCOORD0 and sampler
 slot zero; a deliberately wrong sampler is rejected by the validation script.
 
-Four host tests cover GL semantics/source coverage, Xbox launch path parsing,
-and image orientation/alpha/resize/failure handling, with sanitizers enabled.
+Five host tests cover GL semantics/source coverage, Xbox launch path parsing,
+Salvia system context and image orientation/alpha/resize/failure handling, with sanitizers enabled.
 They complement the separate graphics-only console evidence.
 The SDK's instruction scanner reports three skipped instructions in the small
-graphics probe and 160 in the full application/dependencies. Xenia results in
+graphics probe and 162 in the current full application/dependencies. Xenia results in
 those functions are unreliable; Xenia is not a substitute for a console run.
 
 ## Full application build (integration in progress)
@@ -174,6 +176,46 @@ restriction; an empty setting permits no games, and it never permits an app-only
 launch. The default is empty. This is a test control, not a gameplay success claim.
 
 ### Launch preflight and diagnostic evidence
+
+#### Failed Tetris launch and candidate correction (2026-10-22)
+
+The user saw emulator startup followed by "fatal crash intercepted". ES's private
+logs show its handoff to Nestopia; XBDM then reported the crash helper. Aurora
+was recovered remotely, logs preserved privately, and the test exception cleared.
+This matches the earlier custom Games launch symptom, but no exception address
+was captured, so an identical crash site is not established.
+
+Read-only inspection found Salvia's saved menu still selected Arcade (index 2),
+whose configuration uses `no_uncompress=yes`; NES uses `no_uncompress=no`.
+Salvia restores that selection even for incoming launch data, and its loader
+reads the selected configuration. This can send Nestopia an empty memory buffer
+instead of loading the NES file. This is a concrete integration defect and a
+strong crash hypothesis, not a verified gameplay fix. Source references:
+[menu restoration](https://github.com/danibiker/Salvia/blob/v1.0.10/src/salvia.h),
+[configuration selection](https://github.com/danibiker/Salvia/blob/v1.0.10/src/io/cfgloader.cpp),
+[Nestopia's memory input](https://github.com/danibiker/Salvia/blob/v1.0.10/libretro/nestopia/libretro/libretro.cpp).
+The upstream logger's file write is commented out, so a missing salvia.log does
+not establish an incorrect working directory.
+
+Salvia commands now specify their configuration name explicitly:
+`salvia nes "hdd:/Emulators/Salvia/Nestopia.xex" %ROM%`.
+Use `snes`, `fbn`, `gameboy` and `n64` for the other configured systems. The helper
+validates the core association, system list and known v1.0.10 Xbox menu layout
+(8,496 bytes). After launch permission, it preserves `menu.es-backup`, selects the
+requested system, clears stale directory/filter positions, and verifies the write
+before UI shutdown. Layout/background are retained. Missing/malformed inputs or
+write failures cancel launch. Legacy ROM commands beside salvia.cfg are rejected
+until their system is specified. These checks identify supported structure, not
+binary authenticity or future Salvia layout compatibility.
+
+Five sanitizer tests pass, including wrong-core/unknown-layout rejection, backup
+failure and the Arcade-to-NES regression. A local copy of the captured settings
+also passed. ESSalviaContextProbe exercised the same helper on the console without
+launching a core or ROM, verified NES selection and exact backup/readback, and
+returned to Aurora. Its executable was disabled afterward. The updated app and
+five commands passed full FTP readback; saved boot settings are unchanged. Only
+Tetris was then re-enabled for a user-operated check; its result remains pending.
+See [sanitized evidence](tests/hardware-tetris-2026-10-22.json).
 
 The native launcher checks that the chosen core is a regular XEX2 file and the
 game is a nonempty regular file before dismantling the UI. These are basic file

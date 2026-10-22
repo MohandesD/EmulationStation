@@ -9,8 +9,10 @@ The full app builds, and its carousel, five system lists, cover art and a fixed
 diagnostic app handoff have been verified on a Trinity console.
 
 **Development status:** controller navigation, menu return to Aurora and restoration
-of the selected system have passed a user-operated console test. Emulator
-gameplay/return and restoring a selected game after it exits remain unverified.
+of the selected system have passed a user-operated console test. The first
+manual Tetris handoff reached the emulator and then crashed. A Salvia system
+selection mismatch was found; the candidate correction passed a no-game console
+check, but gameplay/return and restoring a selected game remain unverified.
 Game launching is disabled by default. This is not a finished replacement dashboard; do not set it as the
 console's startup application.
 

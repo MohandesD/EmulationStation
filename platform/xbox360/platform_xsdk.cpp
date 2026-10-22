@@ -1,5 +1,6 @@
 #include "platform.h"
 #include "LaunchCommand.h"
+#include "SalviaLaunch.h"
 #include "Settings.h"
 #include "Log.h"
 #include <xsdk/xam.h>
@@ -12,7 +13,7 @@ int runShutdownCommand() { errno=ENOTSUP; return -1; }
 int runRestartCommand() { errno=ENOTSUP; return -1; }
 static int handoff(const XboxLaunchCommand& command) {
     std::string error;
-    if(!validateXboxLaunchFiles(command,error)) { LOG(LogError)<<error; return -1; }
+    if(!validateXboxLaunchFiles(command,error) || !validateSalviaLaunch(command,error,true)) { LOG(LogError)<<error; return -1; }
     const void* data=command.rom.empty() ? nullptr : command.rom.c_str();
     size_t bytes=command.rom.empty() ? 0 : command.rom.size()+1;
     Log::flush();

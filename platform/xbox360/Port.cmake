@@ -49,6 +49,7 @@ target_sources(es-core PRIVATE
     "${CMAKE_SOURCE_DIR}/platform/xbox360/ImageResize_stb.cpp"
     "${CMAKE_SOURCE_DIR}/platform/xbox360/platform_xsdk.cpp"
     "${CMAKE_SOURCE_DIR}/platform/xbox360/LaunchCommand.cpp"
+    "${CMAKE_SOURCE_DIR}/platform/xbox360/SalviaLaunch.cpp"
     "${CMAKE_SOURCE_DIR}/platform/xbox360/LaunchFiles.cpp"
     "${CMAKE_SOURCE_DIR}/platform/xbox360/es_gl.c"
     "${CMAKE_SOURCE_DIR}/platform/xbox360/es_gpu.c")

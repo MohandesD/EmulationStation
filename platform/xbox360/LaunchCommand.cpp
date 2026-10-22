@@ -53,17 +53,25 @@ bool parseXboxLaunchCommand(const std::string& text,XboxLaunchCommand& out,std::
         }
         if(token.empty()) { error="Empty command argument"; return false; }
         tokens.push_back(token);
-        if(tokens.size()>3) { error="Expected executable and optional ROM only"; return false; }
+        if(tokens.size()>4) { error="Too many launch arguments"; return false; }
     }
-    if(tokens.size()<2 || tokens[0]!="xex") { error="Xbox commands must start with xex"; return false; }
-    std::string executable=tokens[1];
+    const bool salvia=!tokens.empty() && tokens[0]=="salvia";
+    if((salvia && tokens.size()!=4) || (!salvia && (tokens.size()<2 || tokens.size()>3 || tokens[0]!="xex"))) {
+        error="Expected xex executable [ROM] or salvia system executable ROM"; return false;
+    }
+    if(salvia && (tokens[1].size()>38 || tokens[1].find_first_not_of("abcdefghijklmnopqrstuvwxyz0123456789_-")!=std::string::npos)) {
+        error="Invalid Salvia system name"; return false;
+    }
+    std::string executable=tokens[salvia ? 2 : 1];
     if(!normalize(executable,false)) { error="Invalid executable path"; return false; }
     std::string suffix=executable.size()>=4 ? executable.substr(executable.size()-4) : "";
     std::transform(suffix.begin(),suffix.end(),suffix.begin(),[](unsigned char c){return char(std::tolower(c));});
     if(suffix!=".xex") { error="Executable must be an XEX"; return false; }
-    std::string rom=tokens.size()==3 ? tokens[2] : "";
+    std::string rom=salvia ? tokens[3] : (tokens.size()==3 ? tokens[2] : "");
     if(!rom.empty() && !normalize(rom,true)) { error="Invalid ROM path"; return false; }
-    out.executable=executable; out.rom=rom; return true;
+    out.executable=executable; out.rom=rom;
+    if(salvia) out.salviaSystem=tokens[1];
+    return true;
 }
 bool isXboxLaunchPermitted(const XboxLaunchCommand& command,bool enabled,const std::string& testRom) {
     if(enabled) return true;
