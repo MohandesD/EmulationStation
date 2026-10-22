@@ -46,6 +46,28 @@
     "saved_boot_unchanged": true,
     "probe_disabled_after_read": true,
     "cause": "unresolved",
-    "next_check": "same-build manual menu exit without a game"
+    "subsequent_check": "same-build manual menu exit without a game passed; the earlier post-game mismatch remains unresolved"
+  },
+  "separate_exit_only_check": {
+    "same_installed_source_and_app_hash": true,
+    "game_launched_during_this_check": false,
+    "user_exit_action": "Start -> Quit -> Return to Aurora -> Yes",
+    "user_confirmed_aurora_opened": true,
+    "independent_observation": "read-only XBDM confirmed Aurora",
+    "logs_collected_before_any_subsequent_es_launch": true,
+    "application_log_clean_shutdown": true,
+    "sdk_log_loaded_expected_hdd_application": true,
+    "sdk_log_exit_status": 0,
+    "sdk_log_destination": "Aurora",
+    "runtime_inspection_mode": "inspect only; no arm or restore operation",
+    "options": 76,
+    "snapshot_byte_identical": true,
+    "exact_equal": true,
+    "equivalent_after_reload": true,
+    "changed_option_names": [],
+    "liveblock_livestrong_noupdater_preserved": true,
+    "saved_boot_unchanged": true,
+    "probe_disabled_after_read": true,
+    "establishes_restoration_after_gameplay": false
   }
 }

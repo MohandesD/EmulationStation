@@ -30,8 +30,11 @@ with Tetris selected; read-only XBDM independently confirmed ES running afterwar
 The Guide still labels Y "Xbox Home" while the temporary session routes it to ES.
 A no-game session arm/restore check passed earlier. Return to Aurora opened Aurora,
 but the post-game read-only check still found Default/BUT_Y pointing to ES. The
-other 74 options and saved boot matched. Restoration is under investigation;
-other cores and audio acceptance remain pending.
+other 74 options and saved boot matched. A separate exit-only menu check with the
+same installed app then restored all 76 options exactly, with a clean application
+exit, the expected HDD image in the SDK log and an unchanged saved boot file.
+The earlier post-game mismatch remains unresolved; other cores and audio
+acceptance remain pending.
 See [the installed-build evidence](tests/hardware-tetris-return-2026-10-22.json). This is
 **not a finished game frontend yet**.
 
@@ -66,8 +69,9 @@ bring-up; it must be removed as a bring-up gate or deliberately enabled and
 hardware-tested before claiming the port works as a general game frontend.
 Session return is implemented; its no-game console check and a user-operated NES
 Tetris roundtrip with selected-game restoration pass. The post-game restoration
-check did not pass even though Aurora opened; an exit-only reproduction is pending.
-Other cores still need verification.
+check did not pass even though Aurora opened. A separate same-build exit-only
+check restored all 76 options exactly; that success does not establish post-game
+restoration. Other cores still need verification.
 
 The hardware probe caught an actual backend defect: the vertex-stream API
 expects the complete buffer byte length, not the per-vertex stride. The adapter
@@ -332,12 +336,14 @@ transition; the comparator now accepts only the documented loaded-to-found
 transition while preserving all configuration fields. Regression tests cover it.
 The corrected probe passed, restored all options and left saved boot files
 unchanged. It was disabled afterward. The updated app and Tetris-only settings
-passed full FTP readback; ES is open for a manual game/Guide-return check. No game
-was remotely launched. See [session return](SESSION_RETURN.md) and
+passed full FTP readback. The later user-operated game/Guide-return check passed,
+but restoration after that gameplay did not; a separate menu exit without a game
+restored all 76 options exactly. No game was remotely launched. See
+[session return](SESSION_RETURN.md) and
 [console evidence](tests/hardware-session-return-2026-10-22.json). The font change
 is installed but TV appearance still needs confirmation.
 
-## Offline follow-up while the manual return test is pending
+## Offline follow-up and separate installed-build checks
 
 The next candidate retains 34 available Salvia sources in 32 sections, including
 both Arcade and Neo Geo Pocket backends. It routes each game by its physical
@@ -351,8 +357,10 @@ Xbox cross-build pass. The package helper also passes four offline tests with
 fake FTP, including duplicate filenames and source-specific artwork. This
 candidate is not deployed. The installed Tetris build remains unchanged; its game
 exit and selected-game restoration are now user-confirmed. Return to Aurora opens
-Aurora, but its runtime restoration did not pass inspection. That investigation
-and TV font acceptance remain pending.
+Aurora, but its post-game runtime restoration did not pass inspection. A later
+exit-only check passed exact restoration of all 76 options and logged a clean
+exit from the expected HDD app. The earlier post-game mismatch and TV font
+acceptance remain unresolved.
 
 The subsequent offline check adds the optional production-model test above.
 All ten enabled host test groups pass, including independent scan-only and

@@ -8,8 +8,11 @@ An independent read-only XBDM observation confirmed ES running afterward. The us
 then confirmed Return to Aurora, also independently observed. However, the next
 inspect-only runtime check still found Default/BUT_Y pointing to ES; all other 74
 options and the saved boot file matched. Post-game restoration has not passed.
-The cause is unresolved; an exit-only menu reproduction is pending. The earlier
-no-game restoration result remains a separate check.
+A separate exit-only menu check with the same installed app then restored all
+76 options exactly, returned to Aurora and left the saved boot file unchanged.
+Its application and SDK logs confirm a clean exit from the expected HDD app.
+The earlier post-game mismatch remains unexplained; the successful exit-only
+result does not establish restoration after gameplay.
 
 ## Behavior
 
@@ -102,12 +105,25 @@ opened. Production snapshot comparison rejected both exact and accepted reload
 equivalence; network/update protections were unchanged. The probe did not arm or
 restore anything and was disabled afterward. The captured application log ended
 at the Tetris handoff, without a re-entry or clean-shutdown record, so it does not
-explain the exit. The same installed app was reopened for an exit-only menu check;
-no new binary or catalog was deployed. Resolve and verify restoration before
-expanding gameplay. Repeat launch/return separately for other cores before
-enabling them. Font appearance still needs the user's TV check. Newer offline
-safeguards and grouped-source changes have not been installed or hardware-tested
-by this result.
+explain the exit.
+
+The same installed app was then reopened from Aurora for a separate exit-only
+menu check; no game, new binary or catalog was involved. The user confirmed
+Start -> Quit -> Return to Aurora -> Yes, and read-only XBDM confirmed Aurora.
+Logs collected before any subsequent ES launch contain "EmulationStation cleanly
+shutting down." The SDK log identifies the expected HDD application at
+`Hdd1:/Apps/EmulationStation/emulationstation.xex` and records exit status 0 while
+launching Aurora. The inspect-only probe then found a byte-identical snapshot:
+production exact and accepted-reload comparisons both passed for all 76 options,
+with no changed option names and all network/update protections preserved. The
+saved boot file remained unchanged and the probe was disabled afterward.
+
+This establishes successful restoration through an ordinary menu exit in that
+run; it does not explain or erase the earlier post-game failure. Verify that
+post-game path before expanding gameplay. Repeat launch/return separately for
+other cores before enabling them. Font appearance still needs the user's TV
+check. Newer offline safeguards and grouped-source changes have not been
+installed or hardware-tested by these results.
 
 ## Source basis
 
