@@ -47,7 +47,12 @@ void TextureResource::initFromPixels(const unsigned char* dataRGBA, size_t width
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, dataRGBA);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+#ifdef __XSDK__
+	// Smooth enlarged logos and artwork in the Xbox UI; keep tiled patterns sharp.
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mTile ? GL_NEAREST : GL_LINEAR);
+#else
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+#endif
 
 	const GLint wrapMode = mTile ? GL_REPEAT : GL_CLAMP_TO_EDGE;
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
