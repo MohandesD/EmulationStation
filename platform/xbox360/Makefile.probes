@@ -1,0 +1,20 @@
+# Small C++ diagnostics; requires the full C/C++ toolchain.
+SDK ?= $(HOME)/xbox-build/es-xsdk
+TC ?= $(HOME)/xsdk-es-gcc/bin/powerpc-xsdk-elf-
+BUILD ?= $(HOME)/xbox-build/es-probes
+CXX := $(TC)g++
+CXXFLAGS := -std=c++17 -O2 -mcpu=cell -fno-pic -Wall -Wextra -Werror -I$(SDK)/include
+LINK := -static -nostdlib -T $(SDK)/src/xsdk.ld
+LIBS := -Wl,--start-group -lstdc++ $(SDK)/build/libxsdk.a -lc -lm -lgcc -Wl,--end-group
+.PHONY: all
+all: $(BUILD)/ESHandoffReceiver.xex $(BUILD)/ESReturnProbe.xex
+$(BUILD):
+	mkdir -p $@
+$(BUILD)/ESHandoffReceiver.elf: tests/handoff_receiver.cpp $(SDK)/build/libxsdk.a | $(BUILD)
+	$(CXX) $(CXXFLAGS) $(LINK) $< $(LIBS) -o $@
+$(BUILD)/ESReturnProbe.elf: tests/return_probe.cpp $(SDK)/build/libxsdk.a | $(BUILD)
+	$(CXX) $(CXXFLAGS) $(LINK) $< $(LIBS) -o $@
+$(BUILD)/ESHandoffReceiver.xex: $(BUILD)/ESHandoffReceiver.elf
+	python3 $(SDK)/tools/elf2xex.py --title-id 0xF3600007 --title-name ESHandoffReceiver $< $@
+$(BUILD)/ESReturnProbe.xex: $(BUILD)/ESReturnProbe.elf
+	python3 $(SDK)/tools/elf2xex.py --title-id 0xF3600006 --title-name ESReturnProbe $< $@

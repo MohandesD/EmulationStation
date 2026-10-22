@@ -58,6 +58,7 @@ void Settings::setDefaults()
     mBoolMap["XboxLaunchEnabled"] = false; // Temporary bring-up gate; must be validated before enabling.
     mIntMap["XboxDiagnosticFrames"] = 0; // Opt-in bounded frontend test; never launches a game.
     mBoolMap["XboxDiagnosticBrowse"] = false; // Opt-in list rendering, without controller injection.
+    mBoolMap["XboxDiagnosticHandoff"] = false; // Fixed test receiver, only after a bounded diagnostic run.
 #else
     mBoolMap["EnableSounds"] = true;
 #endif

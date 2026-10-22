@@ -15,7 +15,7 @@ add_test(NAME es_gl_semantics COMMAND test_es_gl)
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 add_test(NAME es_gl_source_coverage COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/check_gl_coverage.py)
 
-add_executable(test_es_launch test_launch.cpp ../LaunchCommand.cpp)
+add_executable(test_es_launch test_launch.cpp ../LaunchCommand.cpp ../LaunchFiles.cpp)
 target_include_directories(test_es_launch PRIVATE ..)
 target_compile_options(test_es_launch PRIVATE -Wall -Wextra -Werror -UNDEBUG)
 add_test(NAME es_launch_paths COMMAND test_es_launch)

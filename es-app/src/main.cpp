@@ -17,6 +17,8 @@
 #include "EmulationStation.h"
 #ifdef __XSDK__
 #include <xsdk/xam.h>
+#include "FrontendState.h"
+#include "LaunchCommand.h"
 #endif
 #include "Settings.h"
 #include "ScraperCmdLine.h"
@@ -275,7 +277,7 @@ int main(int argc, char* argv[])
 #ifdef __XSDK__
         // Native pads have built-in defaults, including pads connected later.
         // Do not strand a controller-less startup in the desktop keyboard wizard.
-        ViewController::get()->goToStart();
+        if(!restoreXboxSelection()) ViewController::get()->goToStart();
 #else
 		if(InputManager::getInstance()->getNumConfiguredDevices() > 0)
 		{
@@ -366,6 +368,9 @@ int main(int argc, char* argv[])
 		Log::flush();
 	}
 
+#ifdef __XSDK__
+    if(diagnosticLimit==0) rememberXboxSelection();
+#endif
 	while(window.peekGui() != ViewController::get())
 		delete window.peekGui();
 	window.deinit();
@@ -377,6 +382,11 @@ int main(int argc, char* argv[])
     AudioManager::getInstance()->deinit();
     SDL_Quit();
     Log::flush();
+    if(diagnosticLimit>0 && Settings::getInstance()->getBool("XboxDiagnosticHandoff")) {
+        runXboxHandoffDiagnostic();
+        LOG(LogError)<<"Diagnostic handoff failed; returning to Aurora";
+        Log::flush();
+    }
     return xsdk_launch("hdd:/Apps/Aurora/Aurora.xex",nullptr,0);
 #endif
 

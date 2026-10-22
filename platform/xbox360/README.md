@@ -156,6 +156,48 @@ Do not set this development build as the default dashboard.
 
 ## Next integration work
 
+### Launch preflight and diagnostic evidence
+
+The native launcher checks that the chosen core is a regular XEX2 file and the
+game is a nonempty regular file before dismantling the UI. These are basic file
+checks, not executable authentication or gameplay compatibility tests. Failed
+handoffs restore the frontend and show an error without counting a play. ROM
+paths use Salvia's Hdd/Usb0/Usb1/Usb2 mounts; DVD ROM paths are rejected because
+this Salvia release does not mount Dvd. This does not implement Xbox disc play.
+
+Commands must select the actual emulator core. Salvia's default browser does not
+dispatch incoming ROM launch data to another core. The tested installation's
+selected cores are Nestopia.xex, Snes9x2010.xex, fbneo.xex, Gambatte.xex and
+xbox64.xex. The preparation helper reads and verifies those selections from the
+installed configuration instead of hardcoding default.xex for every system.
+
+Before a game handoff, the frontend records its selected system/game in its own
+es_selection.cfg. Startup accepts only an entry that still exists in the loaded
+catalogue; malformed or stale state falls back to system selection. This feature
+has cross-built but still needs a physical navigation/return test. It does not
+by itself change where an emulator exits.
+
+Build the small diagnostics with `make -f Makefile.probes` from this directory,
+using the same SDK and full C/C++ compiler as the application. A read-only
+ESReturnProbe confirmed that the existing DashLaunch return API is available,
+the current default is Aurora, and the network/update protection options are
+enabled. It invoked no setter or INI reload. See the sanitized evidence JSON.
+
+For the fixed handoff diagnostic only, install ESHandoffReceiver.xex and a text
+file named handoff-fixture.txt containing `EmulationStation handoff test` plus
+a newline under Hdd1:/Apps/ESProbe. Set XboxDiagnosticFrames=180 and
+XboxDiagnosticHandoff=true in the app's settings, retaining XboxLaunchEnabled=false.
+After its bounded render loop and UI shutdown, ES passes that text file's path
+to the receiver through the same native launch helper used by game commands.
+The receiver verifies the exact NUL-terminated launch data, its game: directory,
+and an absolute read, then returns to Aurora. This passed on the console; it
+does not test a Salvia core, ROM launch or return from an emulator. Both options
+were restored to their normal disabled values after collecting the result.
+
+No return setting has been changed in RAM or on disk by these diagnostics.
+Actual emulator return integration remains unfinished. Do not enable game
+launching or change the default dashboard based solely on these results.
+
 1. Verify controller input, audio, filesystem/locale behavior and text input;
    dummy SDL text input is only an adapter, not a verified Xbox keyboard UI.
 2. Test game lists, covers, transitions, input and memory lifetime

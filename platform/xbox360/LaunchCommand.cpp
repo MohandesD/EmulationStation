@@ -24,12 +24,12 @@ static bool normalize(std::string& path,bool rom) {
     if(tail.back()=='/') return false;
     // Salvia v1.0.10 Launcher::initDrives mounts Hdd: and Usb0:/Usb1:/Usb2:.
     if(rom) {
-        if(drive=="game") return false; // game: changes to the emulator on handoff.
+        // game: changes on handoff; Salvia does not mount Dvd: for ROMs.
+        if(drive=="game" || drive=="dvd") return false;
         if(drive=="hdd") drive="Hdd";
         else if(drive=="usb") drive="Usb0";
         else if(drive=="usb1") drive="Usb1";
         else if(drive=="usb2") drive="Usb2";
-        else if(drive=="dvd") drive="Dvd";
     }
     path=drive+":"+tail;
     if(rom) std::replace(path.begin(),path.end(),'/','\\');

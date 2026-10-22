@@ -14,6 +14,8 @@
 #include "FileSorts.h"
 #ifdef __XSDK__
 #include "guis/GuiMsgBox.h"
+#include "LaunchCommand.h"
+#include "FrontendState.h"
 #endif
 
 std::vector<SystemData*> SystemData::sSystemVector;
@@ -117,10 +119,6 @@ void SystemData::launchGame(Window* window, FileData* game)
 #endif
     LOG(LogInfo) << "Attempting to launch game...";
 
-	AudioManager::getInstance()->deinit();
-	VolumeControl::getInstance()->deinit();
-	window->deinit();
-
 	std::string command = mLaunchCommand;
 
 	const std::string rom = escapePath(game->getPath());
@@ -130,6 +128,20 @@ void SystemData::launchGame(Window* window, FileData* game)
 	command = strreplace(command, "%ROM%", rom);
 	command = strreplace(command, "%BASENAME%", basename);
 	command = strreplace(command, "%ROM_RAW%", rom_raw);
+#ifdef __XSDK__
+    XboxLaunchCommand parsed; std::string launchError;
+    if(!parseXboxLaunchCommand(command,parsed,launchError) || !validateXboxLaunchFiles(parsed,launchError)) {
+        window->pushGui(new GuiMsgBox(window,launchError));
+        return;
+    }
+    if(!rememberXboxSelection(game)) {
+        window->pushGui(new GuiMsgBox(window,"COULD NOT SAVE THE RETURN POSITION. CHECK THE APPLICATION FOLDER."));
+        return;
+    }
+#endif
+	AudioManager::getInstance()->deinit();
+	VolumeControl::getInstance()->deinit();
+	window->deinit();
 
 	LOG(LogInfo) << "	" << command;
 	std::cout << "==============================================\n";
@@ -145,6 +157,12 @@ void SystemData::launchGame(Window* window, FileData* game)
 	VolumeControl::getInstance()->init();
 	AudioManager::getInstance()->init();
 	window->normalizeNextUpdate();
+#ifdef __XSDK__
+    // A successful native image handoff replaces this process. Reaching here
+    // means it failed; keep the selected game and don't count it as played.
+    window->pushGui(new GuiMsgBox(window,"THE EMULATOR COULD NOT BE STARTED. THE GAME LIST HAS BEEN RESTORED."));
+    return;
+#endif
 
 	//update number of times the game has been launched
 	int timesPlayed = game->metadata.getInt("playcount") + 1;

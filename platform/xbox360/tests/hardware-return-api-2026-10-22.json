@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-22",
+  "probe_xex_bytes": 593920,
+  "probe_xex_sha256": "0c563a6d08f09a8355fb3aa84d6a4c4a3578cc0bf1b8d6b2823e2544a69de193",
+  "full_ftp_readback_verified": true,
+  "runtime_api_available": true,
+  "network_update_options_preserved_enabled": true,
+  "default_class": "Aurora",
+  "runtime_changed": false,
+  "rom_launched": false,
+  "aurora_observed_after_exit": true
+}

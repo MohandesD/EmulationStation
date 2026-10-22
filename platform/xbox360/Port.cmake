@@ -39,6 +39,7 @@ set(COMMON_LIBRARIES SDL3::SDL3-static freetype CURL::libcurl mbedtls pugixml na
 add_subdirectory(external)
 add_subdirectory(es-core)
 add_subdirectory(es-app)
+target_sources(emulationstation PRIVATE "${CMAKE_SOURCE_DIR}/platform/xbox360/FrontendState.cpp")
 
 target_sources(es-core PRIVATE
     "${CMAKE_SOURCE_DIR}/platform/xbox360/Renderer_init_xsdk.cpp"
@@ -48,6 +49,7 @@ target_sources(es-core PRIVATE
     "${CMAKE_SOURCE_DIR}/platform/xbox360/ImageResize_stb.cpp"
     "${CMAKE_SOURCE_DIR}/platform/xbox360/platform_xsdk.cpp"
     "${CMAKE_SOURCE_DIR}/platform/xbox360/LaunchCommand.cpp"
+    "${CMAKE_SOURCE_DIR}/platform/xbox360/LaunchFiles.cpp"
     "${CMAKE_SOURCE_DIR}/platform/xbox360/es_gl.c"
     "${CMAKE_SOURCE_DIR}/platform/xbox360/es_gpu.c")
 
