@@ -22,12 +22,30 @@
     "establishes_controller_actions_or_selected_game": false
   },
   "return_behavior": "The Guide label stays Xbox Home; temporary runtime Default/BUT_Y settings route that action to EmulationStation.",
-  "manual_return_to_aurora_after_gameplay": "pending",
-  "current_session_runtime_restoration_after_gameplay": "pending",
+  "manual_return_to_aurora_after_gameplay": "user confirmed; Aurora independently observed by XBDM",
+  "current_session_runtime_restoration_after_gameplay": "verification did not pass",
   "earlier_no_game_restoration_evidence": "hardware-session-return-2026-10-22.json",
   "other_core_roundtrips_verified": false,
   "sustained_stability_verified": false,
   "font_tv_verified": false,
   "newer_offline_candidate_covered_by_this_result": false,
-  "raw_runtime_snapshots_kept_private": true
+  "raw_runtime_snapshots_kept_private": true,
+  "post_game_runtime_inspection": {
+    "mode": "inspect only; no arm or restore operation",
+    "options": 76,
+    "exact_equal": false,
+    "equivalent_after_reload": false,
+    "changed_option_names": [
+      "Default",
+      "BUT_Y"
+    ],
+    "observed_destination": "EmulationStation for both",
+    "original_destination": "Aurora; BUT_Y unset",
+    "other_options_match": 74,
+    "liveblock_livestrong_noupdater_preserved": true,
+    "saved_boot_unchanged": true,
+    "probe_disabled_after_read": true,
+    "cause": "unresolved",
+    "next_check": "same-build manual menu exit without a game"
+  }
 }

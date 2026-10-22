@@ -4,9 +4,12 @@ Status on 2026-10-22: cross-built and PC-tested; a no-game console arm/restore
 check now passes on Trinity/17559 with temporary XeUnshackle. All 76 exposed
 options were restored and the saved boot file stayed unchanged. The user has now
 confirmed ES -> NES Tetris plays -> Xbox Guide/Y -> ES, with Tetris still selected.
-An independent read-only XBDM observation confirmed ES running afterward. Manual
-Return to Aurora and verification of the current session's runtime restoration
-remain pending; the earlier no-game restoration result is a separate check.
+An independent read-only XBDM observation confirmed ES running afterward. The user
+then confirmed Return to Aurora, also independently observed. However, the next
+inspect-only runtime check still found Default/BUT_Y pointing to ES; all other 74
+options and the saved boot file matched. Post-game restoration has not passed.
+The cause is unresolved; an exit-only menu reproduction is pending. The earlier
+no-game restoration result remains a separate check.
 
 ## Behavior
 
@@ -94,8 +97,14 @@ Tetris was selected. Read-only XBDM independently confirmed the frontend running
 it does not establish which controls the user pressed or the selected entry.
 See [Tetris return evidence](tests/hardware-tetris-return-2026-10-22.json).
 
-Next verify manual Return to Aurora and original runtime restoration after this
-gameplay roundtrip. Repeat launch/return separately for other cores before
+The post-game read-only probe found Default/BUT_Y still set to ES after Aurora
+opened. Production snapshot comparison rejected both exact and accepted reload
+equivalence; network/update protections were unchanged. The probe did not arm or
+restore anything and was disabled afterward. The captured application log ended
+at the Tetris handoff, without a re-entry or clean-shutdown record, so it does not
+explain the exit. The same installed app was reopened for an exit-only menu check;
+no new binary or catalog was deployed. Resolve and verify restoration before
+expanding gameplay. Repeat launch/return separately for other cores before
 enabling them. Font appearance still needs the user's TV check. Newer offline
 safeguards and grouped-source changes have not been installed or hardware-tested
 by this result.

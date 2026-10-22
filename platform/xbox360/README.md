@@ -28,8 +28,10 @@ read-only XBDM capture shows Tetris rendering a game, and the user confirmed it
 starts and plays. The user has also confirmed Guide/Y returns from Tetris to ES
 with Tetris selected; read-only XBDM independently confirmed ES running afterward.
 The Guide still labels Y "Xbox Home" while the temporary session routes it to ES.
-A no-game session arm/restore check passed earlier. Manual Return to Aurora and
-runtime restoration after gameplay, other cores and audio acceptance remain pending.
+A no-game session arm/restore check passed earlier. Return to Aurora opened Aurora,
+but the post-game read-only check still found Default/BUT_Y pointing to ES. The
+other 74 options and saved boot matched. Restoration is under investigation;
+other cores and audio acceptance remain pending.
 See [the installed-build evidence](tests/hardware-tetris-return-2026-10-22.json). This is
 **not a finished game frontend yet**.
 
@@ -63,8 +65,9 @@ sent to a shell. Salvia ROM data uses its own
 bring-up; it must be removed as a bring-up gate or deliberately enabled and
 hardware-tested before claiming the port works as a general game frontend.
 Session return is implemented; its no-game console check and a user-operated NES
-Tetris roundtrip with selected-game restoration pass. Other cores and restoration
-of the original runtime destination after gameplay still need verification.
+Tetris roundtrip with selected-game restoration pass. The post-game restoration
+check did not pass even though Aurora opened; an exit-only reproduction is pending.
+Other cores still need verification.
 
 The hardware probe caught an actual backend defect: the vertex-stream API
 expects the complete buffer byte length, not the per-vertex stride. The adapter
@@ -347,8 +350,9 @@ handoffs show recovery errors in the UI. Nine host test groups and the full
 Xbox cross-build pass. The package helper also passes four offline tests with
 fake FTP, including duplicate filenames and source-specific artwork. This
 candidate is not deployed. The installed Tetris build remains unchanged; its game
-exit and selected-game restoration are now user-confirmed. Return to Aurora after
-gameplay and TV font acceptance remain pending.
+exit and selected-game restoration are now user-confirmed. Return to Aurora opens
+Aurora, but its runtime restoration did not pass inspection. That investigation
+and TV font acceptance remain pending.
 
 The subsequent offline check adds the optional production-model test above.
 All ten enabled host test groups pass, including independent scan-only and
