@@ -1,0 +1,26 @@
+# Graphics component build usable with the existing C-only compiler while C++ builds.
+SDK ?= $(HOME)/xbox-build/es-xsdk
+TC ?= $(HOME)/xsdk-gcc/bin/powerpc-xsdk-elf-
+BUILD ?= $(HOME)/xbox-build/es-graphics
+GLSLANG ?= /usr/bin/glslangValidator
+CC := $(TC)gcc
+CFLAGS := -std=c17 -O2 -mcpu=cell -fno-pic -Wall -Wextra -Werror -I. -I$(SDK)/include -I$(BUILD)
+OBJECTS := $(BUILD)/es_gl.o $(BUILD)/es_gpu.o $(BUILD)/graphics_probe.o
+.PHONY: all
+all: $(BUILD)/ESGraphicsProbe.xex
+$(BUILD):
+	mkdir -p $@
+$(BUILD)/es_shaders.h: es.vert es.frag tests/check_shaders.py | $(BUILD)
+	python3 $(SDK)/tools/build_shaders.py --glslang $(GLSLANG) --output $@ es.vert es.frag
+	python3 tests/check_shaders.py $@
+$(BUILD)/es_gl.o: es_gl.c es_gl.h | $(BUILD)
+	$(CC) $(CFLAGS) -c $< -o $@
+$(BUILD)/es_gpu.o: es_gpu.c es_gpu.h es_gl.h $(BUILD)/es_shaders.h
+	$(CC) $(CFLAGS) -c $< -o $@
+$(BUILD)/graphics_probe.o: tests/graphics_probe.c es_gl.h es_gpu.h | $(BUILD)
+	$(CC) $(CFLAGS) -c $< -o $@
+$(BUILD)/ESGraphicsProbe.elf: $(OBJECTS) $(SDK)/build/libxsdk.a
+	$(CC) -static -nostdlib -T $(SDK)/src/xsdk.ld $(OBJECTS) -Wl,--start-group $(SDK)/build/libxsdk.a -lc -lm -lgcc -Wl,--end-group -o $@
+$(BUILD)/ESGraphicsProbe.xex: $(BUILD)/ESGraphicsProbe.elf
+	$(TC)objdump -d $< | python3 $(SDK)/tools/xenia_scan.py
+	python3 $(SDK)/tools/elf2xex.py --title-id 0xF3600003 --title-name ESGraphicsProbe $< $@
