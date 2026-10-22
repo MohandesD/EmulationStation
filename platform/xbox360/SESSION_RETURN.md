@@ -50,6 +50,13 @@ back to the game-list dialog instead of showing only a generic launch failure.
 These follow-up safeguards are PC-tested separately from the currently installed
 manual-test build.
 
+The diagnostic frame-limit exit also restores the previous session before
+leaving the frontend. If restoration fails, it stops automatic browsing/captures
+and shows the error once while keeping the UI open. The ordinary Quit action
+can retry recovery. This closes the diagnostic-only exit path that previously
+bypassed the restoration used by the menu; the installed manual test has
+diagnostics disabled.
+
 The intended game exit is **Xbox Guide -> Y**, followed by releasing Y. Salvia's
 **Back+Start** is an internal return to its own browser and remains unchanged.
 This code does not intercept that emulator shortcut, alter Salvia binaries or

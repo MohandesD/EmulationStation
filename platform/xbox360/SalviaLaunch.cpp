@@ -54,6 +54,19 @@ void set32(Bytes& b,size_t i,uint32_t value) {
 bool terminated(const Bytes& b,size_t begin,size_t end) {
     return std::find(b.begin()+begin,b.begin()+end,0)!=b.begin()+end;
 }
+bool systemName(const std::string& name) {
+    return !name.empty() && name.size()<=38 &&
+        name.find_first_not_of("abcdefghijklmnopqrstuvwxyz0123456789_-")==std::string::npos;
+}
+bool readableConfig(const std::string& path) {
+    // Salvia creates a positional entry once a regular configuration file
+    // opens, even when that file is empty. Its contents need not be parsed to
+    // establish the index of a later system.
+    struct stat st{};
+    if(stat(path.c_str(),&st)!=0 || !S_ISREG(st.st_mode)) return false;
+    FILE* file=std::fopen(path.c_str(),"rb");
+    return file && std::fclose(file)==0;
+}
 bool plan(const XboxLaunchCommand& cmd,Plan& p,std::string& error) {
     p={}; error.clear();
     if(cmd.salviaSystem.empty()) {
@@ -67,20 +80,31 @@ bool plan(const XboxLaunchCommand& cmd,Plan& p,std::string& error) {
         return true;
     }
     error="SALVIA'S SYSTEM CONFIGURATION COULD NOT BE VERIFIED.";
-    if(cmd.rom.empty() || cmd.salviaSystem.size()>38 ||
-       cmd.salviaSystem.find_first_not_of("abcdefghijklmnopqrstuvwxyz0123456789_-")!=std::string::npos) return false;
+    if(cmd.rom.empty() || !systemName(cmd.salviaSystem)) return false;
     const auto slash=cmd.executable.find_last_of('/'); if(slash==std::string::npos) return false;
     p.folder=cmd.executable.substr(0,slash+1);
     std::map<std::string,std::string> main,system;
     if(!config(p.folder+"salvia.cfg",main) || !config(p.folder+"config/"+cmd.salviaSystem+".cfg",system)) return false;
     std::istringstream names(main["emulators"]); std::vector<std::string> systems;
     std::set<std::string> unique; std::string name;
-    while(names>>name) {
-        if(systems.size()>=128 || !unique.insert(name).second) return false;
+    // Match Constant::splitChar(emulators, ' '), not stream whitespace
+    // extraction: tabs belong to names and repeated spaces create empty
+    // names upstream. Reject those forms rather than inventing their indices.
+    while(std::getline(names,name,' ')) {
+        if(systems.size()>=128 || !systemName(name) || !unique.insert(name).second) return false;
         systems.push_back(name);
     }
     const auto selected=std::find(systems.begin(),systems.end(),cmd.salviaSystem);
     if(selected==systems.end() || !system["directory"].empty()) return false;
+    // CfgLoader::loadEmuConfig skips files it cannot open. Counting a missing
+    // predecessor would select another system (or Options) in menu.tmp and
+    // can apply the wrong ROM-loading settings. Do not silently remap it.
+    for(auto previous=systems.begin();previous!=selected;++previous) {
+        if(!readableConfig(p.folder+"config/"+*previous+".cfg")) {
+            error="AN EMULATOR SETUP FILE IS MISSING OR UNREADABLE. THE GAME WAS NOT STARTED.";
+            return false;
+        }
+    }
     std::istringstream cores(system["executable"]); bool found=false;
     while(std::getline(cores,name,';')) if(lower(trim(name))==lower(cmd.executable.substr(slash+1))) found=true;
     if(!found || (system["no_uncompress"]!="yes" && system["no_uncompress"]!="no")) return false;

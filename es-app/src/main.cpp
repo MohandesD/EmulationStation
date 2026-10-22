@@ -297,6 +297,7 @@ int main(int argc, char* argv[])
 #ifdef __XSDK__
     unsigned diagnosticFrames = 0;
     const int diagnosticLimit = Settings::getInstance()->getInt("XboxDiagnosticFrames");
+    bool diagnosticExitAttempted = false;
 #endif
 
 	while(running)
@@ -353,7 +354,7 @@ int main(int argc, char* argv[])
 		window.render();
 		Renderer::swapBuffers();
 #ifdef __XSDK__
-        if(diagnosticLimit > 0) {
+        if(diagnosticLimit > 0 && !diagnosticExitAttempted) {
             ++diagnosticFrames;
             if(errorMsg == nullptr && Settings::getInstance()->getBool("XboxDiagnosticBrowse")) {
                 // Visit each real list and allow its transition to finish. This
@@ -372,7 +373,19 @@ int main(int argc, char* argv[])
                     }
                 }
             }
-            if(diagnosticFrames >= static_cast<unsigned>(diagnosticLimit)) running = false;
+            if(diagnosticFrames >= static_cast<unsigned>(diagnosticLimit)) {
+                // Diagnostics can be opened during an already-armed session.
+                // Restore before leaving, just like the manual Quit action.
+                // On failure stop all automatic diagnostic activity and leave
+                // the UI alive so the error can be read and Quit retried.
+                diagnosticExitAttempted = true;
+                std::string error;
+                if(restoreXboxSessionReturn(error)) running = false;
+                else {
+                    LOG(LogError)<<error;
+                    window.pushGui(new GuiMsgBox(&window,error));
+                }
+            }
         }
 #endif
 

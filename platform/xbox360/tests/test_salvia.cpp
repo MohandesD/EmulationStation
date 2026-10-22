@@ -38,6 +38,35 @@ int main() {
     assert(selected[7]==0 && selected[15]==0 && selected[31]==0 && selected[40]==0 && selected[4397]==0);
     assert(prepareSalviaLaunch(cmd,error));
     assert(get(root+"menu.es-backup")==menu); // Idempotent, don't erase rollback.
+    // Upstream skips configurations that cannot open. With only nes.cfg
+    // present, "missing nes" places NES at Salvia index 0, not token index 1.
+    // Reject without rewriting either saved menu or its verified backup.
+    const auto savedBackup=get(root+"menu.es-backup");
+    auto rejectList=[&](const std::string& list) {
+        put(root+"salvia.cfg","emulators="+list+"\n");
+        assert(!validateSalviaLaunch(cmd,error));
+        assert(!prepareSalviaLaunch(cmd,error));
+        assert(get(root+"menu.tmp")==selected);
+        assert(get(root+"menu.es-backup")==savedBackup);
+    };
+    rejectList("missing nes");
+    fs::create_directory(root+"config/unreadable.cfg");
+    rejectList("unreadable nes"); // A directory cannot be opened as a config.
+    // Literal-space splitting preserves empty tokens and tabs within names.
+    // Neither may be collapsed to a plausible but different positional list.
+    put(root+"config/first.cfg","");
+    for(const char* list:{"first  nes", "first\tnes", "../first nes", "first/child nes", "first:first nes", "first nes invalid!"})
+        rejectList(list);
+    // An empty readable predecessor still occupies one upstream menu index.
+    // Missing entries after the target do not change the target's position.
+    put(root+"salvia.cfg","emulators=first nes missing\n");
+    assert(validateSalviaLaunch(cmd,error));
+    assert(prepareSalviaLaunch(cmd,error));
+    assert(get(root+"menu.tmp")[3]==1);
+    assert(validateSalviaLaunch(cmd,error,true));
+    put(root+"salvia.cfg",main);
+    put(root+"menu.tmp",selected);
+    put(root+"menu.es-backup",savedBackup);
     // Wrong/unknown core, malformed config, foreign/truncated ABI: no mutation.
     for(const auto& bad:{std::string("executable=Other.xex\nno_uncompress=no\n"),nes+"executable=Other.xex\n"}) {
         put(root+"config/nes.cfg",bad);

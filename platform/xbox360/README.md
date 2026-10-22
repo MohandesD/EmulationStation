@@ -24,8 +24,10 @@ and restoration of the selected system. The source is published on the
 [Xbox branch of the maintained fork](https://github.com/MohandesD/EmulationStation/tree/xbox360).
 The first manual Tetris handoff crashed after the emulator appeared. The candidate
 Salvia context correction below passed a no-game console check. A subsequent
-read-only XBDM capture shows Tetris rendering a game. User confirmation of controls,
-emulator return, selected-game restoration and audio remain pending. This is
+read-only XBDM capture shows Tetris rendering a game, and the user confirmed it
+starts and plays. Emulator return, selected-game restoration and audio acceptance
+remain pending. A no-game session arm/restore check passed on the console; the
+installed Tetris-only gameplay-return test is awaiting the user's result. This is
 **not a finished game frontend yet**.
 
 `es_gl.c` implements the 26 fixed-function GL calls used in the upstream source.
@@ -49,12 +51,16 @@ by a verified return to Aurora. The Xbox menu provides Return to Aurora, hides u
 actions, and defaults to quiet operation. Controller defaults use SDL-xenon's
 actual button ordering; loaded user mappings override them.
 
-Xbox commands have the form `xex "hdd:/path/app.xex" "hdd:/path/game.nes"`.
-They are parsed as paths, never sent to a shell. Salvia ROM data uses its own
+Generic native commands have the form `xex "hdd:/path/app.xex" "hdd:/path/game.nes"`.
+Salvia commands require their explicit context, for example
+`salvia nes "hdd:/Emulators/Salvia/Nestopia.xex" %ROM%`; the generic form is
+rejected beside a Salvia configuration. Commands are parsed as paths, never
+sent to a shell. Salvia ROM data uses its own
 `Hdd:`/`Usb0:` mounts. `XboxLaunchEnabled` remains false during initial frontend
 bring-up; it must be removed as a bring-up gate or deliberately enabled and
-hardware-tested before claiming the port works as a game frontend. Returning
-from an emulator to ES is not implemented or verified yet.
+hardware-tested before claiming the port works as a general game frontend.
+Session return is implemented and its no-game console check passes; an actual
+emulator exit and selected-game restoration remain unverified.
 
 The hardware probe caught an actual backend defect: the vertex-stream API
 expects the complete buffer byte length, not the per-vertex stride. The adapter
@@ -76,7 +82,8 @@ the installed C-only compiler remains intact.
 On a Linux/WSL host, from the repository root:
 
 ```sh
-cmake -S platform/xbox360/tests -B build-es-tests -G Ninja -DES_STB="$DEPS/stb"
+cmake -S platform/xbox360/tests -B build-es-tests -G Ninja \
+  -DES_STB="$DEPS/stb" -DES_MODEL_DEPS="$DEPS"
 cmake --build build-es-tests
 ctest --test-dir build-es-tests --output-on-failure
 make -C "$SDK" -j4 build/libxsdk.a build/host/libxsc.so
@@ -94,11 +101,18 @@ The source inventory fails if upstream adds an unimplemented GL entry point.
 Compiled shader fetch records must match POSITION0/COLOR0/TEXCOORD0 and sampler
 slot zero; a deliberately wrong sampler is rejected by the validation script.
 
-Five host tests cover GL semantics/source coverage, Xbox launch path parsing,
-Salvia system context and image orientation/alpha/resize/failure handling, with sanitizers enabled.
+Nine host test groups cover GL semantics/source coverage, platform catalogs,
+Xbox launch paths, native handoff recovery, grouped routes, Salvia context,
+session return and image orientation/alpha/resize/failure handling. Native
+host tests run with address/undefined-behaviour sanitizers enabled. The optional
+`ES_MODEL_DEPS` target additionally compiles the production configuration,
+game-list and metadata code against filesystem fixtures. It uses the pinned
+Boost/Eigen/SDL/FreeType headers and small presentation stubs, with no console
+runtime or UI linked. It checks scanning, per-source commands, duplicate
+basenames, metadata isolation, save/reload and game-list-only reconstruction.
 They complement the separate graphics-only console evidence.
 The SDK's instruction scanner reports three skipped instructions in the small
-graphics probe and 162 in the current full application/dependencies. Xenia results in
+graphics probe and 164 in the current full application/dependencies. Xenia results in
 those functions are unreliable; Xenia is not a substitute for a console run.
 
 ## Full application build (integration in progress)
@@ -154,7 +168,8 @@ visits successive system game lists every 180 frames starting at frame 180 and
 captures each list after its transition settles. It calls view navigation only;
 no controller events or ROM launches are injected. A 1,200-frame five-system run
 passed. Both diagnostic options are now disabled in the installed package, so a
-normal manual launch stays open. The console was left in Aurora.
+normal manual launch stays open. This earlier diagnostic ended in Aurora;
+the current installed frontend is reserved for the manual Tetris return test.
 
 Rollback: while Aurora is running, remove only the separately added app folder
 if desired. Existing emulators, ROMs, assets and startup settings are independent.
@@ -209,6 +224,14 @@ write failures cancel launch. Legacy ROM commands beside salvia.cfg are rejected
 until their system is specified. These checks identify supported structure, not
 binary authenticity or future Salvia layout compatibility.
 
+The positional system list must contain nonempty lowercase configuration names
+separated by single spaces; tabs and ambiguous/invalid names are rejected.
+Every configuration before the requested system must also be readable. Salvia
+skips missing configurations, so otherwise the saved index could select a
+different system or Options. An empty readable predecessor still occupies its
+normal index. A missing later configuration does not shift the target. These
+checks happen before changing the menu or backup; they do not remap indices.
+
 Five sanitizer tests pass, including wrong-core/unknown-layout rejection, backup
 failure and the Arcade-to-NES regression. A local copy of the captured settings
 also passed. ESSalviaContextProbe exercised the same helper on the console without
@@ -258,10 +281,11 @@ and an absolute read, then returns to Aurora. This passed on the console; it
 does not test a Salvia core, ROM launch or return from an emulator. Both options
 were restored to their normal disabled values after collecting the result.
 
-No return setting has been changed in RAM or on disk by these diagnostics.
-A default-disabled session-return candidate has since been implemented and
-PC-tested without console access. See [session return](SESSION_RETURN.md) for
-its precise behavior, rollback and pending hardware acceptance. Do not enable
+The earlier receiver/read-only diagnostics changed no return settings. The
+subsequent session-return probe temporarily changed and restored runtime
+Default/BUT_Y, verified all 76 exposed options and left saved boot files
+unchanged. See [session return](SESSION_RETURN.md) for its precise behavior,
+rollback and pending gameplay acceptance. Do not enable
 general game launching or change startup configuration based on PC tests.
 
 1. Verify audio, filesystem/locale behavior and text input;
@@ -320,3 +344,11 @@ Xbox cross-build pass. The package helper also passes four offline tests with
 fake FTP, including duplicate filenames and source-specific artwork. This
 candidate is not deployed. The installed Tetris return test remains unchanged,
 and game exit, selected-game restoration and TV font acceptance remain pending.
+
+The subsequent offline check adds the optional production-model test above.
+All ten enabled host test groups pass, including independent scan-only and
+metadata-only phases. Salvia preflight now rejects a missing predecessor instead
+of selecting the wrong positional system, and diagnostic exits use the same
+session restoration as manual Quit. The full native build passes. These changes
+remain separate from the installed manual-test build; see
+[offline evidence](tests/offline-context-2026-10-22.json).
