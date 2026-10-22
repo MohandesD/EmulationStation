@@ -9,7 +9,7 @@ The full app builds, and its carousel, five system lists, cover art and a fixed
 diagnostic app handoff have been verified on a Trinity console.
 
 **Development status:** controller navigation and a full NES Tetris roundtrip
-have passed on the console: Tetris plays, Xbox Guide/Y returns to EmulationStation
+have passed on console build `3e3d7dd490bb`: Tetris plays, Xbox Guide/Y returns to EmulationStation
 with Tetris selected, and the menu returns to Aurora. A subsequent read-only
 comparison verified exact restoration of all 76 runtime options; saved boot
 settings were unchanged. The earlier post-game mismatch remains documented as
@@ -19,9 +19,10 @@ The platform catalog covers 32 configured sections and 34 Salvia sources,
 independently of installed games. Native catalog browsing passed with five
 populated lists and preserved metadata. Grouped sources retain each backend's
 directory and command inside one Arcade or Neo Geo Pocket section; gameplay
-through other cores still needs verification. The user reports good game-name
-and menu text, but faint grey labels remain fuzzy and system logos need smoothing.
-Visual follow-up changes are separate from the tested build.
+through other cores still needs verification. The user accepted the newer visual
+build `1222c78c167d` on the TV: grey labels and system logos both look better.
+Game-name and menu text were already accepted. Gameplay and return on this newer
+visual build remain unverified.
 Game launching is disabled by default. This is not a finished replacement dashboard; do not set it as the
 console's startup application.
 

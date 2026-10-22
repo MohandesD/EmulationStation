@@ -13,7 +13,10 @@ local Simple-theme variant uses regular-weight metadata labels and darker system
 headings, preserving the menu/game-name styles the user accepted. The native
 build, three targeted graphics checks and four package checks pass. Twenty-five
 files were deployed with rollback copies/read-back verification while fourteen
-protected files stayed unchanged. ES opens; the user's TV comparison is pending.
+protected files stayed unchanged. The user accepted visual build `1222c78c167d`
+on the TV, reporting that grey labels and system logos both look better.
+The full Tetris roundtrip and runtime-restoration result belongs to the earlier
+`3e3d7dd490bb` build; gameplay on the visual update remains unverified.
 See [visual-candidate evidence](tests/image-readability-candidate-2026-10-22.json).
 
 The graphics component cross-compiles into `ESGraphicsProbe.xex` and has run on
@@ -52,9 +55,9 @@ pending. See [current game-return evidence](tests/hardware-tetris-return-catalog
 The newer catalog candidate has now passed a 1,200-frame browser-only console
 check: 32 configured sections route 34 emulator sources, and the five populated
 lists contain 44 entries. Existing metadata was preserved. It exited cleanly to
-Aurora and its temporary diagnostic settings were restored exactly. The user
-reports good game-name and ES menu text, but faint grey labels remain fuzzy and
-system logos are not smooth. Visual follow-up is separate from this tested build.
+Aurora and its temporary diagnostic settings were restored exactly. On that
+build, the user accepted game-name and ES menu text but reported fuzzy grey labels
+and unsmoothed system logos. The later visual update was accepted separately.
 See [catalog evidence](tests/hardware-catalog-2026-10-22.json).
 
 `es_gl.c` implements the 26 fixed-function GL calls used in the upstream source.
@@ -434,6 +437,7 @@ unexplained; this is a separate successful run. Other cores, repeated-session
 stability and disc/native-game support still require their own checks.
 See [sanitized game-return evidence](tests/hardware-tetris-return-catalog-2026-10-22.json).
 
-The user reports that game names and ES menu text look good. Faint grey labels
-remain fuzzy and system logos are not smooth. Visual follow-up changes are
-separate from the tested binary; no improved TV result is claimed yet.
+On this game-tested build, the user reported good game names and ES menu text,
+but fuzzy grey labels and unsmoothed system logos. The later visual build
+`1222c78c167d` received TV acceptance: both labels and logos look better. That
+visual result does not establish gameplay or return behavior on the newer binary.

@@ -22,7 +22,9 @@
     "application_opened_without_game_launch": true,
     "emulationstation_independently_observed_running": true
   },
-  "visual_acceptance": "awaiting user TV comparison",
+  "visual_acceptance": "accepted by the user on the TV",
+  "user_feedback": "Both look better",
+  "accepted_improvements": ["grey-label readability", "system-logo smoothing"],
   "gameplay_tested_on_this_visual_binary": false,
   "previous_gameplay_and_cleanup_evidence": "hardware-tetris-return-catalog-2026-10-22.json",
   "limitation": "Linear magnification smooths enlargement; it does not add detail to SVGs already rasterized at their displayed size."
