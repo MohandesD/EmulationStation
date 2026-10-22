@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <string>
-#include <boost/filesystem.hpp>
+#include "FileSystem.h"
 #include "MetaData.h"
 
 class SystemData;

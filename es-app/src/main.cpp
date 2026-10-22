@@ -1,13 +1,13 @@
 //EmulationStation, a graphical front-end for ROM browsing. Created by Alec "Aloshi" Lofquist.
 //http://www.aloshi.com
 
-#include <SDL.h>
+#include "SDLCompat.h"
 #include <iostream>
 #include <iomanip>
 #include "Renderer.h"
 #include "views/ViewController.h"
 #include "SystemData.h"
-#include <boost/filesystem.hpp>
+#include "FileSystem.h"
 #include "guis/GuiDetectDevice.h"
 #include "guis/GuiMsgBox.h"
 #include "AudioManager.h"
@@ -15,6 +15,9 @@
 #include "Log.h"
 #include "Window.h"
 #include "EmulationStation.h"
+#ifdef __XSDK__
+#include <xsdk/xam.h>
+#endif
 #include "Settings.h"
 #include "ScraperCmdLine.h"
 #include <sstream>
@@ -160,8 +163,10 @@ int main(int argc, char* argv[])
 	unsigned int width = 0;
 	unsigned int height = 0;
 
+#ifndef __XSDK__
 	std::locale::global(boost::locale::generator().generate(""));
 	boost::filesystem::path::imbue(std::locale());
+#endif
 
 	if(!parseArgs(argc, argv, &width, &height))
 		return 0;
@@ -245,9 +250,9 @@ int main(int argc, char* argv[])
 		window.pushGui(new GuiMsgBox(&window,
 			errorMsg,
 			"QUIT", [] { 
-				SDL_Event* quit = new SDL_Event();
-				quit->type = SDL_QUIT;
-				SDL_PushEvent(quit);
+				SDL_Event quit{};
+				quit.type = SDL_QUIT;
+				SDL_PushEvent(&quit);
 			}));
 	}
 
@@ -258,7 +263,7 @@ int main(int argc, char* argv[])
 	}
 
 	//dont generate joystick events while we're loading (hopefully fixes "automatically started emulator" bug)
-	SDL_JoystickEventState(SDL_DISABLE);
+	ES_SetJoystickEvents(false);
 
 	// preload what we can right away instead of waiting for the user to select it
 	// this makes for no delays when accessing content, but a longer startup time
@@ -267,19 +272,29 @@ int main(int argc, char* argv[])
 	//choose which GUI to open depending on if an input configuration already exists
 	if(errorMsg == NULL)
 	{
-		if(fs::exists(InputManager::getConfigPath()) && InputManager::getInstance()->getNumConfiguredDevices() > 0)
+#ifdef __XSDK__
+        // Native pads have built-in defaults, including pads connected later.
+        // Do not strand a controller-less startup in the desktop keyboard wizard.
+        ViewController::get()->goToStart();
+#else
+		if(InputManager::getInstance()->getNumConfiguredDevices() > 0)
 		{
 			ViewController::get()->goToStart();
 		}else{
 			window.pushGui(new GuiDetectDevice(&window, true, [] { ViewController::get()->goToStart(); }));
 		}
+#endif
 	}
 
 	//generate joystick events since we're done loading
-	SDL_JoystickEventState(SDL_ENABLE);
+	ES_SetJoystickEvents(true);
 
 	int lastTime = SDL_GetTicks();
 	bool running = true;
+#ifdef __XSDK__
+    unsigned diagnosticFrames = 0;
+    const int diagnosticLimit = Settings::getInstance()->getInt("XboxDiagnosticFrames");
+#endif
 
 	while(running)
 	{
@@ -324,6 +339,12 @@ int main(int argc, char* argv[])
 		window.update(deltaTime);
 		window.render();
 		Renderer::swapBuffers();
+#ifdef __XSDK__
+        if(diagnosticLimit > 0) {
+            ++diagnosticFrames;
+            if(diagnosticFrames >= static_cast<unsigned>(diagnosticLimit)) running = false;
+        }
+#endif
 
 		Log::flush();
 	}
@@ -335,6 +356,12 @@ int main(int argc, char* argv[])
 	SystemData::deleteSystems();
 
 	LOG(LogInfo) << "EmulationStation cleanly shutting down.";
+#ifdef __XSDK__
+    AudioManager::getInstance()->deinit();
+    SDL_Quit();
+    Log::flush();
+    return xsdk_launch("hdd:/Apps/Aurora/Aurora.xex",nullptr,0);
+#endif
 
 	return 0;
 }

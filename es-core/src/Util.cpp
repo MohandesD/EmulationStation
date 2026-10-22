@@ -124,7 +124,7 @@ fs::path removeCommonPath(const fs::path& path, const fs::path& relativeTo, bool
 	// find point of divergence
 	auto itr_path = p.begin();
 	auto itr_relative_to = r.begin();
-	while(*itr_path == *itr_relative_to && itr_path != p.end() && itr_relative_to != r.end())
+	while(itr_path != p.end() && itr_relative_to != r.end() && *itr_path == *itr_relative_to)
 	{
 		++itr_path;
 		++itr_relative_to;

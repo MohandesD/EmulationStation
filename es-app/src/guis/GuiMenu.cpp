@@ -74,7 +74,11 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 			// volume
 			auto volume = std::make_shared<SliderComponent>(mWindow, 0.f, 100.f, 1.f, "%");
 			volume->setValue((float)VolumeControl::getInstance()->getVolume());
-			s->addWithLabel("SYSTEM VOLUME", volume);
+			#ifdef __XSDK__
+            s->addWithLabel("MENU VOLUME", volume);
+#else
+            s->addWithLabel("SYSTEM VOLUME", volume);
+#endif
 			s->addSaveFunc([volume] { VolumeControl::getInstance()->setVolume((int)round(volume->getValue())); });
 			
 			// disable sounds
@@ -177,6 +181,7 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 			Window* window = mWindow;
 
 			ComponentListRow row;
+#ifndef __XSDK__
 			row.makeAcceptInputHandler([window] {
 				window->pushGui(new GuiMsgBox(window, "REALLY RESTART?", "YES", 
 				[] { 
@@ -198,18 +203,23 @@ GuiMenu::GuiMenu(Window* window) : GuiComponent(window), mMenu(window, "MAIN MEN
 			row.addElement(std::make_shared<TextComponent>(window, "SHUTDOWN SYSTEM", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
 			s->addRow(row);
 
+#endif
 			if(Settings::getInstance()->getBool("ShowExit"))
 			{
 				row.elements.clear();
 				row.makeAcceptInputHandler([window] {
 					window->pushGui(new GuiMsgBox(window, "REALLY QUIT?", "YES", 
 					[] { 
-						SDL_Event ev;
+						SDL_Event ev{};
 						ev.type = SDL_QUIT;
 						SDL_PushEvent(&ev);
 					}, "NO", nullptr));
 				});
-				row.addElement(std::make_shared<TextComponent>(window, "QUIT EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+				#ifdef __XSDK__
+                row.addElement(std::make_shared<TextComponent>(window, "RETURN TO AURORA", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+#else
+                row.addElement(std::make_shared<TextComponent>(window, "QUIT EMULATIONSTATION", Font::get(FONT_SIZE_MEDIUM), 0x777777FF), true);
+#endif
 				s->addRow(row);
 			}
 

@@ -1,0 +1,300 @@
+{
+  "bytes": 593920,
+  "sha256": "9ceb77a5f87cde8813e8f7367bf0b2e8dd286bb07f0cd5a14cc049345ffef782",
+  "full_readback_matched": true,
+  "launch_requested": true,
+  "scope": "graphics component, not full EmulationStation",
+  "native_capture_bytes": 3768320,
+  "native_capture_sha256": "01829e050818a11ba1422f436302af0b5c33e4df9b245e2fd2507f5877a59982",
+  "native_image_dimensions": [
+    1280,
+    720
+  ],
+  "visual_review": "RGB blocks, alpha overlap, clipped rectangle and 2x2 texture match the diagnostic source",
+  "pixel_checks": [
+    {
+      "name": "background",
+      "x": 20,
+      "y": 20,
+      "rgb": [
+        10,
+        15,
+        25
+      ],
+      "expected_rgb": [
+        10,
+        15,
+        26
+      ],
+      "tolerance": 1,
+      "pass": true
+    },
+    {
+      "name": "red",
+      "x": 100,
+      "y": 100,
+      "rgb": [
+        255,
+        0,
+        0
+      ],
+      "expected_rgb": [
+        255,
+        0,
+        0
+      ],
+      "tolerance": 1,
+      "pass": true
+    },
+    {
+      "name": "green",
+      "x": 400,
+      "y": 100,
+      "rgb": [
+        0,
+        255,
+        0
+      ],
+      "expected_rgb": [
+        0,
+        255,
+        0
+      ],
+      "tolerance": 1,
+      "pass": true
+    },
+    {
+      "name": "blue",
+      "x": 800,
+      "y": 100,
+      "rgb": [
+        0,
+        0,
+        255
+      ],
+      "expected_rgb": [
+        0,
+        0,
+        255
+      ],
+      "tolerance": 1,
+      "pass": true
+    },
+    {
+      "name": "alpha_overlap",
+      "x": 400,
+      "y": 350,
+      "rgb": [
+        127,
+        0,
+        128
+      ],
+      "expected_rgb": [
+        127,
+        0,
+        128
+      ],
+      "tolerance": 1,
+      "pass": true
+    },
+    {
+      "name": "scissor_inside",
+      "x": 950,
+      "y": 330,
+      "rgb": [
+        255,
+        255,
+        255
+      ],
+      "expected_rgb": [
+        255,
+        255,
+        255
+      ],
+      "tolerance": 1,
+      "pass": true
+    },
+    {
+      "name": "scissor_left_outside",
+      "x": 899,
+      "y": 330,
+      "rgb": [
+        10,
+        15,
+        25
+      ],
+      "expected_rgb": [
+        10,
+        15,
+        26
+      ],
+      "tolerance": 1,
+      "pass": true
+    },
+    {
+      "name": "scissor_right_outside",
+      "x": 1100,
+      "y": 330,
+      "rgb": [
+        10,
+        15,
+        25
+      ],
+      "expected_rgb": [
+        10,
+        15,
+        26
+      ],
+      "tolerance": 1,
+      "pass": true
+    },
+    {
+      "name": "scissor_top_outside",
+      "x": 950,
+      "y": 299,
+      "rgb": [
+        10,
+        15,
+        25
+      ],
+      "expected_rgb": [
+        10,
+        15,
+        26
+      ],
+      "tolerance": 1,
+      "pass": true
+    },
+    {
+      "name": "scissor_bottom_outside",
+      "x": 950,
+      "y": 460,
+      "rgb": [
+        10,
+        15,
+        25
+      ],
+      "expected_rgb": [
+        10,
+        15,
+        26
+      ],
+      "tolerance": 1,
+      "pass": true
+    },
+    {
+      "name": "texture_red",
+      "x": 90,
+      "y": 530,
+      "rgb": [
+        255,
+        0,
+        0
+      ],
+      "expected_rgb": [
+        255,
+        0,
+        0
+      ],
+      "tolerance": 1,
+      "pass": true
+    },
+    {
+      "name": "texture_green",
+      "x": 220,
+      "y": 530,
+      "rgb": [
+        0,
+        255,
+        0
+      ],
+      "expected_rgb": [
+        0,
+        255,
+        0
+      ],
+      "tolerance": 1,
+      "pass": true
+    },
+    {
+      "name": "texture_blue",
+      "x": 90,
+      "y": 620,
+      "rgb": [
+        0,
+        0,
+        255
+      ],
+      "expected_rgb": [
+        0,
+        0,
+        255
+      ],
+      "tolerance": 1,
+      "pass": true
+    },
+    {
+      "name": "texture_alpha",
+      "x": 220,
+      "y": 620,
+      "rgb": [
+        133,
+        136,
+        141
+      ],
+      "expected_rgb": [
+        133,
+        135,
+        140
+      ],
+      "tolerance": 1,
+      "pass": true
+    }
+  ],
+  "auto_exit_frames": 1800,
+  "log_reports_gpu_failure": false,
+  "returned_to_aurora_observed": true,
+  "rom_launched": false,
+  "full_application_verified": false,
+  "line_primitive_check": {
+    "y": 100,
+    "x_range": [
+      1098,
+      1102
+    ],
+    "rgb_samples": [
+      [
+        10,
+        15,
+        25
+      ],
+      [
+        10,
+        15,
+        25
+      ],
+      [
+        0,
+        255,
+        255
+      ],
+      [
+        10,
+        15,
+        25
+      ],
+      [
+        10,
+        15,
+        25
+      ]
+    ],
+    "expected_line_rgb": [
+      0,
+      255,
+      255
+    ],
+    "pass": true
+  },
+  "boot_ini_unchanged": true
+}

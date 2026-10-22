@@ -1,4 +1,5 @@
 #include "Sound.h"
+#include <climits>
 #include "AudioManager.h"
 #include "Log.h"
 #include "Settings.h"
@@ -56,6 +57,26 @@ void Sound::init()
 	if(mPath.empty())
 		return;
 
+#ifdef ES_USE_SDL3
+    SDL_AudioSpec source;
+    Uint8* wav=nullptr; Uint32 length=0;
+    if(!SDL_LoadWAV(mPath.c_str(),&source,&wav,&length)) {
+        LOG(LogError)<<"WAV decode failed: "<<SDL_GetError(); return;
+    }
+    const SDL_AudioSpec target={SDL_AUDIO_S16LE,2,44100};
+    Uint8* converted=nullptr; int convertedBytes=0;
+    if(length>static_cast<Uint32>(INT_MAX) ||
+       !SDL_ConvertAudioSamples(&source,wav,static_cast<int>(length),&target,&converted,&convertedBytes)) {
+        LOG(LogError)<<"WAV conversion failed: "<<SDL_GetError(); SDL_free(wav); return;
+    }
+    SDL_free(wav);
+    // Keep upstream ownership (new[]/delete[]) rather than mixing SDL allocators.
+    Uint8* owned=new Uint8[convertedBytes];
+    memcpy(owned,converted,convertedBytes); SDL_free(converted);
+    ES_AudioLock();
+    mSampleData=owned; mSampleLength=convertedBytes; mSamplePos=0; mSampleFormat=target;
+    ES_AudioUnlock();
+#else
 	//load wav file via SDL
 	SDL_AudioSpec wave;
 	Uint8 * data = NULL;
@@ -78,17 +99,18 @@ void Sound::init()
 	}
 	else {
 		//worked. set up member data
-		SDL_LockAudio();
+		ES_AudioLock();
 		mSampleData = cvt.buf;
 		mSampleLength = cvt.len_cvt;
 		mSamplePos = 0;
 		mSampleFormat.channels = 2;
 		mSampleFormat.freq = 44100;
 		mSampleFormat.format = AUDIO_S16;
-		SDL_UnlockAudio();
+		ES_AudioUnlock();
 	}
 	//free wav data now
     SDL_FreeWAV(data);
+#endif
 }
 
 void Sound::deinit()
@@ -97,12 +119,12 @@ void Sound::deinit()
 
 	if(mSampleData != NULL)
 	{
-		SDL_LockAudio();
+		ES_AudioLock();
 		delete[] mSampleData;
 		mSampleData = NULL;
 		mSampleLength = 0;
 		mSamplePos = 0;
-		SDL_UnlockAudio();
+		ES_AudioUnlock();
 	}
 }
 
@@ -114,7 +136,7 @@ void Sound::play()
 	if(!Settings::getInstance()->getBool("EnableSounds"))
 		return;
 
-	SDL_LockAudio();
+	ES_AudioLock();
 	if (playing)
 	{
 		//replay from start. rewind the sample to the beginning
@@ -126,7 +148,7 @@ void Sound::play()
 		//flag our sample as playing
 		playing = true;
 	}
-	SDL_UnlockAudio();
+	ES_AudioUnlock();
 	//tell the AudioManager to start playing samples
 	AudioManager::getInstance()->play();
 }
@@ -139,10 +161,10 @@ bool Sound::isPlaying() const
 void Sound::stop()
 {
 	//flag our sample as playing and rewind its position
-	SDL_LockAudio();
+	ES_AudioLock();
 	playing = false;
 	mSamplePos = 0;
-	SDL_UnlockAudio();
+	ES_AudioUnlock();
 }
 
 const Uint8 * Sound::getData() const

@@ -1,7 +1,7 @@
 #include "Gamelist.h"
 #include "SystemData.h"
 #include "pugixml/pugixml.hpp"
-#include <boost/filesystem.hpp>
+#include "FileSystem.h"
 #include "Log.h"
 #include "Settings.h"
 #include "Util.h"

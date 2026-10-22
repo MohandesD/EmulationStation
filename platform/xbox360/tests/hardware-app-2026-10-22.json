@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-22",
+  "upstream_commit": "9cc42adff67946175d2b7e25c6ae69cc374e98a0",
+  "xex_sha256": "ab08548c131341984051098daff0e65c342e1c00bf4934a46ceb33f097c74c7f",
+  "xex_bytes": 10100736,
+  "full_cross_build": true,
+  "systems": {
+    "nes": 10,
+    "snes": 11,
+    "arcade": 16,
+    "gb": 5,
+    "n64": 1
+  },
+  "theme": "RetroPie/es-theme-simple@5a6c1daf965b9d410398243c232a34911dad8826",
+  "package_files_readback_verified": 42,
+  "native_capture_bytes": 3768320,
+  "native_capture_dimensions": [
+    1280,
+    720
+  ],
+  "native_capture_visually_verified": "system carousel with NES selected, Nintendo system logos, themed background, game count and help prompts",
+  "diagnostic_frames": 600,
+  "clean_shutdown_logged": true,
+  "aurora_observed_after_exit": true,
+  "controller_connected": false,
+  "controller_navigation_verified": false,
+  "gameplay_verified": false,
+  "emulator_return_verified": false,
+  "rom_launched": false,
+  "boot_configuration_changed": false,
+  "public_fork_or_pr_created": false,
+  "host_tests_passed": 4,
+  "host_tests_sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "xenia_skipped_instructions": 160
+}

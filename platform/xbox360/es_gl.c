@@ -118,7 +118,7 @@ static void transform(const float *m, const float *p, float *out) {
     for (unsigned row=0; row<4; ++row) out[row]=m[row]*p[0]+m[4+row]*p[1]+m[8+row]*p[2]+m[12+row]*p[3];
 }
 void glDrawArrays(GLenum mode, GLint first, GLsizei count) {
-    if (mode!=GL_TRIANGLES && mode!=GL_TRIANGLE_STRIP) { error(GL_INVALID_ENUM); return; }
+    if (mode!=GL_TRIANGLES && mode!=GL_TRIANGLE_STRIP && mode!=GL_LINES) { error(GL_INVALID_ENUM); return; }
     if (first<0 || count<0 || (unsigned)count>MAX_VERTICES || (size_t)first+(size_t)count>INT_MAX) { error(GL_INVALID_VALUE); return; }
     if (!count) return;
     if (!state.driver.draw || !state.position.enabled || !state.position.data ||

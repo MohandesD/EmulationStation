@@ -2,7 +2,7 @@
 #include "Log.h"
 #include "pugixml/pugixml.hpp"
 #include "platform.h"
-#include <boost/filesystem.hpp>
+#include "FileSystem.h"
 #include <boost/assign.hpp>
 
 Settings* Settings::sInstance = NULL;
@@ -53,7 +53,13 @@ void Settings::setDefaults()
 	mBoolMap["VSync"] = true;
 #endif
 
-	mBoolMap["EnableSounds"] = true;
+#ifdef __XSDK__
+    mBoolMap["EnableSounds"] = false;
+    mBoolMap["XboxLaunchEnabled"] = false; // Temporary bring-up gate; must be validated before enabling.
+    mIntMap["XboxDiagnosticFrames"] = 0; // Opt-in bounded frontend test; never launches a game.
+#else
+    mBoolMap["EnableSounds"] = true;
+#endif
 	mBoolMap["ShowHelpPrompts"] = true;
 	mBoolMap["ScrapeRatings"] = true;
 	mBoolMap["IgnoreGamelist"] = false;

@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <SDL.h>
+#include "SDLCompat.h"
 #include <sstream>
 #include "pugixml/pugixml.hpp"
 

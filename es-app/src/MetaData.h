@@ -4,8 +4,8 @@
 #include <string>
 #include <map>
 #include "GuiComponent.h"
-#include <boost/date_time.hpp>
-#include <boost/filesystem.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include "FileSystem.h"
 
 enum MetaDataType
 {

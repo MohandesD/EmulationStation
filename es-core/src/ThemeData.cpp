@@ -128,7 +128,9 @@ std::string resolvePath(const char* in, const fs::path& relative)
 		path = getHomePath() + (in + 1);
 	}else if(*path.begin() == ".")
 	{
-		path = relPath / (in + 1);
+		// Keep the leading dot: removing it turns ./art into /art, which
+		// std::filesystem correctly treats as an absolute replacement path.
+		path = relPath / path;
 	}
 
 	return path.generic_string();

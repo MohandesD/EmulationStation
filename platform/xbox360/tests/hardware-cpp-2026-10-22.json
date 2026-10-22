@@ -1,0 +1,16 @@
+{
+  "sha256": "62d119b0867db1a32cca33033de057c1994686113f70273a4aefab7d3a8bdb4f",
+  "bytes": 1839104,
+  "console_result": "PASS",
+  "tests": [
+    "C++ vector and string streams",
+    "exception throw/catch",
+    "create directory",
+    "write and read text file",
+    "stat regular file",
+    "canonical path exists",
+    "directory iteration"
+  ],
+  "returned_to_aurora": true,
+  "no_rom_launch": true
+}

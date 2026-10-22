@@ -6,7 +6,7 @@
 #include "views/ViewController.h"
 #include "guis/GuiGameScraper.h"
 #include "guis/GuiMsgBox.h"
-#include <boost/filesystem.hpp>
+#include "FileSystem.h"
 
 #include "components/TextEditComponent.h"
 #include "components/DateTimeComponent.h"

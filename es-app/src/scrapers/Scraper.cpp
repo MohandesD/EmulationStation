@@ -1,8 +1,13 @@
 #include "scrapers/Scraper.h"
+#include <fstream>
 #include "Log.h"
 #include "Settings.h"
+#ifndef __XSDK__
 #include <FreeImage.h>
-#include <boost/filesystem.hpp>
+#else
+bool esResizeImage(const std::string&,int,int);
+#endif
+#include "FileSystem.h"
 #include <boost/assign.hpp>
 
 #include "GamesDBScraper.h"
@@ -213,6 +218,9 @@ void ImageDownloadHandle::update()
 //you can pass 0 for width or height to keep aspect ratio
 bool resizeImage(const std::string& path, int maxWidth, int maxHeight)
 {
+#ifdef __XSDK__
+	return esResizeImage(path,maxWidth,maxHeight);
+#else
 	// nothing to do
 	if(maxWidth == 0 && maxHeight == 0)
 		return true;
@@ -266,6 +274,7 @@ bool resizeImage(const std::string& path, int maxWidth, int maxHeight)
 		LOG(LogError) << "Failed to save resized image!";
 
 	return saved;
+#endif
 }
 
 std::string getSaveAsPath(const ScraperSearchParams& params, const std::string& suffix, const std::string& url)

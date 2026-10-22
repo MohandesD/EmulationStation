@@ -1,4 +1,5 @@
 #include "ImageIO.h"
+#include <FreeImage.h>
 
 #include <memory.h>
 

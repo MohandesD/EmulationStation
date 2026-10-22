@@ -159,6 +159,14 @@ set(EMBEDDED_ASSET_SOURCES
 
 list(APPEND CORE_SOURCES ${EMBEDDED_ASSET_SOURCES})
 
+if(XSDK)
+    list(REMOVE_ITEM CORE_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer_init_sdlgl.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ImageIO.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/AudioManager.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/platform.cpp)
+endif()
+
 include_directories(${COMMON_INCLUDE_DIRS})
 add_library(es-core STATIC ${CORE_SOURCES} ${CORE_HEADERS})
 target_link_libraries(es-core ${COMMON_LIBRARIES})

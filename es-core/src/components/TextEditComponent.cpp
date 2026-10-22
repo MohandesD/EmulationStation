@@ -77,14 +77,14 @@ void TextEditComponent::textInput(const char* text)
 
 void TextEditComponent::startEditing()
 {
-	SDL_StartTextInput();
+	ES_StartTextInput();
 	mEditing = true;
 	updateHelpPrompts();
 }
 
 void TextEditComponent::stopEditing()
 {
-	SDL_StopTextInput();
+	ES_StopTextInput();
 	mEditing = false;
 	updateHelpPrompts();
 }

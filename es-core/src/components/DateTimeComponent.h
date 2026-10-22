@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GuiComponent.h"
-#include <boost/date_time.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include "resources/Font.h"
 
 // Used to enter or display a specific point in time.

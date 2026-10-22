@@ -2,8 +2,8 @@
 
 #include <string>
 #include <Eigen/Dense>
-#include <boost/filesystem.hpp>
-#include <boost/date_time.hpp>
+#include "FileSystem.h"
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 std::string strToUpper(const char* from);
 std::string& strToUpper(std::string& str);

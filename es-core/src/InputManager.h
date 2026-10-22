@@ -1,7 +1,7 @@
 #ifndef _INPUTMANAGER_H_
 #define _INPUTMANAGER_H_
 
-#include <SDL.h>
+#include "SDLCompat.h"
 #include <vector>
 #include <map>
 #include <string>

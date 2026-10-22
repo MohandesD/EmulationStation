@@ -8,6 +8,7 @@
 #include <xsdk/texture.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 enum { WIDTH=1280, HEIGHT=720, VERTICES=65536 };
 typedef struct { XsdkTexture texture; uint64_t revision; } DeviceTexture;
@@ -80,13 +81,17 @@ static int draw(const ESGLDrawState *s, const ESGLVertex *vertices, size_t count
     XsdkTexture *t=texture(s->texture); if(!t) return 0;
     if(gpu.used+count>VERTICES) { if(!waitGpu()) return 0; gpu.used=0; }
     volatile uint32_t *destination=gpu.vertices+gpu.used*(sizeof *vertices/4);
-    memcpy((void *)destination,vertices,count*sizeof *vertices);
+    // xsdk's write-combined GPU allocation requires volatile 32-bit stores.
+    const unsigned char *source=(const unsigned char *)vertices;
+    for(size_t i=0;i<count*sizeof *vertices/4;++i) {
+        uint32_t word; memcpy(&word,source+i*4,4); destination[i]=word;
+    }
     uint32_t address=xsdk_gpu_address(destination);
     xsdk_gpu_invalidate(address,(uint32_t)(count*sizeof *vertices));
     gpu.used+=count;
     xsdk_gpu_set_shaders(&gpu.vertex,&gpu.fragment);
     xsdk_built_shader_set_literals(&es_vert); xsdk_built_shader_set_literals(&es_frag);
-    xsdk_gpu_set_vertices(0,address,sizeof *vertices);
+    xsdk_gpu_set_vertices(0,address,(uint32_t)(count*sizeof *vertices));
     XsdkSampler sampler={.min_filter=XSDK_FILTER_POINT,.mag_filter=XSDK_FILTER_POINT,
                           .address_u=XSDK_ADDRESS_CLAMP,.address_v=XSDK_ADDRESS_CLAMP};
     if(s->texture) {
@@ -113,7 +118,9 @@ static int draw(const ESGLDrawState *s, const ESGLVertex *vertices, size_t count
         if(right<=left || top<=bottom) return 1;
         xsdk_gpu_set_scissor(left,HEIGHT-top,right-left,top-bottom);
     } else xsdk_gpu_set_scissor(0,0,WIDTH,HEIGHT);
-    xsdk_gpu_draw(s->primitive==GL_TRIANGLES ? XSDK_PRIMITIVE_TRIANGLE_LIST : XSDK_PRIMITIVE_TRIANGLE_STRIP,count);
+    uint32_t primitive=s->primitive==GL_LINES ? XSDK_PRIMITIVE_LINE_LIST :
+        s->primitive==GL_TRIANGLES ? XSDK_PRIMITIVE_TRIANGLE_LIST : XSDK_PRIMITIVE_TRIANGLE_STRIP;
+    xsdk_gpu_draw(primitive,count);
     return 1;
 }
 static int clear(const ESGLDrawState *s, const float rgba[4]) {
@@ -160,6 +167,17 @@ int esGpuPresent(void) {
     xsdk_gpu_resolve(gpu.front,WIDTH,HEIGHT,0xFF000000u);
     xsdk_present_end(); gpu.inFrame=0;
     return !gpu.failed;
+}
+int esGpuCapture(const char *path) {
+    if(!gpu.opened || gpu.inFrame || !gpu.front || !waitGpu()) return 0;
+    const volatile uint32_t *pixels=xsdk_present_pixels(gpu.front);
+    const size_t bytes=xsdk_gpu_resolve_bytes(WIDTH,HEIGHT);
+    FILE *file=fopen(path,"wb"); if(!file) return 0;
+    // Capture only our own 1280x720 tiled target; no XBDM/D3D surface metadata.
+    int ok=fwrite((const void *)pixels,1,bytes,file)==bytes;
+    if(fclose(file)!=0) ok=0;
+    xsdk_log_write("ES GPU capture: %u bytes, ok=%d",(unsigned)bytes,ok);
+    return ok;
 }
 void esGpuClose(void) {
     if(!gpu.opened) return;

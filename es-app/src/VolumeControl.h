@@ -5,7 +5,7 @@
 
 #if defined (__APPLE__)
     #error TODO: Not implemented for MacOS yet!!!
-#elif defined(__linux__)
+#elif defined(__linux__) && !defined(__XSDK__)
 	#include <unistd.h>
 	#include <fcntl.h>
 	#include <alsa/asoundlib.h>
@@ -23,7 +23,7 @@ class VolumeControl
 {
 #if defined (__APPLE__)
     #error TODO: Not implemented for MacOS yet!!!
-#elif defined(__linux__)
+#elif defined(__linux__) && !defined(__XSDK__)
     static const char * mixerName;
     static const char * mixerCard;
     int mixerIndex;

@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 2.8)
 
 project(emulationstation-all)
 
+if(XSDK)
+    include(platform/xbox360/Port.cmake)
+    return()
+endif()
+
 #-------------------------------------------------------------------------------
 #add local find scripts to CMAKE path
 LIST(APPEND CMAKE_MODULE_PATH

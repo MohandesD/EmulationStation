@@ -43,7 +43,7 @@ void Log::flush()
 
 void Log::close()
 {
-	fclose(file);
+	if(file) fclose(file);
 	file = NULL;
 }
 

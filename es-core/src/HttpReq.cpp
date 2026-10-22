@@ -1,7 +1,8 @@
 #include <iostream>
+#include <cassert>
 #include "HttpReq.h"
 #include "Log.h"
-#include <boost/filesystem.hpp>
+#include "FileSystem.h"
 
 CURLM* HttpReq::s_multi_handle = curl_multi_init();
 
@@ -48,7 +49,12 @@ HttpReq::HttpReq(const std::string& url)
 		return;
 	}
 
-	//set the url
+#ifdef __XSDK__
+    curl_easy_setopt(mHandle, CURLOPT_CAINFO, "game:/cacert.pem");
+    curl_easy_setopt(mHandle, CURLOPT_CONNECTTIMEOUT, 10L);
+    curl_easy_setopt(mHandle, CURLOPT_TIMEOUT, 30L);
+#endif
+    //set the url
 	CURLcode err = curl_easy_setopt(mHandle, CURLOPT_URL, url.c_str());
 	if(err != CURLE_OK)
 	{

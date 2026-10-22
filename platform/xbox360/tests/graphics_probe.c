@@ -27,6 +27,8 @@ int main(void) {
         if(XamInputGetState(0,0,&input)==ERROR_SUCCESS && (input.gamepad.buttons&INPUT_GAMEPAD_B)) break;
         glClearColor(.04f,.06f,.10f,1); glClear(GL_COLOR_BUFFER_BIT);
         rect(60,60,300,160,255,0,0,255); rect(380,60,300,160,0,255,0,255); rect(700,60,300,160,0,0,255,255);
+        const GLint line[]={1100,60,1100,220};
+        glColor4ub(0,255,255,255); glVertexPointer(2,GL_INT,0,line); glDrawArrays(GL_LINES,0,2);
         rect(60,260,500,160,255,0,0,255); rect(310,300,500,160,0,0,255,128);
         glScissor(900,260,200,160); glEnable(GL_SCISSOR_TEST);
         rect(800,250,400,300,255,255,255,255); glDisable(GL_SCISSOR_TEST);
@@ -36,7 +38,11 @@ int main(void) {
         glDisableClientState(GL_TEXTURE_COORD_ARRAY); glDisable(GL_TEXTURE_2D);
         GLenum error=glGetError();
         if(error || !esGpuPresent()) { xsdk_log_write("FAIL: graphics frame %u error=0x%X",frames,error); failed=1; break; }
-        if(++frames==120) xsdk_log_write("PASS: 120 component frames submitted; visual verification still required");
+        if(++frames==120) {
+            xsdk_log_write("PASS: 120 component frames submitted; visual verification still required");
+            (void)esGpuCapture("game:/graphics-1280x720.raw");
+        }
+        if(frames==1800) break; // B may exit sooner; unattended diagnostic returns to Aurora.
     }
     glDeleteTextures(1,&checker); esGpuClose();
     xsdk_log_write("ES graphics probe exit: %u frames, failed=%d",frames,failed);

@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "sources": {
+    "SDL": {"url": "https://github.com/xenosworks/SDL-xenon.git", "commit": "adb87a744ae056f1849718770cf198fa6c4899f9"},
+    "freetype": {"url": "https://github.com/freetype/freetype.git", "commit": "42608f77f20749dd6ddc9e0536788eaad70ea4b5"},
+    "eigen": {"url": "https://github.com/eigenteam/eigen-git-mirror.git", "commit": "cf794d3b741a6278df169e58461f8529f43bce5d"},
+    "stb": {"url": "https://github.com/nothings/stb.git", "commit": "a7d4c2175630e1ea5b6f8dd00ab96fed0b97b96d"},
+    "curl": {"url": "https://github.com/xenosworks/curl-xenon.git", "commit": "f65d5550b05798ca78561ffff88dd9c9c1771627"},
+    "mbedtls": {"url": "https://github.com/xenosworks/mbedtls-xenon.git", "commit": "591b04adbec4bc5582649601f4407506a610162b", "submodules": true}
+  },
+  "sdk": {"url": "https://github.com/xenosworks/xsdk.git", "commit": "57b02f1e60667e37d22c3aa613d23d2486514ff8"},
+  "boost_headers": {"version": "1.83.0", "BOOST_VERSION": 108300, "tested_package": "Debian 13 libboost1.83-dev 1.83.0-4.2"},
+  "compiler": {"target": "powerpc-xsdk-elf", "gcc": "15.3.0", "binutils": "2.47", "newlib": "4.6.0.20260123", "patches": "sdk/tools/toolchain"}
+}

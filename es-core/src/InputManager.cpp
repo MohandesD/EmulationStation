@@ -4,7 +4,7 @@
 #include "Window.h"
 #include "Log.h"
 #include "pugixml/pugixml.hpp"
-#include <boost/filesystem.hpp>
+#include "FileSystem.h"
 #include "platform.h"
 
 #define KEYBOARD_GUID_STRING "-1"
@@ -48,11 +48,11 @@ void InputManager::init()
 
 	SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, 
 		Settings::getInstance()->getBool("BackgroundJoystickInput") ? "1" : "0");
-	SDL_InitSubSystem(SDL_INIT_JOYSTICK);
-	SDL_JoystickEventState(SDL_ENABLE);
+	if(!ES_InitInput()) LOG(LogError)<<"Joystick init failed: "<<SDL_GetError();
+	ES_SetJoystickEvents(true);
 
 	// first, open all currently present joysticks
-	int numJoysticks = SDL_NumJoysticks();
+	int numJoysticks = ES_JoystickCount();
 	for(int i = 0; i < numJoysticks; i++)
 	{
 		addJoystickByDeviceIndex(i);
@@ -64,22 +64,39 @@ void InputManager::init()
 
 void InputManager::addJoystickByDeviceIndex(int id)
 {
-	assert(id >= 0 && id < SDL_NumJoysticks());
+	if(id < 0 || id >= ES_JoystickCount()) return;
 	
 	// open joystick & add to our list
-	SDL_Joystick* joy = SDL_JoystickOpen(id);
-	assert(joy);
+	SDL_Joystick* joy = ES_OpenJoystickIndex(id);
+	if(!joy) { LOG(LogWarning)<<"Joystick open failed: "<<SDL_GetError(); return; }
 
 	// add it to our list so we can close it again later
 	SDL_JoystickID joyId = SDL_JoystickInstanceID(joy);
+	if(mJoysticks.count(joyId)) { SDL_JoystickClose(joy); return; }
 	mJoysticks[joyId] = joy;
 
 	char guid[65];
-	SDL_JoystickGetGUIDString(SDL_JoystickGetGUID(joy), guid, 65);
+	ES_GUIDString(SDL_JoystickGetGUID(joy), guid, 65);
 
 	// create the InputConfig
 	mInputConfigs[joyId] = new InputConfig(joyId, SDL_JoystickName(joy), guid);
-	if(!loadInputConfig(mInputConfigs[joyId]))
+	#ifdef __XSDK__
+    // Pinned SDL-xenon uses gamepad button order and zero hats. User config wins.
+    InputConfig* pad=mInputConfigs[joyId];
+    pad->mapInput("a",Input(joyId,TYPE_BUTTON,0,1,true));
+    pad->mapInput("b",Input(joyId,TYPE_BUTTON,1,1,true));
+    pad->mapInput("x",Input(joyId,TYPE_BUTTON,2,1,true));
+    pad->mapInput("y",Input(joyId,TYPE_BUTTON,3,1,true));
+    pad->mapInput("select",Input(joyId,TYPE_BUTTON,4,1,true));
+    pad->mapInput("start",Input(joyId,TYPE_BUTTON,6,1,true));
+    pad->mapInput("pageup",Input(joyId,TYPE_BUTTON,9,1,true));
+    pad->mapInput("pagedown",Input(joyId,TYPE_BUTTON,10,1,true));
+    pad->mapInput("up",Input(joyId,TYPE_BUTTON,SDL_GAMEPAD_BUTTON_DPAD_UP,1,true));
+    pad->mapInput("down",Input(joyId,TYPE_BUTTON,SDL_GAMEPAD_BUTTON_DPAD_DOWN,1,true));
+    pad->mapInput("left",Input(joyId,TYPE_BUTTON,SDL_GAMEPAD_BUTTON_DPAD_LEFT,1,true));
+    pad->mapInput("right",Input(joyId,TYPE_BUTTON,SDL_GAMEPAD_BUTTON_DPAD_RIGHT,1,true));
+#endif
+    if(!loadInputConfig(mInputConfigs[joyId]))
 	{
 		LOG(LogInfo) << "Added unconfigured joystick " << SDL_JoystickName(joy) << " (GUID: " << guid << ", instance ID: " << joyId << ", device index: " << id << ").";
 	}else{
@@ -94,7 +111,7 @@ void InputManager::addJoystickByDeviceIndex(int id)
 
 void InputManager::removeJoystickByJoystickID(SDL_JoystickID joyId)
 {
-	assert(joyId != -1);
+	if(!mJoysticks.count(joyId)) return;
 
 	// delete old prevAxisValues
 	auto axisIt = mPrevAxisValues.find(joyId);
@@ -146,12 +163,12 @@ void InputManager::deinit()
 		mKeyboardInputConfig = NULL;
 	}
 
-	SDL_JoystickEventState(SDL_DISABLE);
+	ES_SetJoystickEvents(false);
 	SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
 }
 
 int InputManager::getNumJoysticks() { return mJoysticks.size(); }
-int InputManager::getButtonCountByDevice(SDL_JoystickID id)
+int InputManager::getButtonCountByDevice(int id)
 {
 	if(id == DEVICE_KEYBOARD)
 		return 120; //it's a lot, okay.
@@ -194,7 +211,7 @@ bool InputManager::parseEvent(const SDL_Event& ev, Window* window)
 
 	case SDL_JOYBUTTONDOWN:
 	case SDL_JOYBUTTONUP:
-		window->input(getInputConfigByDevice(ev.jbutton.which), Input(ev.jbutton.which, TYPE_BUTTON, ev.jbutton.button, ev.jbutton.state == SDL_PRESSED, false));
+		window->input(getInputConfigByDevice(ev.jbutton.which), Input(ev.jbutton.which, TYPE_BUTTON, ev.jbutton.button, ES_ButtonPressed(ev), false));
 		return true;
 
 	case SDL_JOYHATMOTION:
@@ -202,7 +219,7 @@ bool InputManager::parseEvent(const SDL_Event& ev, Window* window)
 		return true;
 
 	case SDL_KEYDOWN:
-		if(ev.key.keysym.sym == SDLK_BACKSPACE && SDL_IsTextInputActive())
+		if(ES_EventKey(ev) == SDLK_BACKSPACE && ES_TextInputActive())
 		{
 			window->textInput("\b");
 		}
@@ -210,7 +227,7 @@ bool InputManager::parseEvent(const SDL_Event& ev, Window* window)
 		if(ev.key.repeat)
 			return false;
 
-		if(ev.key.keysym.sym == SDLK_F4)
+		if(ES_EventKey(ev) == SDLK_F4)
 		{
 			SDL_Event* quit = new SDL_Event();
 			quit->type = SDL_QUIT;
@@ -218,11 +235,11 @@ bool InputManager::parseEvent(const SDL_Event& ev, Window* window)
 			return false;
 		}
 
-		window->input(getInputConfigByDevice(DEVICE_KEYBOARD), Input(DEVICE_KEYBOARD, TYPE_KEY, ev.key.keysym.sym, 1, false));
+		window->input(getInputConfigByDevice(DEVICE_KEYBOARD), Input(DEVICE_KEYBOARD, TYPE_KEY, ES_EventKey(ev), 1, false));
 		return true;
 
 	case SDL_KEYUP:
-		window->input(getInputConfigByDevice(DEVICE_KEYBOARD), Input(DEVICE_KEYBOARD, TYPE_KEY, ev.key.keysym.sym, 0, false));
+		window->input(getInputConfigByDevice(DEVICE_KEYBOARD), Input(DEVICE_KEYBOARD, TYPE_KEY, ES_EventKey(ev), 0, false));
 		return true;
 
 	case SDL_TEXTINPUT:
@@ -230,7 +247,7 @@ bool InputManager::parseEvent(const SDL_Event& ev, Window* window)
 		break;
 
 	case SDL_JOYDEVICEADDED:
-		addJoystickByDeviceIndex(ev.jdevice.which); // ev.jdevice.which is a device index
+		addJoystickByDeviceIndex(ES_AddedJoystickIndex(ev.jdevice.which));
 		return true;
 
 	case SDL_JOYDEVICEREMOVED:
@@ -369,6 +386,6 @@ std::string InputManager::getDeviceGUIDString(int deviceId)
 	}
 
 	char guid[65];
-	SDL_JoystickGetGUIDString(SDL_JoystickGetGUID(it->second), guid, 65);
+	ES_GUIDString(SDL_JoystickGetGUID(it->second), guid, 65);
 	return std::string(guid);
 }

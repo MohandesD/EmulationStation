@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 
-#include "SDL_audio.h"
+#include "SDLCompat.h"
 
 #include "Sound.h"
 
@@ -16,6 +16,10 @@ class AudioManager
 	static std::shared_ptr<AudioManager> sInstance;
 
 	static void mixAudio(void *unused, Uint8 *stream, int len);
+#ifdef ES_USE_SDL3
+	static SDL_AudioStream* sAudioStream;
+	static void streamCallback(void*, SDL_AudioStream*, int additional, int total);
+#endif
 
 	AudioManager();
 

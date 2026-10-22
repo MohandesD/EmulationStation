@@ -1,6 +1,6 @@
 #include "platform.h"
 #include <stdlib.h>
-#include <boost/filesystem.hpp>
+#include "FileSystem.h"
 #include <iostream>
 
 #ifdef WIN32

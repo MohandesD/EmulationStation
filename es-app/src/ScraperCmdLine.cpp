@@ -5,12 +5,19 @@
 #include "Settings.h"
 #include <signal.h>
 #include "Log.h"
+#ifdef __XSDK__
+#include "SDLCompat.h"
+#endif
 
 std::ostream& out = std::cout;
 
 void handle_interrupt_signal(int p)
 {
+#ifdef __XSDK__
+	SDL_Delay(50000);
+#else
 	sleep(50);
+#endif
 
 	LOG(LogInfo) << "Interrupt received during scrape...";
 

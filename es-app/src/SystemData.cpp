@@ -1,9 +1,9 @@
 #include "SystemData.h"
 #include "Gamelist.h"
-#include <boost/filesystem.hpp>
+#include "FileSystem.h"
 #include <fstream>
 #include <stdlib.h>
-#include <SDL_joystick.h>
+#include "SDLCompat.h"
 #include "Renderer.h"
 #include "AudioManager.h"
 #include "VolumeControl.h"
@@ -12,6 +12,9 @@
 #include <iostream>
 #include "Settings.h"
 #include "FileSorts.h"
+#ifdef __XSDK__
+#include "guis/GuiMsgBox.h"
+#endif
 
 std::vector<SystemData*> SystemData::sSystemVector;
 
@@ -76,7 +79,7 @@ std::string strreplace(std::string str, const std::string& replace, const std::s
 // everything else: assume bash and escape special characters with backslashes
 std::string escapePath(const boost::filesystem::path& path)
 {
-#ifdef WIN32
+#if defined(WIN32) || defined(__XSDK__)
 	// windows escapes stuff by just putting everything in quotes
 	return '"' + fs::path(path).make_preferred().string() + '"';
 #else
@@ -106,7 +109,13 @@ std::string escapePath(const boost::filesystem::path& path)
 
 void SystemData::launchGame(Window* window, FileData* game)
 {
-	LOG(LogInfo) << "Attempting to launch game...";
+	#ifdef __XSDK__
+    if(!Settings::getInstance()->getBool("XboxLaunchEnabled")) {
+        window->pushGui(new GuiMsgBox(window,"GAME LAUNCHING IS NOT ENABLED IN THIS TEST BUILD."));
+        return;
+    }
+#endif
+    LOG(LogInfo) << "Attempting to launch game...";
 
 	AudioManager::getInstance()->deinit();
 	VolumeControl::getInstance()->deinit();

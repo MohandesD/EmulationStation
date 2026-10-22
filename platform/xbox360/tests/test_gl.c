@@ -36,6 +36,9 @@ int main(void) {
     near(vertices[0].position[0],-1); near(vertices[0].position[1],1);
     near(vertices[2].position[0],1); near(vertices[2].position[1],-1);
     near(vertices[0].color[1],128/255.f); near(vertices[0].color[3],64/255.f);
+    // ComponentGrid's debug/menu separator lines are also part of upstream ES.
+    glDrawArrays(GL_LINES,0,2); ok();
+    assert(vertexCount==2 && captured.primitive==GL_LINES);
 
     // Interleaved, deliberately unaligned floats and a nonzero 'first' (RatingComponent).
     unsigned char packed[1+6*20]; memset(packed,0,sizeof packed);

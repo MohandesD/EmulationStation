@@ -6,7 +6,7 @@
 #include <map>
 #include <deque>
 #include <string>
-#include <boost/filesystem.hpp>
+#include "FileSystem.h"
 #include <boost/variant.hpp>
 #include <Eigen/Dense>
 #include "pugixml/pugixml.hpp"

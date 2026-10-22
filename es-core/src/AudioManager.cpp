@@ -1,6 +1,6 @@
 #include "AudioManager.h"
 
-#include <SDL.h>
+#include "SDLCompat.h"
 #include "Log.h"
 
 std::vector<std::shared_ptr<Sound>> AudioManager::sSoundVector;
