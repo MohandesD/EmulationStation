@@ -25,7 +25,11 @@ std::vector<SystemData*> SystemData::sSystemVector;
 namespace fs = boost::filesystem;
 
 SystemData::SystemData(const std::string& name, const std::string& fullName, const std::string& startPath, const std::vector<std::string>& extensions, 
-	const std::string& command, const std::vector<PlatformIds::PlatformId>& platformIds, const std::string& themeFolder)
+	const std::string& command, const std::vector<PlatformIds::PlatformId>& platformIds, const std::string& themeFolder
+#ifdef __XSDK__
+    , const std::vector<XboxRoute>& xboxRoutes
+#endif
+    )
 {
 	mName = name;
 	mFullName = fullName;
@@ -42,12 +46,20 @@ SystemData::SystemData(const std::string& name, const std::string& fullName, con
 	mLaunchCommand = command;
 	mPlatformIds = platformIds;
 	mThemeFolder = themeFolder;
+#ifdef __XSDK__
+    mXboxRoutes = xboxRoutes; // loadConfig validates all sources before constructing the system.
+#endif
 
 	mRootFolder = new FileData(FOLDER, mStartPath, this);
 	mRootFolder->metadata.set("name", mFullName);
 
-	if(!Settings::getInstance()->getBool("ParseGamelistOnly"))
+	if(!Settings::getInstance()->getBool("ParseGamelistOnly")) {
+#ifdef __XSDK__
+        if(hasXboxRoutes()) populateXboxRoutes();
+        else
+#endif
 		populateFolder(mRootFolder);
+    }
 
 	if(!Settings::getInstance()->getBool("IgnoreGamelist"))
 		parseGamelist(this);
@@ -116,6 +128,16 @@ void SystemData::launchGame(Window* window, FileData* game)
     LOG(LogInfo) << "Attempting to launch game...";
 
 	std::string command = mLaunchCommand;
+#ifdef __XSDK__
+    if(hasXboxRoutes()) {
+        const auto* route=getXboxRoute(game->getPath().generic_string());
+        if(!route) {
+            window->pushGui(new GuiMsgBox(window,"THIS GAME DOES NOT MATCH A CONFIGURED EMULATOR SOURCE."));
+            return;
+        }
+        command=route->command;
+    }
+#endif
 
 	const std::string rom = escapePath(game->getPath());
 	const std::string basename = game->getPath().stem().string();
@@ -160,7 +182,11 @@ void SystemData::launchGame(Window* window, FileData* game)
 
 	LOG(LogInfo) << "	" << command;
 	std::cout << "==============================================\n";
+#ifdef __XSDK__
+    int exitCode = runXboxSystemCommand(command,launchError);
+#else
 	int exitCode = runSystemCommand(command);
+#endif
 	std::cout << "==============================================\n";
 
 	if(exitCode != 0)
@@ -175,7 +201,7 @@ void SystemData::launchGame(Window* window, FileData* game)
 #ifdef __XSDK__
     // A successful native image handoff replaces this process. Reaching here
     // means it failed; keep the selected game and don't count it as played.
-    window->pushGui(new GuiMsgBox(window,"THE EMULATOR COULD NOT BE STARTED. THE GAME LIST HAS BEEN RESTORED."));
+    window->pushGui(new GuiMsgBox(window,launchError));
     return;
 #endif
 
@@ -249,6 +275,31 @@ void SystemData::populateFolder(FileData* folder)
 		}
 	}
 }
+
+#ifdef __XSDK__
+void SystemData::populateXboxRoutes()
+{
+    // The common root is a collection namespace, never a scan request. Only
+    // declared, non-overlapping physical sources contribute games. Backend
+    // folders stay out of the frontend hierarchy and full paths stay intact.
+    for(const auto& route:mXboxRoutes) {
+        std::error_code ec;
+        const auto sourceStatus=fs::symlink_status(route.path,ec);
+        if(ec || !fs::is_directory(sourceStatus) || fs::is_symlink(sourceStatus)) continue;
+        fs::recursive_directory_iterator end,entry(route.path,fs::directory_options::skip_permission_denied,ec);
+        for(; !ec && entry!=end;entry.increment(ec)) {
+            const auto status=entry->symlink_status(ec);
+            if(ec) break;
+            if(fs::is_symlink(status)) { entry.disable_recursion_pending();continue; }
+            if(!fs::is_regular_file(status) || entry->path().stem().empty()) continue;
+            const auto path=entry->path().generic_string();
+            if(getXboxRoute(path)!=&route) continue;
+            mRootFolder->addChild(new FileData(GAME,path,this));
+        }
+        if(ec) LOG(LogWarning)<<"Could not finish reading Xbox game source "<<route.path<<": "<<ec.message();
+    }
+}
+#endif
 
 std::vector<std::string> readList(const std::string& str, const char* delims = " \t\r\n,")
 {
@@ -354,7 +405,30 @@ bool SystemData::loadConfig()
 		boost::filesystem::path genericPath(path);
 		path = genericPath.generic_string();
 
+#ifdef __XSDK__
+        std::vector<XboxRoute> routes;
+        if(auto sources=system.child("xboxRoutes")) {
+            for(auto source=sources.child("route");source;source=source.next_sibling("route")) {
+                XboxRoute route;
+                route.path=source.child("path").text().get();
+                route.extensions=readList(source.child("extension").text().get());
+                route.command=source.child("command").text().get();
+                routes.push_back(route);
+            }
+            std::string error;
+            if(!validateXboxRoutes(path,routes,error)) {
+                LOG(LogError)<<"System \""<<name<<"\": "<<error;
+                continue;
+            }
+        }
+        SystemData* newSys = new SystemData(name, fullname, path, extensions, cmd, platformIds, themeFolder, routes);
+#else
+        if(system.child("xboxRoutes")) {
+            LOG(LogWarning)<<"System \""<<name<<"\" requires the Xbox route-aware launcher; ignoring it.";
+            continue;
+        }
 		SystemData* newSys = new SystemData(name, fullname, path, extensions, cmd, platformIds, themeFolder);
+#endif
 		if(newSys->getRootFolder()->getChildren().size() == 0)
 		{
 			LOG(LogWarning) << "System \"" << name << "\" has no games! Ignoring it.";
@@ -435,14 +509,24 @@ std::string SystemData::getGamelistPath(bool forWrite) const
 {
 	fs::path filePath;
 
-	filePath = mRootFolder->getPath() / "gamelist.xml";
-	if(fs::exists(filePath))
-		return filePath.generic_string();
+#ifdef __XSDK__
+    // Collections share a physical common root, not their metadata identity.
+    // Keep Arcade/NGP/etc. in separate application-local gamelist files.
+    if(!hasXboxRoutes())
+#endif
+    {
+	    filePath = mRootFolder->getPath() / "gamelist.xml";
+	    if(fs::exists(filePath)) return filePath.generic_string();
+    }
 
 	filePath = getHomePath() + "/.emulationstation/gamelists/" + mName + "/gamelist.xml";
 	if(forWrite) // make sure the directory exists if we're going to write to it, or crashes will happen
 		fs::create_directories(filePath.parent_path());
-	if(forWrite || fs::exists(filePath))
+	if(forWrite || fs::exists(filePath)
+#ifdef __XSDK__
+        || hasXboxRoutes()
+#endif
+        )
 		return filePath.generic_string();
 
 	return "/etc/emulationstation/gamelists/" + mName + "/gamelist.xml";
@@ -455,9 +539,13 @@ std::string SystemData::getThemePath() const
 	// 2. currently selected theme set
 
 	// first, check game folder
-	fs::path localThemePath = mRootFolder->getPath() / "theme.xml";
-	if(fs::exists(localThemePath))
-		return localThemePath.generic_string();
+#ifdef __XSDK__
+    if(!hasXboxRoutes())
+#endif
+    {
+	    fs::path localThemePath = mRootFolder->getPath() / "theme.xml";
+	    if(fs::exists(localThemePath)) return localThemePath.generic_string();
+    }
 
 	// not in game folder, try theme sets
 	return ThemeData::getThemeFromCurrentSet(mThemeFolder).generic_string();

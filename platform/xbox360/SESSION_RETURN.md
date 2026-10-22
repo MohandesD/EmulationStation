@@ -43,6 +43,13 @@ unexpected state. Restoration errors remain visible and require diagnosis or a
 fresh temporary session. A runtime reload is not atomic and rollback is best
 effort; PC tests cannot prove the console API's behavior.
 
+The next offline revision checks the current options again after staging the
+restore INI, immediately before reload. A concurrent change cancels restoration
+without overwriting it. Failed handoffs also pass the specific recovery error
+back to the game-list dialog instead of showing only a generic launch failure.
+These follow-up safeguards are PC-tested separately from the currently installed
+manual-test build.
+
 The intended game exit is **Xbox Guide -> Y**, followed by releasing Y. Salvia's
 **Back+Start** is an internal return to its own browser and remains unchanged.
 This code does not intercept that emulator shortcut, alter Salvia binaries or

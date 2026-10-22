@@ -1,4 +1,5 @@
 #include "FrontendState.h"
+#include "XboxRoutes.h"
 #include "SystemData.h"
 #include "views/ViewController.h"
 #include "pugixml/pugixml.hpp"
@@ -40,12 +41,14 @@ bool restoreXboxSelection() {
     if(root.attribute("version").as_int()!=1) return false;
     const std::string name=root.attribute("system").as_string();
     const std::string path=root.attribute("path").as_string();
+    const std::string pathKey=xboxRoutePathKey(path);
     auto controller=ViewController::get();
     for(auto system:SystemData::sSystemVector) {
         if(system->getName()!=name) continue;
         if(std::string(root.attribute("view").as_string())=="games") {
             for(auto game:system->getRootFolder()->getFilesRecursive(GAME|FOLDER)) {
-                if(game->getPath().generic_string()!=path) continue;
+                const auto current=game->getPath().generic_string();
+                if(current!=path && (pathKey.empty() || xboxRoutePathKey(current)!=pathKey)) continue;
                 controller->getGameListView(system)->setCursor(game);
                 controller->goToGameList(system);
                 LOG(LogInfo)<<"Restored game-list selection";

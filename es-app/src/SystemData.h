@@ -7,12 +7,19 @@
 #include "MetaData.h"
 #include "PlatformId.h"
 #include "ThemeData.h"
+#ifdef __XSDK__
+#include "XboxRoutes.h"
+#endif
 
 class SystemData
 {
 public:
 	SystemData(const std::string& name, const std::string& fullName, const std::string& startPath, const std::vector<std::string>& extensions, 
-		const std::string& command, const std::vector<PlatformIds::PlatformId>& platformIds, const std::string& themeFolder);
+		const std::string& command, const std::vector<PlatformIds::PlatformId>& platformIds, const std::string& themeFolder
+#ifdef __XSDK__
+        , const std::vector<XboxRoute>& xboxRoutes = {}
+#endif
+        );
 	~SystemData();
 
 	inline FileData* getRootFolder() const { return mRootFolder; };
@@ -21,6 +28,10 @@ public:
 	inline const std::string& getStartPath() const { return mStartPath; }
 	inline const std::vector<std::string>& getExtensions() const { return mSearchExtensions; }
 	inline const std::string& getThemeFolder() const { return mThemeFolder; }
+#ifdef __XSDK__
+    bool hasXboxRoutes() const { return !mXboxRoutes.empty(); }
+    const XboxRoute* getXboxRoute(const std::string& path) const { return resolveXboxRoute(mXboxRoutes,path); }
+#endif
 
 	inline const std::vector<PlatformIds::PlatformId>& getPlatformIds() const { return mPlatformIds; }
 	inline bool hasPlatformId(PlatformIds::PlatformId id) { return std::find(mPlatformIds.begin(), mPlatformIds.end(), id) != mPlatformIds.end(); }
@@ -73,6 +84,10 @@ private:
 	std::vector<PlatformIds::PlatformId> mPlatformIds;
 	std::string mThemeFolder;
 	std::shared_ptr<ThemeData> mTheme;
+#ifdef __XSDK__
+    std::vector<XboxRoute> mXboxRoutes;
+    void populateXboxRoutes();
+#endif
 
 	void populateFolder(FileData* folder);
 

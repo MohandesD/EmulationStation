@@ -305,3 +305,18 @@ passed full FTP readback; ES is open for a manual game/Guide-return check. No ga
 was remotely launched. See [session return](SESSION_RETURN.md) and
 [console evidence](tests/hardware-session-return-2026-10-22.json). The font change
 is installed but TV appearance still needs confirmation.
+
+## Offline follow-up while the manual return test is pending
+
+The next candidate retains 34 available Salvia sources in 32 sections, including
+both Arcade and Neo Geo Pocket backends. It routes each game by its physical
+source directory, keeps separate metadata for grouped sections, and preserves
+saved selections across equivalent path casing/drive aliases. Scraper IDs are
+validated independently of theme names. See [platform routing](PLATFORMS.md).
+
+Restoration rechecks runtime state after staging its private file; failed
+handoffs show recovery errors in the UI. Nine host test groups and the full
+Xbox cross-build pass. The package helper also passes four offline tests with
+fake FTP, including duplicate filenames and source-specific artwork. This
+candidate is not deployed. The installed Tetris return test remains unchanged,
+and game exit, selected-game restoration and TV font acceptance remain pending.

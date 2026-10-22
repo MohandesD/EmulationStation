@@ -70,6 +70,9 @@ int main() {
     Mock fatal;fatal.badActive=true;fatal.badRestore=true;assert(!arm(fatal,error));assert(error.find("STOP TESTING")!=std::string::npos);
     Mock absent;assert(arm(absent,error));absent.saved.clear();assert(!arm(absent,error));assert(!restore(absent,error));assert(absent.reloads==1);
     Mock altered;assert(arm(altered,error));altered.live.back().value=211;assert(!restore(altered,error));assert(altered.reloads==1);
+    Mock restoreRace;assert(arm(restoreRace,error));restoreRace.changedWhileStaging=true;
+    assert(!restore(restoreRace,error));assert(!error.empty());assert(restoreRace.reloads==1);
+    assert(restoreRace.live[0].value==0); // preserve the external change, no reload
     Mock unsafe;unsafe.live[0].value=0;assert(!arm(unsafe,error));assert(unsafe.reloads==0);
     Mock stale;stale.saved=before;stale.saved.back().value=9;assert(arm(stale,error));assert(stale.saved.back().value==210);
     auto pluginStatus=before;pluginStatus[5].flags=0xFE;

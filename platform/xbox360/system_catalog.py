@@ -10,7 +10,7 @@ import json
 import re
 import xml.etree.ElementTree as ET
 
-# IDs are presentation/scraper aliases, not a list of the user's games.
+# IDs identify carousel sections/theme folders, not a list of the user's games.
 ALIASES = {"gameboy": "gb", "master": "mastersystem", "megacd": "segacd",
            "32x": "sega32x", "pce": "pcengine", "pcecd": "pcenginecd",
            "virtualboy": "virtualboy", "spectrum": "zxspectrum",
@@ -20,6 +20,26 @@ TITLES = {"nes": "Nintendo Entertainment System", "snes": "Super Nintendo",
           "gameboy": "Game Boy / Game Boy Color", "genesis": "Sega Genesis / Mega Drive",
           "fbn": "Arcade", "mame": "Arcade", "ngp": "Neo Geo Pocket",
           "ngp-beetle": "Neo Geo Pocket"}
+
+# Scrapers use es-app/src/PlatformId.cpp's vocabulary, which is separate from
+# the carousel/theme IDs above. Do not rename sections or merge their ROM paths
+# merely because several profiles share one scraper platform. Unknown profiles
+# still browse/launch normally; "ignore" avoids scraping an unrelated platform.
+SCRAPER_PLATFORMS = {
+    "32x": "sega32x", "3do": "3do",
+    "amiga500": "amiga", "amiga1200": "amiga", "amigacd32": "amiga",
+    "atari5200": "atari5200", "atari800": "atari800", "c64": "c64",
+    "cannonball": "arcade", "dos": "pc", "fbn": "arcade", "mame": "arcade",
+    "gameboy": "gb gbc", "gamegear": "gamegear", "gba": "gba",
+    "genesis": "genesis", "lynx": "atarilynx", "master": "mastersystem",
+    "megacd": "segacd", "msx": "msx", "n64": "n64", "nes": "nes",
+    "ngp": "ngp ngpc", "ngp-beetle": "ngp ngpc",
+    "pce": "pcengine", "pcecd": "pcengine",
+    # Salvia's pcfx.cfg is its SuperGrafx profile, not a PC-FX emulator.
+    "pcfx": "pcengine", "prboom": "pc", "psx": "psx", "quake": "pc",
+    "snes": "snes", "spectrum": "zxspectrum",
+    "wonderswan": "wonderswan wonderswancolor",
+}
 
 def parse_config(text):
     result = {}
@@ -61,6 +81,7 @@ def build_catalog(configs, installed, active=()):
         selected = installed.get(cores[0].lower())
         ready = bool(selected and not cfg.get('directory') and cfg.get('no_uncompress') in ('yes', 'no'))
         profiles.append(dict(config=name, system=ALIASES.get(name, name),
+            scraper_platform=SCRAPER_PLATFORMS.get(name, 'ignore'),
             title=TITLES.get(name, cfg.get('name', name)), folder=folder, assets=assets,
             extensions=['.' + e.lower() for e in extensions], core=selected or cores[0],
             alternatives=cores[1:], available=ready, active=name in active,
@@ -68,9 +89,14 @@ def build_catalog(configs, installed, active=()):
     return profiles
 
 def choose_profiles(profiles, preferred=None):
-    # MAME/FBNeo and the two NGP cores are alternative backends, not extra
-    # carousel sections. All remain in catalog.json for explicit selection.
-    preferred = dict({'arcade': 'fbn', 'ngp': 'ngp'}, **(preferred or {}))
+    # Several backends can share one carousel section without losing any of
+    # their ROM directories or launch contexts. The preferred profile supplies
+    # the section's presentation and legacy command, not every game's core.
+    # Built-in preferences are presentation defaults; only a supplied choice
+    # is binding. Unavailable sources stay excluded, never rerouted to a core
+    # belonging to another profile just because that core is available.
+    explicit = preferred or {}
+    preferred = dict({'arcade': 'fbn', 'ngp': 'ngp'}, **explicit)
     groups = {}
     for p in profiles:
         groups.setdefault(p['system'], []).append(p)
@@ -81,21 +107,42 @@ def choose_profiles(profiles, preferred=None):
             continue
         wanted = preferred.get(system)
         match = next((p for p in available if p['config'] == wanted), None)
-        if wanted and any(p['config'] == wanted for p in group) and match is None:
+        if wanted and match is None and system in explicit:
             continue  # Don't silently change the requested backend.
-        selected.append(match or next((p for p in available if p['active']), available[0]))
+        primary = match or next((p for p in available if p['active']), available[0])
+        routes = [primary] + [p for p in available if p is not primary]
+        section = {k: v for k, v in primary.items() if k != 'routes'}
+        section['routes'] = [{k: v for k, v in p.items() if k != 'routes'} for p in routes]
+        selected.append(section)
     return selected
 
 def systems_xml(profiles, app='hdd:/Emulators/Salvia', roms='hdd:/ROMs'):
+    def extensions(profiles):
+        values = {ext for p in profiles for ext in p['extensions']}
+        return ' '.join(sorted(values | {ext.upper() for ext in values}))
+
+    def command(p):
+        return f'salvia {p["config"]} "{app}/{p["core"]}" %ROM%'
+
     root = ET.Element('systemList')
     for p in profiles:
+        routes = p.get('routes', [p])
         node = ET.SubElement(root, 'system')
-        values = dict(name=p['system'], fullname=p['title'], path=roms + '/' + p['folder'],
-            extension=' '.join(sorted(set(p['extensions'] + [e.upper() for e in p['extensions']]))),
-            command=f'salvia {p["config"]} "{app}/{p["core"]}" %ROM%',
-            platform=p['system'], theme=p['system'])
+        values = dict(name=p['system'], fullname=p['title'],
+            path=roms if len(routes) > 1 else roms + '/' + p['folder'],
+            extension=extensions(routes), command=command(p),
+            platform=p['scraper_platform'], theme=p['system'])
         for key, value in values.items():
             ET.SubElement(node, key).text = value
+        if len(routes) > 1:
+            # Requires the Xbox route-aware scanner/launcher. The common root
+            # is a collection namespace; only these source paths are scanned.
+            collection = ET.SubElement(node, 'xboxRoutes')
+            for source in routes:
+                route = ET.SubElement(collection, 'route')
+                for key, value in dict(path=roms + '/' + source['folder'],
+                        extension=extensions([source]), command=command(source)).items():
+                    ET.SubElement(route, key).text = value
     ET.indent(root)
     return ET.tostring(root, encoding='unicode') + '\n'
 
@@ -105,8 +152,9 @@ def proposed_salvia_config(text, profiles):
         raise ValueError('Duplicate active Salvia system')
     # Append only. Existing menu.tmp indices keep their current meaning.
     for p in profiles:
-        if p['config'] not in active:
-            active.append(p['config'])
+        for source in p.get('routes', [p]):
+            if source['config'] not in active:
+                active.append(source['config'])
     if len(active) > 128:
         raise ValueError('Too many Salvia systems')
     lines = text.splitlines()
@@ -130,9 +178,10 @@ def main():
     selected = choose_profiles(catalog)
     (args.output / 'es_systems.cfg').write_text(systems_xml(selected), encoding='utf-8')
     (args.output / 'salvia.cfg.proposed').write_text(proposed_salvia_config(text, selected), encoding='utf-8')
-    (args.output / 'catalog.json').write_text(json.dumps(dict(profiles=catalog,
+    (args.output / 'catalog.json').write_text(json.dumps(dict(profiles=catalog, sections=selected,
         frontend_systems=len(selected), hardware_verified_all_platforms=False,
-        includes_empty_systems=True, console_changed=False), indent=2) + '\n', encoding='utf-8')
+        includes_empty_systems=True, requires_xbox_routes=any(len(p['routes']) > 1 for p in selected),
+        console_changed=False), indent=2) + '\n', encoding='utf-8')
     print(json.dumps(dict(profiles=len(catalog), frontend_systems=len(selected), console_changed=False)))
 
 if __name__ == '__main__':

@@ -10,6 +10,22 @@ namespace fs = boost::filesystem;
 
 FileData* findOrCreateFile(SystemData* system, const boost::filesystem::path& path, FileType type)
 {
+	#ifdef __XSDK__
+    if(system->hasXboxRoutes()) {
+        // Routed systems flatten backend directories. Never identify metadata
+        // by basename: two cores can have distinct games with the same name.
+        if(type!=GAME || !system->getXboxRoute(path.generic_string())) return nullptr;
+        std::error_code ec;
+        if(!fs::is_regular_file(path,ec) || ec || fs::is_symlink(path,ec) || ec) return nullptr;
+        const auto key=xboxRoutePathKey(path.generic_string());
+        auto* root=system->getRootFolder();
+        for(auto* child:root->getChildren())
+            if(child->getType()==GAME && xboxRoutePathKey(child->getPath().generic_string())==key) return child;
+        auto* game=new FileData(GAME,path,system);
+        root->addChild(game);
+        return game;
+    }
+    #endif
 	// first, verify that path is within the system's root folder
 	FileData* root = system->getRootFolder();
 	
@@ -112,7 +128,19 @@ void parseGamelist(SystemData* system)
 		FileType type = typeList[i];
 		for(pugi::xml_node fileNode = root.child(tag); fileNode; fileNode = fileNode.next_sibling(tag))
 		{
-			fs::path path = resolvePath(fileNode.child("path").text().get(), relativeTo, false);
+			fs::path path;
+#ifdef __XSDK__
+            if(system->hasXboxRoutes()) {
+                std::string physical;
+                if(type!=GAME || !resolveXboxRouteMetadataPath(system->getStartPath(),fileNode.child("path").text().get(),physical) ||
+                   !system->getXboxRoute(physical)) {
+                    LOG(LogWarning)<<"Ignoring gamelist entry outside configured Xbox game sources";
+                    continue;
+                }
+                path=physical;
+            } else
+#endif
+            path=resolvePath(fileNode.child("path").text().get(), relativeTo, false);
 			
 			if(!boost::filesystem::exists(path))
 			{
@@ -140,6 +168,9 @@ void parseGamelist(SystemData* system)
 
 void addFileDataNode(pugi::xml_node& parent, const FileData* file, const char* tag, SystemData* system)
 {
+#ifdef __XSDK__
+    if(system->hasXboxRoutes() && (file->getType()!=GAME || !system->getXboxRoute(file->getPath().generic_string()))) return;
+#endif
 	//create game and add to parent node
 	pugi::xml_node newNode = parent.append_child(tag);
 
@@ -157,6 +188,11 @@ void addFileDataNode(pugi::xml_node& parent, const FileData* file, const char* t
 		//there's something useful in there so we'll keep the node, add the path
 
 		// try and make the path relative if we can so things still work if we change the rom folder location in the future
+#ifdef __XSDK__
+        if(system->hasXboxRoutes())
+            newNode.prepend_child("path").text().set(makeXboxRouteRelativePath(system->getStartPath(),file->getPath().generic_string()).c_str());
+        else
+#endif
 		newNode.prepend_child("path").text().set(makeRelativePath(file->getPath(), system->getStartPath(), false).generic_string().c_str());
 	}
 }
@@ -221,9 +257,20 @@ void updateGamelist(SystemData* system)
 					continue;
 				}
 
-				fs::path nodePath = resolvePath(pathNode.text().get(), system->getStartPath(), true);
 				fs::path gamePath((*fit)->getPath());
-				if(nodePath == gamePath || (fs::exists(nodePath) && fs::exists(gamePath) && fs::equivalent(nodePath, gamePath)))
+                bool sameFile=false;
+#ifdef __XSDK__
+                if(system->hasXboxRoutes()) {
+                    std::string physical;
+                    if(!resolveXboxRouteMetadataPath(system->getStartPath(),pathNode.text().get(),physical) || !system->getXboxRoute(physical)) continue;
+                    sameFile=xboxRoutePathKey(physical)==xboxRoutePathKey(gamePath.generic_string());
+                } else
+#endif
+                {
+                    fs::path nodePath=resolvePath(pathNode.text().get(), system->getStartPath(), true);
+                    sameFile=nodePath==gamePath || (fs::exists(nodePath) && fs::exists(gamePath) && fs::equivalent(nodePath,gamePath));
+                }
+				if(sameFile)
 				{
 					// found it
 					root.remove_child(fileNode);

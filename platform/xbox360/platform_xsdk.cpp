@@ -12,32 +12,42 @@ std::string getHomePath() { return "game:"; }
 // Console shutdown/restart are not shell commands. The Xbox menu hides these.
 int runShutdownCommand() { errno=ENOTSUP; return -1; }
 int runRestartCommand() { errno=ENOTSUP; return -1; }
-static int handoff(const XboxLaunchCommand& command) {
-    std::string error;
+static int handoff(const XboxLaunchCommand& command,std::string& error) {
     if(!validateXboxLaunchFiles(command,error) || !validateSalviaLaunch(command,error,true)) { LOG(LogError)<<error; return -1; }
     const void* data=command.rom.empty() ? nullptr : command.rom.c_str();
     size_t bytes=command.rom.empty() ? 0 : command.rom.size()+1;
     Log::flush();
     return xsdk_launch(command.executable.c_str(),data,bytes);
 }
-int runSystemCommand(const std::string& text) {
-    XboxLaunchCommand command; std::string error;
+int runXboxSystemCommand(const std::string& text,std::string& error) {
+    error.clear(); XboxLaunchCommand command;
     if(!parseXboxLaunchCommand(text,command,error)) { LOG(LogError)<<error; errno=EINVAL; return -1; }
     if(!isXboxLaunchPermitted(command,Settings::getInstance()->getBool("XboxLaunchEnabled"),
         Settings::getInstance()->getString("XboxTestRom"))) {
         LOG(LogWarning)<<"Xbox title launching is disabled during frontend bring-up";
+        error="THIS GAME HAS NOT BEEN ENABLED FOR TESTING YET.";
         errno=EPERM; return -1;
     }
     if(!prepareXboxSessionReturn(error)) { LOG(LogError)<<error; return -1; }
-    const int result=handoff(command);
+    const int result=handoff(command,error);
     // Successful launch replaces the process. Restore on any returned handoff.
-    if(!restoreXboxSessionReturn(error)) LOG(LogError)<<error;
+    std::string restoreError;
+    if(!restoreXboxSessionReturn(restoreError)) {
+        error="THE EMULATOR COULD NOT BE STARTED. "+restoreError;
+        LOG(LogError)<<error;
+        return -1;
+    }
+    if(error.empty()) error="THE EMULATOR COULD NOT BE STARTED. THE GAME LIST HAS BEEN RESTORED.";
     return result;
+}
+int runSystemCommand(const std::string& text) {
+    std::string error;
+    return runXboxSystemCommand(text,error);
 }
 int runXboxHandoffDiagnostic() {
     XboxLaunchCommand command; std::string error;
     const char* text="xex hdd:/Apps/ESProbe/ESHandoffReceiver.xex hdd:/Apps/ESProbe/handoff-fixture.txt";
     if(!parseXboxLaunchCommand(text,command,error)) return -1;
     LOG(LogInfo)<<"Launching the fixed handoff diagnostic receiver";
-    return handoff(command);
+    return handoff(command,error);
 }

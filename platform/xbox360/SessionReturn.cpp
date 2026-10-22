@@ -48,9 +48,13 @@ bool pointsHome(const Snapshot& s,const Option& target) {
     }
     return false;
 }
-bool apply(Backend& b,const char* slot,const Snapshot& expected) {
+bool apply(Backend& b,const char* slot,const Snapshot& expected,const Snapshot* unchanged=nullptr) {
     const auto text=ini(expected);
     if(text.empty() || !b.stage(slot,text)) return false;
+    // Staging touches disk and can take time. Do not overwrite another app's
+    // runtime changes made after restore validated the active session.
+    Snapshot current;
+    if(unchanged && (!b.read(current) || !equal(*unchanged,current))) return false;
     b.reload(slot);
     Snapshot observed;
     return b.read(observed) && equivalentAfterReload(expected,observed);
@@ -158,7 +162,7 @@ bool restore(Backend& b,std::string& error) {
     if(!b.read(current) || !valid(current) || !b.target(target)) return false;
     if(!pointsHome(current,target)) { error.clear(); return true; } // A new session or no arm.
     if(!b.loadOriginal(original) || !makeActive(original,target,active) || !equivalentAfterReload(active,current)) return false;
-    if(!apply(b,"restore",original)) return false;
+    if(!apply(b,"restore",original,&current)) return false;
     error.clear(); return true;
 }
 }

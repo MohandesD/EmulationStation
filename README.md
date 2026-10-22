@@ -17,7 +17,9 @@ return implementation passes PC failure/rollback tests and a no-game console
 arm/restore check of all 76 options. Actual emulator return and restoring a
 selected game still need the staged manual console check.
 The offline platform catalog covers Salvia configurations independently of the
-games currently installed. Font smoothing is also awaiting a TV comparison.
+games currently installed. Grouped Xbox sources retain each backend's directory
+and launch command inside one Arcade or Neo Geo Pocket section; this new routing
+is still awaiting console validation. Font smoothing is also awaiting a TV comparison.
 Game launching is disabled by default. This is not a finished replacement dashboard; do not set it as the
 console's startup application.
 

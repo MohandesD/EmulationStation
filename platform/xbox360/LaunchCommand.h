@@ -14,5 +14,8 @@ bool parseXboxLaunchCommand(const std::string& text,XboxLaunchCommand& out,std::
 bool validateXboxLaunchFiles(const XboxLaunchCommand& command,std::string& error);
 // A single explicit ROM can be tested while the general launch gate stays off.
 bool isXboxLaunchPermitted(const XboxLaunchCommand& command,bool enabled,const std::string& testRom);
+// A successful handoff replaces this process. Any returned call provides the
+// launch failure, or the more urgent session-restoration failure, for the UI.
+int runXboxSystemCommand(const std::string& text,std::string& error);
 // Fixed diagnostic receiver and text fixture only; does not enable game launches.
 int runXboxHandoffDiagnostic();
