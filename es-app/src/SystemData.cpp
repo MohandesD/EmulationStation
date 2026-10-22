@@ -16,6 +16,7 @@
 #include "guis/GuiMsgBox.h"
 #include "LaunchCommand.h"
 #include "SalviaLaunch.h"
+#include "SessionReturn.h"
 #include "FrontendState.h"
 #endif
 
@@ -143,6 +144,11 @@ void SystemData::launchGame(Window* window, FileData* game)
         return;
     }
     if(!prepareSalviaLaunch(parsed,launchError)) {
+        LOG(LogError)<<launchError;
+        window->pushGui(new GuiMsgBox(window,launchError));
+        return;
+    }
+    if(!prepareXboxSessionReturn(launchError)) {
         LOG(LogError)<<launchError;
         window->pushGui(new GuiMsgBox(window,launchError));
         return;

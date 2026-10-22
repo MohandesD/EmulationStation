@@ -1,6 +1,7 @@
 #include "platform.h"
 #include "LaunchCommand.h"
 #include "SalviaLaunch.h"
+#include "SessionReturn.h"
 #include "Settings.h"
 #include "Log.h"
 #include <xsdk/xam.h>
@@ -27,7 +28,11 @@ int runSystemCommand(const std::string& text) {
         LOG(LogWarning)<<"Xbox title launching is disabled during frontend bring-up";
         errno=EPERM; return -1;
     }
-    return handoff(command);
+    if(!prepareXboxSessionReturn(error)) { LOG(LogError)<<error; return -1; }
+    const int result=handoff(command);
+    // Successful launch replaces the process. Restore on any returned handoff.
+    if(!restoreXboxSessionReturn(error)) LOG(LogError)<<error;
+    return result;
 }
 int runXboxHandoffDiagnostic() {
     XboxLaunchCommand command; std::string error;

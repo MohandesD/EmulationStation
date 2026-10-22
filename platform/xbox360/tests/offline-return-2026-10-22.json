@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-22",
+  "scope": "Offline PC development only; Xbox reserved for family play",
+  "console_contacted": false,
+  "console_files_changed": false,
+  "xex_built": true,
+  "xex_bytes": 10166272,
+  "xex_sha256": "953ebc166103c2234ee9621d88e37e58ca1a7823aa049ccdd45677f7aa1b6bec",
+  "deployed": false,
+  "host_test_groups_passed": 7,
+  "native_tests_sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "return_implemented": true,
+  "return_default_enabled": false,
+  "return_hardware_verified": false,
+  "return_route": "Guide -> Y; Salvia Back+Start unchanged",
+  "font_change": "Xbox font atlas min/mag linear filtering; no size/layout changes",
+  "font_tv_verified": false,
+  "platform_profiles": 35,
+  "available_system_sections": 32,
+  "platform_catalog_independent_of_game_inventory": true,
+  "all_platforms_hardware_verified": false,
+  "missing_selected_binary": "Cannonball",
+  "saved_boot_changes": false,
+  "prior_tetris_playability_user_confirmed": true
+}

@@ -191,7 +191,7 @@ whose configuration uses `no_uncompress=yes`; NES uses `no_uncompress=no`.
 Salvia restores that selection even for incoming launch data, and its loader
 reads the selected configuration. This can send Nestopia an empty memory buffer
 instead of loading the NES file. This is a concrete integration defect and a
-strong crash hypothesis, not a verified gameplay fix. Source references:
+strong crash hypothesis; the subsequent user test confirmed that Tetris starts and plays. Source references:
 [menu restoration](https://github.com/danibiker/Salvia/blob/v1.0.10/src/salvia.h),
 [configuration selection](https://github.com/danibiker/Salvia/blob/v1.0.10/src/io/cfgloader.cpp),
 [Nestopia's memory input](https://github.com/danibiker/Salvia/blob/v1.0.10/libretro/nestopia/libretro/libretro.cpp).
@@ -217,9 +217,9 @@ returned to Aurora. Its executable was disabled afterward. The updated app and
 five commands passed full FTP readback; saved boot settings are unchanged. Only
 Tetris was then re-enabled for a user-operated check. XBDM subsequently reported
 Nestopia.xex, and a private 1280x720 framebuffer showed the Tetris playfield, pieces,
-score and line counter. This proves the game now renders past startup; it does
-not establish controller response, sustained stability or emulator return. The
-user report is still pending, and the game was left running.
+score and line counter. The user subsequently confirmed that Tetris starts and plays. Sustained
+stability and emulator return remain unverified. At the user's request, the
+console was then left in Salvia for family play.
 See [sanitized evidence](tests/hardware-tetris-2026-10-22.json).
 
 The native launcher checks that the chosen core is a regular XEX2 file and the
@@ -259,8 +259,10 @@ does not test a Salvia core, ROM launch or return from an emulator. Both options
 were restored to their normal disabled values after collecting the result.
 
 No return setting has been changed in RAM or on disk by these diagnostics.
-Actual emulator return integration remains unfinished. Do not enable game
-launching or change the default dashboard based solely on these results.
+A default-disabled session-return candidate has since been implemented and
+PC-tested without console access. See [session return](SESSION_RETURN.md) for
+its precise behavior, rollback and pending hardware acceptance. Do not enable
+general game launching or change startup configuration based on PC tests.
 
 1. Verify audio, filesystem/locale behavior and text input;
    dummy SDL text input is only an adapter, not a verified Xbox keyboard UI.
@@ -280,3 +282,13 @@ Do not set it as the default dashboard.
 
 No ROM, BIOS, commercial artwork, console keys or recovery data belongs in this
 branch. Preserve upstream LICENSE.md; new port sources use the same MIT terms.
+
+## Offline work on 2026-10-22
+
+The catalog now derives systems from emulator definitions independently of games;
+see [platform coverage](PLATFORMS.md). The local package provides 35 profiles and
+32 available sections, including empty systems. Xbox font atlases now use linear
+minification/magnification to retain grayscale antialiasing when text is scaled.
+Font sizes, layout and other platforms are unchanged. A PC sampling comparison
+illustrates the effect; TV legibility and system-logo artwork need separate
+visual acceptance. Seven host test groups pass. The new build is offline only.

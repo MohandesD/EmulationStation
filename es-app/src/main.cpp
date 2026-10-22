@@ -19,6 +19,7 @@
 #include <xsdk/xam.h>
 #include "FrontendState.h"
 #include "LaunchCommand.h"
+#include "SessionReturn.h"
 #endif
 #include "Settings.h"
 #include "ScraperCmdLine.h"
@@ -318,6 +319,16 @@ int main(int argc, char* argv[])
 					InputManager::getInstance()->parseEvent(event, &window);
 					break;
 				case SDL_QUIT:
+#ifdef __XSDK__
+                    {
+                        std::string error;
+                        if(!restoreXboxSessionReturn(error)) {
+                            LOG(LogError)<<error;
+                            window.pushGui(new GuiMsgBox(&window,error));
+                            break;
+                        }
+                    }
+#endif
 					running = false;
 					break;
 			}

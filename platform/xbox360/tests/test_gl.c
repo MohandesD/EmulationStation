@@ -75,6 +75,9 @@ int main(void) {
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR); ok();
     assert(captured.texture->wrapS==GL_CLAMP_TO_EDGE && captured.texture->minFilter==GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); ok();
+    glDrawArrays(GL_TRIANGLES,0,3); ok();
+    assert(captured.texture->magFilter==GL_LINEAR && captured.texture->rgba[7]==127);
 
     // RGBA bytes must not be swapped by host/console endianness.
     const unsigned char rgba[]={10,20,30,40,50,60,70,80};
