@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace XboxReturn {
 struct Option {
@@ -22,12 +23,18 @@ struct Backend {
 };
 bool valid(const Snapshot&);
 bool equal(const Snapshot&,const Snapshot&);
+// Runtime reload reclassifies an already-loaded plugin (0xFB) as found (0xFE).
+// Configuration/path/device equality is still required; other flag changes fail.
+bool equivalentAfterReload(const Snapshot& expected,const Snapshot& observed);
 std::string encode(const Snapshot&);
 bool decode(const std::string&,Snapshot&);
 std::string ini(const Snapshot&);
 bool arm(Backend&,std::string& error);
 bool restore(Backend&,std::string& error);
 }
+
+// Resolve the already-loaded runtime. Does not change options or files.
+std::unique_ptr<XboxReturn::Backend> openXboxReturnRuntime();
 
 // Disabled unless explicitly enabled for a later hardware test.
 bool prepareXboxSessionReturn(std::string& error);

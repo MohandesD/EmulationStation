@@ -1,9 +1,10 @@
 # Temporary emulator return: offline candidate
 
-Status on 2026-10-22: implemented, cross-built and PC-tested; **not installed or
-executed on the Xbox**. The console is reserved for family play. Tetris already
-starts and plays from the previous build, according to the user. That success
-does not establish return behavior or support for other cores.
+Status on 2026-10-22: cross-built and PC-tested; a no-game console arm/restore
+check now passes on Trinity/17559 with temporary XeUnshackle. All 76 exposed
+options were restored and the saved boot file stayed unchanged. The user has
+authorised console work again. The updated app is installed for a single manual
+Tetris launch/return check; gameplay return is still pending.
 
 ## Behavior
 
@@ -22,7 +23,13 @@ is written. Runtime reload does not start boot plugins or apply boot patches.
 
 Before reload the snapshot is checked again. After reload every exposed option
 is compared with the intended result, including path device/root/flags and the
-existing liveblock/livestrong/noupdater values. Failed verification attempts a
+existing liveblock/livestrong/noupdater values. One precisely documented metadata
+transition is accepted after reload: a plugin path's PLUGIN_LOADED (0xFB) becomes
+ITEM_FOUND (0xFE). The path, device, root and all other values must match; missing
+plugins, altered paths and reverse/unrelated flag transitions fail. Snapshot
+persistence and the pre-reload race check still require strict equality. The
+runtime resets this marker without unloading or reloading the resident plugin.
+Failed verification attempts a
 verified restoration and blocks the launch. Unknown types, unsafe-to-serialize
 paths, failed writes and missing restore state are rejected. API absence does
 not fall back to raw pointer writes or a persistent configuration change.
@@ -48,13 +55,24 @@ entry without overwriting the original, missing/corrupt restore state, failed
 staging, concurrent changes, reload mismatch, successful rollback and failed
 rollback. These are injected runtime tests, not a hardware result.
 
-Once console access is authorized again, first inspect the actual runtime
-snapshot and compare the staged files without launching a game. Then perform a
-bounded no-game arm/restore check, verifying unchanged saved boot files. Only
-after that passes, repeat the already-working single Tetris test, use Guide -> Y,
-confirm the selected game is restored, then Return to Aurora and confirm the
-original runtime destination. Keep broad game launching disabled during this
-check. Repeat launch/return separately for other cores before enabling them.
+The read-only native probe first captured 76 options and verified the target.
+The first no-game reload exposed the plugin-status transition above: restoration
+returned every configuration value and Aurora's default but the old comparator
+rejected the marker. XBDM stayed responsive. Tagged upstream source explains this
+behavior; regression tests now model a loaded plugin and an unset BUT_Y.
+
+The corrected probe then armed ES and restored Aurora successfully, with a
+byte-identical before/after option snapshot in that run. Independent FTP reads
+confirmed only Default/BUT_Y differ between staged INIs and that the root boot
+file is unchanged. The probe was returned to inspect mode and renamed .checked.
+See [console evidence](tests/hardware-session-return-2026-10-22.json).
+
+The updated app has been read-back verified with XboxSessionReturn=true,
+XboxLaunchEnabled=false and the single Tetris exception. Only ES was remotely
+opened. The user was asked to play briefly, use Guide -> Y, release Y and confirm
+ES restores the selected game. Then test Return to Aurora and original runtime
+restoration. Repeat launch/return separately for other cores before enabling them.
+Font appearance still needs the user's TV check.
 
 ## Source basis
 
@@ -66,5 +84,7 @@ Reviewed DashLaunch revision `f57eca9ba6dbba15dbdb226059fa94ad0dfaee98`:
 - [INI parser](https://github.com/XeFreedom/DashLaunch/blob/f57eca9ba6dbba15dbdb226059fa94ad0dfaee98/dll/iniparse.c): global key lookup, boolean/hex values and restricted path character set.
 
 The loaded temporary environment may differ from this upstream revision; that is
-why actual reload acceptance remains pending despite a previously successful
-read-only API probe.
+why the successful no-game reload check does not establish gameplay exit or
+compatibility with other softmods.
+
+Plugin marker constants: [`_common.h`](https://github.com/XeFreedom/DashLaunch/blob/f57eca9ba6dbba15dbdb226059fa94ad0dfaee98/_common.h).

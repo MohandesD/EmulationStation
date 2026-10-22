@@ -53,7 +53,7 @@ bool apply(Backend& b,const char* slot,const Snapshot& expected) {
     if(text.empty() || !b.stage(slot,text)) return false;
     b.reload(slot);
     Snapshot observed;
-    return b.read(observed) && equal(observed,expected);
+    return b.read(observed) && equivalentAfterReload(expected,observed);
 }
 }
 bool valid(const Snapshot& s) {
@@ -86,6 +86,19 @@ bool valid(const Snapshot& s) {
 bool equal(const Snapshot& a,const Snapshot& b) {
     if(!valid(a) || !valid(b) || a.size()!=b.size()) return false;
     for(const auto& o:a) { const auto* p=find(b,o.name); if(!p || !same(o,*p)) return false; }
+    return true;
+}
+bool equivalentAfterReload(const Snapshot& expected,const Snapshot& observed) {
+    if(!valid(expected) || !valid(observed) || expected.size()!=observed.size()) return false;
+    for(const auto& o:expected) {
+        const auto* actual=find(observed,o.name); if(!actual) return false;
+        Option adjusted=o;
+        // DashLaunch initOpts clears KeyData; setupPkeyPath records ITEM_FOUND.
+        // runtimeRunTasks deliberately does not call loadPlugins. This changes
+        // only reported bookkeeping, not the resident plugin or its settings.
+        if(o.type==8 && o.flags==0xFB && actual->flags==0xFE) adjusted.flags=0xFE;
+        if(!same(adjusted,*actual)) return false;
+    }
     return true;
 }
 std::string encode(const Snapshot& s) {
@@ -126,7 +139,7 @@ bool arm(Backend& b,std::string& error) {
     Snapshot before,active,original,observed; Option target;
     if(!b.read(before) || !valid(before) || !b.target(target)) return false;
     if(pointsHome(before,target)) {
-        if(!b.loadOriginal(original) || !makeActive(original,target,active) || !equal(before,active)) return false;
+        if(!b.loadOriginal(original) || !makeActive(original,target,active) || !equivalentAfterReload(active,before)) return false;
         error.clear(); return true; // Re-entry after a game; keep the original restore point.
     }
     if(!makeActive(before,target,active) || !b.saveOriginal(before) ||
@@ -134,7 +147,7 @@ bool arm(Backend& b,std::string& error) {
        !b.stage("restore",ini(before)) || !b.stage("active",ini(active)) ||
        !b.read(observed) || !equal(before,observed)) return false;
     b.reload("active");
-    if(b.read(observed) && equal(observed,active)) { error.clear(); return true; }
+    if(b.read(observed) && equivalentAfterReload(active,observed)) { error.clear(); return true; }
     // Reload has no success result. Verify every option, then restore on any mismatch.
     if(!apply(b,"restore",before)) error="SESSION RETURN COULD NOT BE RESTORED. STOP TESTING AND RESTART THE TEMPORARY SESSION.";
     return false;
@@ -144,7 +157,7 @@ bool restore(Backend& b,std::string& error) {
     Snapshot current,original,active; Option target;
     if(!b.read(current) || !valid(current) || !b.target(target)) return false;
     if(!pointsHome(current,target)) { error.clear(); return true; } // A new session or no arm.
-    if(!b.loadOriginal(original) || !makeActive(original,target,active) || !equal(current,active)) return false;
+    if(!b.loadOriginal(original) || !makeActive(original,target,active) || !equivalentAfterReload(active,current)) return false;
     if(!apply(b,"restore",original)) return false;
     error.clear(); return true;
 }

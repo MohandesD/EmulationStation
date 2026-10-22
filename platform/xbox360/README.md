@@ -292,3 +292,16 @@ minification/magnification to retain grayscale antialiasing when text is scaled.
 Font sizes, layout and other platforms are unchanged. A PC sampling comparison
 illustrates the effect; TV legibility and system-logo artwork need separate
 visual acceptance. Seven host test groups pass. The new build is offline only.
+
+## Resumed console checks on 2026-10-22
+
+The user subsequently allowed console work. A read-only inspection captured all
+76 runtime options. The no-game arm/restore probe exposed a plugin-status marker
+transition; the comparator now accepts only the documented loaded-to-found
+transition while preserving all configuration fields. Regression tests cover it.
+The corrected probe passed, restored all options and left saved boot files
+unchanged. It was disabled afterward. The updated app and Tetris-only settings
+passed full FTP readback; ES is open for a manual game/Guide-return check. No game
+was remotely launched. See [session return](SESSION_RETURN.md) and
+[console evidence](tests/hardware-session-return-2026-10-22.json). The font change
+is installed but TV appearance still needs confirmation.

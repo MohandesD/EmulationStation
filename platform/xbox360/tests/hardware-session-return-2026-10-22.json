@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-22",
+  "console": "Trinity / 17559 / temporary XeUnshackle",
+  "read_only_snapshot_options": 76,
+  "initial_probe": {
+    "arm_check_failed": true,
+    "sole_difference": "plugin1 metadata PLUGIN_LOADED 0xFB -> ITEM_FOUND 0xFE",
+    "aurora_default_restored": true,
+    "all_configuration_values_restored": true,
+    "xbdm_still_responsive": true,
+    "game_launched": false
+  },
+  "correction": {
+    "recognizes_only_documented_plugin_flag_transition": true,
+    "strict_path_device_root_and_numeric_comparison": true,
+    "host_test_groups_passed": 7
+  },
+  "corrected_probe": {
+    "mode": "verify",
+    "runtime_readable": true,
+    "options": 76,
+    "target_valid": true,
+    "snapshot_saved": true,
+    "armed": true,
+    "restored": true,
+    "all_options_unchanged": true,
+    "rom_launched": false
+  },
+  "staged_ini_changed_keys": [
+    "Default",
+    "BUT_Y"
+  ],
+  "saved_boot_unchanged": true,
+  "probe_disabled_after_check": true,
+  "probe_sha256": "0e4e754833314ab28a2441992c6dcf70254c18cbb38059db6881ccade4694813",
+  "application": {
+    "app_sha256": "a860c391eca0b1e24cbe4e7e5f5d1d06785050bf104c2f644488c87176503fbb",
+    "app_bytes": 10166272,
+    "session_return": true,
+    "general_game_launch_enabled": false,
+    "single_game": "Tetris (NES)",
+    "game_launched": false
+  },
+  "app_and_settings_full_ftp_readback": true,
+  "only_frontend_remotely_opened": true,
+  "manual_game_return_result": "awaiting user report",
+  "game_selection_restoration_verified": false,
+  "font_tv_verified": false,
+  "raw_runtime_snapshots_kept_private": true
+}

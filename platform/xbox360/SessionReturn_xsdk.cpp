@@ -1,6 +1,5 @@
 #include "SessionReturn.h"
 #include "LaunchCommand.h"
-#include "Settings.h"
 #include <xsdk/kernel.h>
 #include <cstdio>
 #include <cstring>
@@ -103,21 +102,8 @@ struct Runtime final: XboxReturn::Backend {
     }
 };
 }
-bool prepareXboxSessionReturn(std::string& error) {
-    error.clear();
-    if(!Settings::getInstance()->getBool("XboxSessionReturn")) return true;
-    Runtime runtime;
-    if(!runtime.init()) { error="SESSION RETURN IS UNAVAILABLE. THE GAME WAS NOT STARTED."; return false; }
-    return XboxReturn::arm(runtime,error);
-}
-bool restoreXboxSessionReturn(std::string& error) {
-    error.clear(); struct stat st{};
-    if(stat((std::string(Base)+"/original.state").c_str(),&st)!=0) {
-        // A feature-disabled build never reads the runtime API. If enabled,
-        // missing state is still checked, so an active target cannot be abandoned.
-        if(!Settings::getInstance()->getBool("XboxSessionReturn")) return true;
-    }
-    Runtime runtime;
-    if(!runtime.init()) { error="SESSION RETURN SETTINGS COULD NOT BE CHECKED."; return false; }
-    return XboxReturn::restore(runtime,error);
+std::unique_ptr<XboxReturn::Backend> openXboxReturnRuntime() {
+    auto runtime=std::make_unique<Runtime>();
+    if(!runtime->init()) return {};
+    return runtime;
 }

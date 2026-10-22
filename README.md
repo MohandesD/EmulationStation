@@ -13,8 +13,9 @@ of the selected system have passed a user-operated console test. The first
 manual Tetris handoff reached the emulator and then crashed. A Salvia system
 selection mismatch was found and corrected. The user then confirmed that Tetris
 starts and plays, corroborating a capture of its game screen. A session-only
-return implementation now builds and passes PC failure/rollback tests, but actual
-emulator return and restoring a selected game still need console verification.
+return implementation passes PC failure/rollback tests and a no-game console
+arm/restore check of all 76 options. Actual emulator return and restoring a
+selected game still need the staged manual console check.
 The offline platform catalog covers Salvia configurations independently of the
 games currently installed. Font smoothing is also awaiting a TV comparison.
 Game launching is disabled by default. This is not a finished replacement dashboard; do not set it as the
