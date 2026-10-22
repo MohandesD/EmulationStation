@@ -19,9 +19,11 @@ Aurora after a bounded 600-frame test. Its own fenced capture was visually check
 An additional 1,200-frame diagnostic visited all five real game lists. Native
 captures show their system headers, game names and selected cover art; all counts
 match the installed library. This automated rendering check does not prove input.
-This is **not a finished game frontend yet**: controller navigation, audio,
-emulator launch/return and publication remain unfinished. No controller was
-connected during these display tests, so input is not verified.
+Later user-operated tests passed controller navigation, menu return to Aurora
+and restoration of the selected system. The source is published on the
+[Xbox branch of the maintained fork](https://github.com/MohandesD/EmulationStation/tree/xbox360).
+This is **not a finished game frontend yet**: emulator launch/return, restoring
+a selected game after it exits, and audio behavior remain unverified.
 
 `es_gl.c` implements the 26 fixed-function GL calls used in the upstream source.
 It preserves the existing renderer/components and implements column-major model
@@ -141,7 +143,8 @@ before clearing; after 600 main-loop frames the app exits cleanly to Aurora.
 The default is zero, which leaves the frontend open normally. Game launching
 remains gated by `XboxLaunchEnabled=false`. Hotplugged Xbox pads receive defaults;
 an unplugged controller no longer strands startup in the desktop setup wizard.
-Physical navigation and the menu's Return to Aurora action still need testing.
+Physical navigation and the menu's Return to Aurora action passed the later
+user-operated test documented below.
 
 `XboxDiagnosticBrowse=true`, together with a positive diagnostic frame limit,
 visits successive system game lists every 180 frames starting at frame 180 and
@@ -155,6 +158,20 @@ if desired. Existing emulators, ROMs, assets and startup settings are independen
 Do not set this development build as the default dashboard.
 
 ## Next integration work
+
+### Manual controller check (2026-10-22)
+
+The user confirmed system Left/Right, entering a game list, Up/Down selection,
+Back, and Start -> Quit -> Return to Aurora. A second launch restored the user's
+Game Boy system selection, also confirmed on the TV. The application's saved
+selection and clean-exit/restoration logs corroborate those reports. This tests
+restoration of the system screen; restoring a selected game after emulator exit
+remains a separate acceptance check.
+
+For a staged manual game test, XboxTestRom may name one absolute ROM path while
+XboxLaunchEnabled remains false. Both the UI and native handoff enforce this
+restriction; an empty setting permits no games, and it never permits an app-only
+launch. The default is empty. This is a test control, not a gameplay success claim.
 
 ### Launch preflight and diagnostic evidence
 
@@ -198,15 +215,15 @@ No return setting has been changed in RAM or on disk by these diagnostics.
 Actual emulator return integration remains unfinished. Do not enable game
 launching or change the default dashboard based solely on these results.
 
-1. Verify controller input, audio, filesystem/locale behavior and text input;
+1. Verify audio, filesystem/locale behavior and text input;
    dummy SDL text input is only an adapter, not a verified Xbox keyboard UI.
-2. Test game lists, covers, transitions, input and memory lifetime
-   on the user's Trinity/17559 temporary XeUnshackle session.
+2. Extend the passed game-list, cover and input checks to sustained browsing
+   and memory lifetime on the Trinity/17559 temporary XeUnshackle session.
 3. Add native XEX and Salvia handoff with documented launch data. The earlier
    Games direct-ROM handoff crashed: do not recycle it as a proven implementation.
    Prove emulator start and return without changing saved boot configuration.
-4. Publish a maintained Xbox fork or an upstream PR, with a reproducible build,
-   notices, installation/rollback instructions and explicit hardware results.
+4. Maintain the published Xbox fork with reproducible builds, notices,
+   installation/rollback instructions and explicit hardware results.
 
 The component probe shows RGB blocks, a translucent overlay, a clipped rectangle
 and a four-colour texture. B requests an early return to HDD Aurora through

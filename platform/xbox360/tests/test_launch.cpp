@@ -10,10 +10,16 @@ int main() {
     assert(parseXboxLaunchCommand("xex \"Hdd1:\\Emulators\\Salvia\\default.xex\" \"hdd:/ROMs/nes/Game's name.nes\"",result,error));
     assert(result.executable=="hdd:/Emulators/Salvia/default.xex");
     assert(result.rom=="Hdd:\\ROMs\\nes\\Game's name.nes");
+    assert(!isXboxLaunchPermitted(result,false,""));
+    assert(isXboxLaunchPermitted(result,true,""));
+    assert(isXboxLaunchPermitted(result,false,"hdd:/ROMs/nes/Game's name.nes"));
+    assert(!isXboxLaunchPermitted(result,false,"hdd:/ROMs/nes/another.nes"));
+    assert(!isXboxLaunchPermitted(result,false,"hdd:/ROMs/nes/../nes/Game's name.nes"));
     assert(parseXboxLaunchCommand("xex usb:/Apps/Test.XEX Usb0:/ROMs/test.zip",result,error));
     assert(result.rom=="Usb0:\\ROMs\\test.zip");
     assert(parseXboxLaunchCommand("  xex   game:/app.xex  ",result,error));
     assert(result.rom.empty());
+    assert(!isXboxLaunchPermitted(result,false,"hdd:/ROMs/test.nes"));
     const char* invalid[]={"", "xex", "shell hdd:/a.xex", "xex hdd:/a.elf", "xex hdd:/a.xex extra extra",
         "xex \"hdd:/a.xex", "xex hdd:/a.xex \"\"", "xex hdd:/a.xex game:/a.nes", "xex hdd:/a.xex /a.nes",
         "xex \"hdd:/a.xex\"tail", "xex hdd:/../a.xex", "xex hdd:/./a.xex", "xex hdd://a.xex",

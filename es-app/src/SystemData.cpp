@@ -111,12 +111,6 @@ std::string escapePath(const boost::filesystem::path& path)
 
 void SystemData::launchGame(Window* window, FileData* game)
 {
-	#ifdef __XSDK__
-    if(!Settings::getInstance()->getBool("XboxLaunchEnabled")) {
-        window->pushGui(new GuiMsgBox(window,"GAME LAUNCHING IS NOT ENABLED IN THIS TEST BUILD."));
-        return;
-    }
-#endif
     LOG(LogInfo) << "Attempting to launch game...";
 
 	std::string command = mLaunchCommand;
@@ -130,7 +124,16 @@ void SystemData::launchGame(Window* window, FileData* game)
 	command = strreplace(command, "%ROM_RAW%", rom_raw);
 #ifdef __XSDK__
     XboxLaunchCommand parsed; std::string launchError;
-    if(!parseXboxLaunchCommand(command,parsed,launchError) || !validateXboxLaunchFiles(parsed,launchError)) {
+    if(!parseXboxLaunchCommand(command,parsed,launchError)) {
+        window->pushGui(new GuiMsgBox(window,launchError));
+        return;
+    }
+    if(!isXboxLaunchPermitted(parsed,Settings::getInstance()->getBool("XboxLaunchEnabled"),
+        Settings::getInstance()->getString("XboxTestRom"))) {
+        window->pushGui(new GuiMsgBox(window,"THIS GAME HAS NOT BEEN ENABLED FOR TESTING YET."));
+        return;
+    }
+    if(!validateXboxLaunchFiles(parsed,launchError)) {
         window->pushGui(new GuiMsgBox(window,launchError));
         return;
     }

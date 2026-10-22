@@ -10,5 +10,7 @@ struct XboxLaunchCommand {
 bool parseXboxLaunchCommand(const std::string& text,XboxLaunchCommand& out,std::string& error);
 // Check a parsed command before dismantling the frontend. No title is launched.
 bool validateXboxLaunchFiles(const XboxLaunchCommand& command,std::string& error);
+// A single explicit ROM can be tested while the general launch gate stays off.
+bool isXboxLaunchPermitted(const XboxLaunchCommand& command,bool enabled,const std::string& testRom);
 // Fixed diagnostic receiver and text fixture only; does not enable game launches.
 int runXboxHandoffDiagnostic();

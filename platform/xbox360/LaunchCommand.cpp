@@ -65,3 +65,9 @@ bool parseXboxLaunchCommand(const std::string& text,XboxLaunchCommand& out,std::
     if(!rom.empty() && !normalize(rom,true)) { error="Invalid ROM path"; return false; }
     out.executable=executable; out.rom=rom; return true;
 }
+bool isXboxLaunchPermitted(const XboxLaunchCommand& command,bool enabled,const std::string& testRom) {
+    if(enabled) return true;
+    if(command.rom.empty() || testRom.empty()) return false;
+    std::string normalized=testRom;
+    return normalize(normalized,true) && normalized==command.rom;
+}

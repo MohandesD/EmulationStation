@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-22",
+  "tested_xex_sha256": "1aa37c0e97f2026eb00505b8db2def074cd0b014954898e9b7891e34d78122e0",
+  "user_confirmed_controller_works_in_aurora": true,
+  "user_confirmed_system_navigation": true,
+  "user_confirmed_game_list_navigation": true,
+  "user_confirmed_back_navigation": true,
+  "user_confirmed_menu_return_to_aurora": true,
+  "aurora_observed_after_exit": true,
+  "clean_exit_logged": true,
+  "application_log_errors": 0,
+  "selection_file_written": true,
+  "saved_view": "systems",
+  "saved_system": "gb",
+  "user_confirmed_system_selection_restored": true,
+  "system_selection_restoration_logged": true,
+  "game_selection_after_emulator_exit_verified": false,
+  "rom_launched": false,
+  "emulator_launch_or_return_verified": false
+}

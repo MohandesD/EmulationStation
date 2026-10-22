@@ -56,6 +56,7 @@ void Settings::setDefaults()
 #ifdef __XSDK__
     mBoolMap["EnableSounds"] = false;
     mBoolMap["XboxLaunchEnabled"] = false; // Temporary bring-up gate; must be validated before enabling.
+    mStringMap["XboxTestRom"] = ""; // Optional single manually selected game for staged hardware testing.
     mIntMap["XboxDiagnosticFrames"] = 0; // Opt-in bounded frontend test; never launches a game.
     mBoolMap["XboxDiagnosticBrowse"] = false; // Opt-in list rendering, without controller injection.
     mBoolMap["XboxDiagnosticHandoff"] = false; // Fixed test receiver, only after a bounded diagnostic run.

@@ -21,7 +21,8 @@ static int handoff(const XboxLaunchCommand& command) {
 int runSystemCommand(const std::string& text) {
     XboxLaunchCommand command; std::string error;
     if(!parseXboxLaunchCommand(text,command,error)) { LOG(LogError)<<error; errno=EINVAL; return -1; }
-    if(!Settings::getInstance()->getBool("XboxLaunchEnabled")) {
+    if(!isXboxLaunchPermitted(command,Settings::getInstance()->getBool("XboxLaunchEnabled"),
+        Settings::getInstance()->getString("XboxTestRom"))) {
         LOG(LogWarning)<<"Xbox title launching is disabled during frontend bring-up";
         errno=EPERM; return -1;
     }
