@@ -1,6 +1,25 @@
 EmulationStation
 ================
 
+## Xbox 360 development branch
+
+This fork ports the original EmulationStation application to Xbox 360 using the
+open-source xsdk toolchain, SDL3 input/audio adapters and a native Xenos renderer.
+The full app builds, and its carousel, five system lists, cover art and a fixed
+diagnostic app handoff have been verified on a Trinity console.
+
+**Development status:** physical controller navigation, emulator gameplay/return
+and selection restoration still need verification. Game launching is disabled
+by default. This is not a finished replacement dashboard; do not set it as the
+console's startup application.
+
+See [Xbox build, tests, installation and limitations](platform/xbox360/README.md)
+and [pinned dependencies](platform/xbox360/dependencies.json). No ROMs, BIOS,
+commercial artwork, console secrets or proprietary Microsoft SDK are included.
+The original project's documentation follows below.
+
+## Original project
+
 A cross-platform graphical front-end for emulators with controller navigation.
 
 Project website: http://emulationstation.org
