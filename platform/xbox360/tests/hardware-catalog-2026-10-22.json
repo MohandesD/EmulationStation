@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-22",
+  "console": "Trinity / 17559 / temporary XeUnshackle",
+  "scope": "Browser-only catalog diagnostic; no emulator or ROM launch",
+  "installed_source_commit": "ea0482ef7452f9894cac032140c105abe96ec317",
+  "installed_app_sha256": "3e3d7dd490bb09408ee6a8a5af5f03f886006eb4c81164ebd5c40a751761209a",
+  "deployment": {
+    "files_readback_verified": 104,
+    "existing_files_replaced": 3,
+    "files_added": 101,
+    "protected_files_unchanged": 8,
+    "roms_or_bios_added": false,
+    "persistent_startup_modified": false
+  },
+  "catalog": {
+    "configured_sections": 32,
+    "emulator_sources": 34,
+    "populated_sections": 5,
+    "empty_sections_hidden_by_current_frontend": true,
+    "entries": 44,
+    "entries_by_section": {
+      "arcade": 17,
+      "gb": 5,
+      "n64": 1,
+      "nes": 10,
+      "snes": 11
+    },
+    "original_entries_with_metadata_preserved": 43,
+    "additional_existing_arcade_backend_entry": 1,
+    "metadata_semantics_preserved_after_native_xml_rewrite": true
+  },
+  "diagnostic": {
+    "frames": 1200,
+    "all_game_launching_blocked": true,
+    "populated_lists_visited": 5,
+    "native_captures_saved": 6,
+    "application_log_clean_shutdown": true,
+    "sdk_log_loaded_expected_hdd_application": true,
+    "sdk_log_exit_status": 0,
+    "sdk_log_destination": "Aurora",
+    "aurora_independently_observed": true,
+    "application_settings_restored_exactly": true,
+    "selection_unchanged": true,
+    "saved_boot_unchanged": true
+  },
+  "visual_review": {
+    "inconsistent_preview_display_artifact_resolved": true,
+    "unchanged_png_pixel_inspection_confirmed_text_present": true,
+    "renderer_defect_established_by_preview_artifact": false,
+    "font_smoothing_tv_acceptance": "pending"
+  },
+  "candidate_gameplay_verified": false,
+  "candidate_post_game_runtime_restoration_verified": false,
+  "earlier_post_game_runtime_mismatch": "unresolved; separate exit-only restoration passed",
+  "earlier_return_evidence": "hardware-tetris-return-2026-10-22.json",
+  "raw_logs_captures_and_configuration_kept_private": true
+}

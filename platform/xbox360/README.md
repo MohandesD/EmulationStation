@@ -38,6 +38,13 @@ acceptance remain pending.
 See [the installed-build evidence](tests/hardware-tetris-return-2026-10-22.json). This is
 **not a finished game frontend yet**.
 
+The newer catalog candidate has now passed a 1,200-frame browser-only console
+check: 32 configured sections route 34 emulator sources, and the five populated
+lists contain 44 entries. Existing metadata was preserved. It exited cleanly to
+Aurora and its temporary diagnostic settings were restored exactly. This newer
+build has no gameplay result yet; TV font-smoothing acceptance is still pending.
+See [catalog evidence](tests/hardware-catalog-2026-10-22.json).
+
 `es_gl.c` implements the 26 fixed-function GL calls used in the upstream source.
 It preserves the existing renderer/components and implements column-major model
 and projection transforms, separate/interleaved vertex arrays, byte-order-safe
@@ -355,8 +362,8 @@ Restoration rechecks runtime state after staging its private file; failed
 handoffs show recovery errors in the UI. Nine host test groups and the full
 Xbox cross-build pass. The package helper also passes four offline tests with
 fake FTP, including duplicate filenames and source-specific artwork. This
-candidate is not deployed. The installed Tetris build remains unchanged; its game
-exit and selected-game restoration are now user-confirmed. Return to Aurora opens
+candidate was not deployed at that offline checkpoint. The earlier Tetris build's
+game exit and selected-game restoration are user-confirmed. Return to Aurora opens
 Aurora, but its post-game runtime restoration did not pass inspection. A later
 exit-only check passed exact restoration of all 76 options and logged a clean
 exit from the expected HDD app. The earlier post-game mismatch and TV font
@@ -367,5 +374,31 @@ All ten enabled host test groups pass, including independent scan-only and
 metadata-only phases. Salvia preflight now rejects a missing predecessor instead
 of selecting the wrong positional system, and diagnostic exits use the same
 session restoration as manual Quit. The full native build passes. These changes
-remain separate from the installed manual-test build; see
+were tested separately from the earlier manual-test build; see
 [offline evidence](tests/offline-context-2026-10-22.json).
+
+## Grouped catalog browser-only console check (2026-10-22)
+
+Candidate source `ea0482ef7452f9894cac032140c105abe96ec317`, XEX SHA-256
+`3e3d7dd490bb09408ee6a8a5af5f03f886006eb4c81164ebd5c40a751761209a`,
+was deployed with 104 read-back-verified files: 3 replacements and 101 additions.
+Eight protected files stayed unchanged. The 32 configured sections cover 34
+sources; empty sections are currently omitted from the carousel. The five
+populated lists contain Arcade 17, Game Boy 5, Nintendo 64 1, NES 10 and SNES 11
+entries. All 43 original entries retained their metadata; the extra Arcade entry
+was found in an existing second backend's ROM folder.
+
+With every game launch blocked, the 1,200-frame diagnostic loaded and visited
+all five populated lists, saved six native captures and exited cleanly to Aurora.
+The original application settings were then restored byte-for-byte; selection
+and saved boot settings were unchanged. Native XML rewrites changed formatting,
+but the original metadata fields were preserved. This verifies catalog loading,
+scanning and browser execution, not the newly installed build's emulator handoff
+or restoration after gameplay.
+
+Apparent missing text in image previews was traced to the preview display:
+the unchanged PNG pixels contain the text, and reopening previews shows it.
+No renderer change is justified by that artifact. Font smoothing still needs the
+user's TV check. The earlier post-game runtime mismatch remains unresolved, and
+the separate successful exit-only restoration remains a distinct result. See
+[sanitized catalog evidence](tests/hardware-catalog-2026-10-22.json).

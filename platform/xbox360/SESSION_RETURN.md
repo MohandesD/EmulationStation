@@ -122,8 +122,10 @@ This establishes successful restoration through an ordinary menu exit in that
 run; it does not explain or erase the earlier post-game failure. Verify that
 post-game path before expanding gameplay. Repeat launch/return separately for
 other cores before enabling them. Font appearance still needs the user's TV
-check. Newer offline safeguards and grouped-source changes have not been
-installed or hardware-tested by these results.
+check. A newer build with the offline safeguards and grouped-source changes
+subsequently passed a browser-only console diagnostic; its gameplay and
+post-game restoration are still pending. See
+[catalog evidence](tests/hardware-catalog-2026-10-22.json).
 
 ## Source basis
 
