@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-22",
+  "console": "Trinity / 17559 / temporary XeUnshackle",
+  "installed_source_commit": "ea0482ef7452f9894cac032140c105abe96ec317",
+  "installed_app_sha256": "3e3d7dd490bb09408ee6a8a5af5f03f886006eb4c81164ebd5c40a751761209a",
+  "installed_executable_readback_matches": true,
+  "installed_test_configuration": {
+    "session_return": true,
+    "general_game_launch_enabled": false,
+    "single_game": "Tetris (NES)",
+    "diagnostics_disabled": true
+  },
+  "user_confirmation": {
+    "launched_from_emulationstation": true,
+    "tetris_starts_and_plays": true,
+    "game_exit_action": "Xbox Guide -> Y",
+    "guide_button_label": "Xbox Home",
+    "returned_to_emulationstation": true,
+    "selected_game_restored": "Tetris (NES)",
+    "menu_exit_action": "Start -> Quit -> Return to Aurora -> Yes",
+    "returned_to_aurora": true
+  },
+  "independent_observation": {
+    "method": "read-only XBDM",
+    "emulationstation_observed_after_game": true,
+    "aurora_observed_after_menu_exit_before_probe": true,
+    "establishes_controller_actions_or_selected_game": false
+  },
+  "archived_logs": {
+    "collected_before_any_subsequent_es_launch": true,
+    "restored_game_list_selection": true,
+    "application_clean_shutdown": true,
+    "sdk_loaded_expected_hdd_application": true,
+    "sdk_exit_status": 0,
+    "sdk_destination": "Aurora"
+  },
+  "post_game_runtime_inspection": {
+    "mode": "inspect only; no arm or restore operation",
+    "original_snapshot_matches_known_restored_baseline": true,
+    "options": 76,
+    "snapshot_byte_identical": true,
+    "exact_equal": true,
+    "equivalent_after_reload": true,
+    "changed_option_names": [],
+    "comparison_uses_production_decode_equal_and_equivalent_after_reload": true,
+    "liveblock": true,
+    "livestrong": true,
+    "noupdater": true,
+    "saved_boot_unchanged": true,
+    "probe_disabled_after_read": true
+  },
+  "user_display_feedback": {
+    "game_names": "good",
+    "emulationstation_menu_text": "good",
+    "faint_grey_labels": "fuzzy",
+    "system_logos": "not smooth",
+    "visual_followup_changes_covered_by_this_result": false
+  },
+  "earlier_post_game_runtime_mismatch": "Historical earlier-build failure remains unexplained; this later run passed",
+  "earlier_return_evidence": "hardware-tetris-return-2026-10-22.json",
+  "catalog_browser_evidence": "hardware-catalog-2026-10-22.json",
+  "other_core_roundtrips_verified": false,
+  "repeated_session_stability_verified": false,
+  "disc_or_native_xbox360_game_support_verified": false,
+  "raw_runtime_snapshots_logs_and_configuration_kept_private": true
+}

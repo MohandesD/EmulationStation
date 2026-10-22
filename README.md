@@ -8,18 +8,20 @@ open-source xsdk toolchain, SDL3 input/audio adapters and a native Xenos rendere
 The full app builds, and its carousel, five system lists, cover art and a fixed
 diagnostic app handoff have been verified on a Trinity console.
 
-**Development status:** controller navigation, menu return to Aurora and restoration
-of the selected system have passed a user-operated console test. The first
-manual Tetris handoff reached the emulator and then crashed. A Salvia system
-selection mismatch was found and corrected. The user then confirmed that Tetris
-starts and plays, corroborating a capture of its game screen. A session-only
-return implementation passes PC failure/rollback tests and a no-game console
-arm/restore check of all 76 options. Actual emulator return and restoring a
-selected game still need the staged manual console check.
-The offline platform catalog covers Salvia configurations independently of the
-games currently installed. Grouped Xbox sources retain each backend's directory
-and launch command inside one Arcade or Neo Geo Pocket section; this new routing
-is still awaiting console validation. Font smoothing is also awaiting a TV comparison.
+**Development status:** controller navigation and a full NES Tetris roundtrip
+have passed on the console: Tetris plays, Xbox Guide/Y returns to EmulationStation
+with Tetris selected, and the menu returns to Aurora. A subsequent read-only
+comparison verified exact restoration of all 76 runtime options; saved boot
+settings were unchanged. The earlier post-game mismatch remains documented as
+an unexplained historical run. See [current game-return evidence](platform/xbox360/tests/hardware-tetris-return-catalog-2026-10-22.json).
+
+The platform catalog covers 32 configured sections and 34 Salvia sources,
+independently of installed games. Native catalog browsing passed with five
+populated lists and preserved metadata. Grouped sources retain each backend's
+directory and command inside one Arcade or Neo Geo Pocket section; gameplay
+through other cores still needs verification. The user reports good game-name
+and menu text, but faint grey labels remain fuzzy and system logos need smoothing.
+Visual follow-up changes are separate from the tested build.
 Game launching is disabled by default. This is not a finished replacement dashboard; do not set it as the
 console's startup application.
 

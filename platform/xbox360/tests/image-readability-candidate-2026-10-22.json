@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-22",
+  "source_commit": "9a15e37cfda015339cf3a8b5887abd533d47ea27",
+  "app_sha256": "1222c78c167d60dedde6809f71d8298d4b4fc047727c0c1e5f7fc0b97eb4408c",
+  "native_build_passed": true,
+  "targeted_host_checks_passed": ["es_gl_semantics", "es_gl_source_coverage", "es_image_contract"],
+  "package_offline_tests_passed": 4,
+  "changes": {
+    "xbox_non_tiled_image_magnification": "linear",
+    "tiled_images_and_other_platforms": "unchanged",
+    "simple_theme_metadata_font_properties_changed": 4,
+    "simple_theme_system_heading_colors_changed": 43,
+    "theme_xml_files_changed": 24,
+    "game_list_and_menu_text_styles": "unchanged",
+    "heading_font_weight_dimensions_and_layout": "unchanged"
+  },
+  "deployment": {
+    "files_replaced_with_rollback_and_readback": 25,
+    "protected_files_unchanged": 14,
+    "settings_selection_catalog_and_populated_gamelists_unchanged": true,
+    "boot_and_salvia_configuration_unchanged": true,
+    "application_opened_without_game_launch": true,
+    "emulationstation_independently_observed_running": true
+  },
+  "visual_acceptance": "awaiting user TV comparison",
+  "gameplay_tested_on_this_visual_binary": false,
+  "previous_gameplay_and_cleanup_evidence": "hardware-tetris-return-catalog-2026-10-22.json",
+  "limitation": "Linear magnification smooths enlargement; it does not add detail to SVGs already rasterized at their displayed size."
+}

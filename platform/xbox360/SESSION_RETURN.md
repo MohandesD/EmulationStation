@@ -1,22 +1,20 @@
-# Temporary emulator return: Tetris roundtrip confirmed
+# Temporary emulator return: Tetris roundtrip and restoration confirmed
 
-Status on 2026-10-22: cross-built and PC-tested; a no-game console arm/restore
-check now passes on Trinity/17559 with temporary XeUnshackle. All 76 exposed
-options were restored and the saved boot file stayed unchanged. The user has now
-confirmed ES -> NES Tetris plays -> Xbox Guide/Y -> ES, with Tetris still selected.
-An independent read-only XBDM observation confirmed ES running afterward. The user
-then confirmed Return to Aurora, also independently observed. However, the next
-inspect-only runtime check still found Default/BUT_Y pointing to ES; all other 74
-options and the saved boot file matched. Post-game restoration has not passed.
-A separate exit-only menu check with the same installed app then restored all
-76 options exactly, returned to Aurora and left the saved boot file unchanged.
-Its application and SDK logs confirm a clean exit from the expected HDD app.
-The earlier post-game mismatch remains unexplained; the successful exit-only
-result does not establish restoration after gameplay.
+Status on 2026-10-22: the installed catalog build passes a complete user-operated
+NES Tetris roundtrip on Trinity/17559 with temporary XeUnshackle. Tetris plays,
+Xbox Guide/Y returns to ES with Tetris selected, and the menu returns to Aurora.
+Read-only XBDM observed ES and then Aurora before any probe launch. Logs confirm
+restored selection and clean shutdown. An inspect-only probe and production
+comparison verified byte-identical restoration of all 76 exposed runtime options,
+including network/update protections; saved boot settings remained unchanged.
+See [current game-return evidence](tests/hardware-tetris-return-catalog-2026-10-22.json).
+An earlier build's post-game mismatch remains unexplained and is retained below;
+its separate exit-only check passed. The new successful run does not establish
+the cause of that earlier failure or compatibility with other cores.
 
 ## Behavior
 
-`XboxSessionReturn` defaults to `false`. When explicitly enabled for a future
+`XboxSessionReturn` defaults to `false`. When explicitly enabled for a staged
 test, an approved game launch prepares a return to
 `hdd:/Apps/EmulationStation/emulationstation.xex` before dismantling the UI.
 The existing game-launch and single-ROM gates still apply. This candidate only
@@ -51,12 +49,12 @@ unexpected state. Restoration errors remain visible and require diagnosis or a
 fresh temporary session. A runtime reload is not atomic and rollback is best
 effort; PC tests cannot prove the console API's behavior.
 
-The next offline revision checks the current options again after staging the
+The current build checks the options again after staging the
 restore INI, immediately before reload. A concurrent change cancels restoration
 without overwriting it. Failed handoffs also pass the specific recovery error
 back to the game-list dialog instead of showing only a generic launch failure.
-These follow-up safeguards are PC-tested separately from the currently installed
-manual-test build.
+These safeguards are included in the installed catalog build. Their failure
+paths are PC-tested; the console result exercises a successful return.
 
 The diagnostic frame-limit exit also restores the previous session before
 leaving the frontend. If restoration fails, it stops automatic browsing/captures
@@ -91,8 +89,8 @@ confirmed only Default/BUT_Y differ between staged INIs and that the root boot
 file is unchanged. The probe was returned to inspect mode and renamed .checked.
 See [console evidence](tests/hardware-session-return-2026-10-22.json).
 
-The installed app has been read-back verified with XboxSessionReturn=true,
-XboxLaunchEnabled=false and the single Tetris exception. Its source revision is
+The earlier app was read-back verified with XboxSessionReturn=true,
+XboxLaunchEnabled=false and the single Tetris exception. Its source revision was
 `d94d2fac6ed7cfaac6184831ce069b67e9fda9bb`; XEX SHA-256 is
 `a860c391eca0b1e24cbe4e7e5f5d1d06785050bf104c2f644488c87176503fbb`.
 The user operated the game and confirmed it played, Guide/Y returned to ES, and
@@ -118,14 +116,31 @@ production exact and accepted-reload comparisons both passed for all 76 options,
 with no changed option names and all network/update protections preserved. The
 saved boot file remained unchanged and the probe was disabled afterward.
 
-This establishes successful restoration through an ordinary menu exit in that
-run; it does not explain or erase the earlier post-game failure. Verify that
-post-game path before expanding gameplay. Repeat launch/return separately for
-other cores before enabling them. Font appearance still needs the user's TV
-check. A newer build with the offline safeguards and grouped-source changes
-subsequently passed a browser-only console diagnostic; its gameplay and
-post-game restoration are still pending. See
-[catalog evidence](tests/hardware-catalog-2026-10-22.json).
+That run establishes successful restoration through an ordinary menu exit; it
+does not explain or erase the earlier post-game failure.
+
+The newer catalog build, source `ea0482ef7452f9894cac032140c105abe96ec317`,
+XEX SHA-256 `3e3d7dd490bb09408ee6a8a5af5f03f886006eb4c81164ebd5c40a751761209a`,
+then passed a browser-only diagnostic and a separate full Tetris return test.
+The user confirmed play, Guide/Y return with Tetris selected, and menu exit to
+Aurora. XBDM independently observed both applications, with Aurora observed
+before the probe. Logs archived before any ES relaunch contain restored game-list
+selection and clean shutdown; the SDK log identifies the expected HDD app and
+exit status 0 to Aurora. The archived executable matches the installed hash.
+
+The saved original snapshot matches the known restored baseline. The inspect-only
+probe captured 76 options, byte-identical to that original; production exact and
+accepted-reload comparisons both passed with no changed option names.
+Liveblock, livestrong and noupdater remained enabled, saved boot settings were
+unchanged, and the probe was disabled afterward. This verifies post-game cleanup
+for this installed NES Tetris configuration. It does not explain the historical
+mismatch. Repeat launch/return separately for other cores before enabling them.
+See [catalog evidence](tests/hardware-catalog-2026-10-22.json) and
+[current Tetris return evidence](tests/hardware-tetris-return-catalog-2026-10-22.json).
+
+The user reports that game names and ES menu text look good, while faint grey
+labels look fuzzy and system logos are not smooth. Visual follow-up changes are
+separate from this tested binary and have no TV acceptance result yet.
 
 ## Source basis
 

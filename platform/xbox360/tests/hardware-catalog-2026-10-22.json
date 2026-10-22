@@ -53,5 +53,6 @@
   "candidate_post_game_runtime_restoration_verified": false,
   "earlier_post_game_runtime_mismatch": "unresolved; separate exit-only restoration passed",
   "earlier_return_evidence": "hardware-tetris-return-2026-10-22.json",
+  "subsequent_gameplay_and_restoration_evidence": "hardware-tetris-return-catalog-2026-10-22.json",
   "raw_logs_captures_and_configuration_kept_private": true
 }

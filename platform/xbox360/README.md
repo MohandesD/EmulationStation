@@ -8,6 +8,14 @@ The earlier custom Games dashboard is a separate project, not this port.
 
 ## Current state (2026-10-22)
 
+A visual follow-up uses linear magnification for non-tiled Xbox images. The
+local Simple-theme variant uses regular-weight metadata labels and darker system
+headings, preserving the menu/game-name styles the user accepted. The native
+build, three targeted graphics checks and four package checks pass. Twenty-five
+files were deployed with rollback copies/read-back verification while fourteen
+protected files stayed unchanged. ES opens; the user's TV comparison is pending.
+See [visual-candidate evidence](tests/image-readability-candidate-2026-10-22.json).
+
 The graphics component cross-compiles into `ESGraphicsProbe.xex` and has run on
 the Trinity/17559 console. A native 1280x720 capture shows correct RGB blocks,
 alpha blending, scissors and texture colours; 14 pixel checks and a native line check pass. After 1,800
@@ -33,16 +41,20 @@ but the post-game read-only check still found Default/BUT_Y pointing to ES. The
 other 74 options and saved boot matched. A separate exit-only menu check with the
 same installed app then restored all 76 options exactly, with a clean application
 exit, the expected HDD image in the SDK log and an unchanged saved boot file.
-The earlier post-game mismatch remains unresolved; other cores and audio
-acceptance remain pending.
-See [the installed-build evidence](tests/hardware-tetris-return-2026-10-22.json). This is
+The earlier post-game mismatch remains unexplained; its evidence is preserved in
+[the earlier return record](tests/hardware-tetris-return-2026-10-22.json).
+The newer catalog build has now passed the complete Tetris sequence, including
+menu exit to Aurora and exact post-game restoration of all 76 runtime options.
+Saved boot settings remained unchanged. Other cores and audio acceptance remain
+pending. See [current game-return evidence](tests/hardware-tetris-return-catalog-2026-10-22.json). This is
 **not a finished game frontend yet**.
 
 The newer catalog candidate has now passed a 1,200-frame browser-only console
 check: 32 configured sections route 34 emulator sources, and the five populated
 lists contain 44 entries. Existing metadata was preserved. It exited cleanly to
-Aurora and its temporary diagnostic settings were restored exactly. This newer
-build has no gameplay result yet; TV font-smoothing acceptance is still pending.
+Aurora and its temporary diagnostic settings were restored exactly. The user
+reports good game-name and ES menu text, but faint grey labels remain fuzzy and
+system logos are not smooth. Visual follow-up is separate from this tested build.
 See [catalog evidence](tests/hardware-catalog-2026-10-22.json).
 
 `es_gl.c` implements the 26 fixed-function GL calls used in the upstream source.
@@ -75,10 +87,9 @@ sent to a shell. Salvia ROM data uses its own
 bring-up; it must be removed as a bring-up gate or deliberately enabled and
 hardware-tested before claiming the port works as a general game frontend.
 Session return is implemented; its no-game console check and a user-operated NES
-Tetris roundtrip with selected-game restoration pass. The post-game restoration
-check did not pass even though Aurora opened. A separate same-build exit-only
-check restored all 76 options exactly; that success does not establish post-game
-restoration. Other cores still need verification.
+Tetris roundtrip with selected-game restoration pass. The current catalog build
+also passed post-game menu exit with exact restoration of all 76 options. The
+earlier build's mismatch remains documented; other cores still need verification.
 
 The hardware probe caught an actual backend defect: the vertex-stream API
 expects the complete buffer byte length, not the per-vertex stride. The adapter
@@ -186,8 +197,8 @@ visits successive system game lists every 180 frames starting at frame 180 and
 captures each list after its transition settles. It calls view navigation only;
 no controller events or ROM launches are injected. A 1,200-frame five-system run
 passed. Both diagnostic options are now disabled in the installed package, so a
-normal manual launch stays open. This earlier diagnostic ended in Aurora;
-the current installed frontend is reserved for the manual Tetris return test.
+normal manual launch stays open. The installed frontend retains the single-Tetris
+launch gate after the successful manual return test.
 
 Rollback: while Aurora is running, remove only the separately added app folder
 if desired. Existing emulators, ROMs, assets and startup settings are independent.
@@ -201,8 +212,8 @@ The user confirmed system Left/Right, entering a game list, Up/Down selection,
 Back, and Start -> Quit -> Return to Aurora. A second launch restored the user's
 Game Boy system selection, also confirmed on the TV. The application's saved
 selection and clean-exit/restoration logs corroborate those reports. This tests
-restoration of the system screen; restoring a selected game after emulator exit
-remains a separate acceptance check.
+restoration of the system screen. The later Tetris test separately confirmed
+selected-game restoration after emulator exit.
 
 For a staged manual game test, XboxTestRom may name one absolute ROM path while
 XboxLaunchEnabled remains false. Both the UI and native handoff enforce this
@@ -258,8 +269,8 @@ returned to Aurora. Its executable was disabled afterward. The updated app and
 five commands passed full FTP readback; saved boot settings are unchanged. Only
 Tetris was then re-enabled for a user-operated check. XBDM subsequently reported
 Nestopia.xex, and a private 1280x720 framebuffer showed the Tetris playfield, pieces,
-score and line counter. The user subsequently confirmed that Tetris starts and plays. Sustained
-stability and emulator return remain unverified. At the user's request, the
+score and line counter. The user subsequently confirmed that Tetris starts and plays.
+At that checkpoint sustained stability and emulator return were unverified. At the user's request, the
 console was then left in Salvia for family play.
 See [sanitized evidence](tests/hardware-tetris-2026-10-22.json).
 
@@ -278,8 +289,8 @@ installed configuration instead of hardcoding default.xex for every system.
 
 Before a game handoff, the frontend records its selected system/game in its own
 es_selection.cfg. Startup accepts only an entry that still exists in the loaded
-catalogue; malformed or stale state falls back to system selection. This feature
-has cross-built but still needs a physical navigation/return test. It does not
+catalogue; malformed or stale state falls back to system selection. The user has
+confirmed selection restoration after the Tetris roundtrip. It does not
 by itself change where an emulator exits.
 
 Build the small diagnostics with `make -f Makefile.probes` from this directory,
@@ -303,7 +314,7 @@ The earlier receiver/read-only diagnostics changed no return settings. The
 subsequent session-return probe temporarily changed and restored runtime
 Default/BUT_Y, verified all 76 exposed options and left saved boot files
 unchanged. See [session return](SESSION_RETURN.md) for its precise behavior,
-rollback and pending gameplay acceptance. Do not enable
+rollback and scoped gameplay acceptance. Do not enable
 general game launching or change startup configuration based on PC tests.
 
 1. Verify audio, filesystem/locale behavior and text input;
@@ -347,8 +358,8 @@ passed full FTP readback. The later user-operated game/Guide-return check passed
 but restoration after that gameplay did not; a separate menu exit without a game
 restored all 76 options exactly. No game was remotely launched. See
 [session return](SESSION_RETURN.md) and
-[console evidence](tests/hardware-session-return-2026-10-22.json). The font change
-is installed but TV appearance still needs confirmation.
+[console evidence](tests/hardware-session-return-2026-10-22.json). The later TV
+feedback and complete catalog-build return test are recorded below.
 
 ## Offline follow-up and separate installed-build checks
 
@@ -366,8 +377,8 @@ candidate was not deployed at that offline checkpoint. The earlier Tetris build'
 game exit and selected-game restoration are user-confirmed. Return to Aurora opens
 Aurora, but its post-game runtime restoration did not pass inspection. A later
 exit-only check passed exact restoration of all 76 options and logged a clean
-exit from the expected HDD app. The earlier post-game mismatch and TV font
-acceptance remain unresolved.
+exit from the expected HDD app. The earlier post-game mismatch remains
+unexplained; the later catalog-build result is recorded separately below.
 
 The subsequent offline check adds the optional production-model test above.
 All ten enabled host test groups pass, including independent scan-only and
@@ -398,7 +409,31 @@ or restoration after gameplay.
 
 Apparent missing text in image previews was traced to the preview display:
 the unchanged PNG pixels contain the text, and reopening previews shows it.
-No renderer change is justified by that artifact. Font smoothing still needs the
-user's TV check. The earlier post-game runtime mismatch remains unresolved, and
-the separate successful exit-only restoration remains a distinct result. See
+No renderer change is justified by that artifact. The subsequent TV feedback and
+gameplay check are distinct from this browser-only diagnostic. The earlier
+post-game runtime mismatch and successful exit-only restoration remain separate
+historical results. See
 [sanitized catalog evidence](tests/hardware-catalog-2026-10-22.json).
+
+## Catalog-build Tetris return and cleanup (2026-10-22)
+
+The same catalog build and installed executable hash above passed a full manual
+sequence: ES -> NES Tetris plays -> Xbox Guide/Y -> ES with Tetris selected ->
+Start -> Quit -> Return to Aurora -> Yes. Read-only XBDM confirmed ES after the
+game and Aurora after the menu exit, before the inspection probe ran.
+
+Logs archived before any ES relaunch show restored game-list selection and clean
+shutdown; the SDK log identifies the expected HDD image and exit status 0 to
+Aurora. The executable readback matches the catalog candidate hash. The original
+snapshot matches the known restored baseline, and the inspect-only probe found
+all 76 runtime options byte-identical to it. Production exact and accepted-reload
+comparisons both passed, with no changed option names; liveblock, livestrong and
+noupdater remained enabled. Saved boot settings were unchanged and the probe
+was disabled afterward. The earlier build's post-game mismatch remains
+unexplained; this is a separate successful run. Other cores, repeated-session
+stability and disc/native-game support still require their own checks.
+See [sanitized game-return evidence](tests/hardware-tetris-return-catalog-2026-10-22.json).
+
+The user reports that game names and ES menu text look good. Faint grey labels
+remain fuzzy and system logos are not smooth. Visual follow-up changes are
+separate from the tested binary; no improved TV result is claimed yet.
