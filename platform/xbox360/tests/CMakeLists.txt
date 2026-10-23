@@ -58,6 +58,23 @@ if(ES_MODEL_DEPS)
     target_compile_options(test_es_model_routes PRIVATE -UNDEBUG -ffunction-sections -fdata-sections)
     target_link_options(test_es_model_routes PRIVATE -Wl,--gc-sections)
     add_test(NAME es_routed_model COMMAND test_es_model_routes)
+    # Invoked explicitly by test_distribution.py with a freshly extracted ZIP.
+    add_executable(test_es_distribution test_distribution_model.cpp
+        ../XboxRoutes.cpp ../LaunchCommand.cpp ../LaunchFiles.cpp ../SalviaLaunch.cpp
+        ../../../es-app/src/SystemData.cpp ../../../es-app/src/Gamelist.cpp
+        ../../../es-app/src/FileData.cpp ../../../es-app/src/FileSorts.cpp
+        ../../../es-app/src/MetaData.cpp ../../../es-app/src/PlatformId.cpp
+        ../../../es-app/src/MameNameMap.cpp ../../../es-core/src/ThemeData.cpp
+        ../../../es-core/src/Settings.cpp ../../../es-core/src/Util.cpp
+        ../../../es-core/src/Log.cpp ../../../external/pugixml/src/pugixml.cpp)
+    target_include_directories(test_es_distribution PRIVATE .. ../../../es-app/src
+        ../../../es-core/src ../../../external ../../../external/pugixml
+        "${ES_MODEL_DEPS}/boost" "${ES_MODEL_DEPS}/eigen"
+        "${ES_MODEL_DEPS}/SDL/include" "${ES_MODEL_DEPS}/freetype/include")
+    target_compile_definitions(test_es_distribution PRIVATE __XSDK__ ES_USE_SDL3
+        EIGEN_DONT_ALIGN EIGEN_DONT_VECTORIZE EIGEN_MPL2_ONLY BOOST_DATE_TIME_NO_LIB)
+    target_compile_options(test_es_distribution PRIVATE -UNDEBUG -ffunction-sections -fdata-sections)
+    target_link_options(test_es_distribution PRIVATE -Wl,--gc-sections)
 endif()
 
 set(ES_STB "" CACHE PATH "Pinned stb source tree; enables image decoder/resize tests")
@@ -67,7 +84,7 @@ if(ES_STB)
     target_compile_options(test_es_images PRIVATE -UNDEBUG)
     add_test(NAME es_image_contract COMMAND test_es_images)
 endif()
-foreach(target test_es_launch test_es_handoff test_es_routes test_es_salvia test_es_images test_es_return test_es_model_routes)
+foreach(target test_es_launch test_es_handoff test_es_routes test_es_salvia test_es_images test_es_return test_es_model_routes test_es_distribution)
     if(TARGET ${target} AND ES_TEST_SANITIZERS AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
         target_compile_options(${target} PRIVATE -fsanitize=address,undefined -fno-omit-frame-pointer)
         target_link_options(${target} PRIVATE -fsanitize=address,undefined)

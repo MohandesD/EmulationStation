@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!-- Original Clean theme, Copyright 2026 EmulationStation Xbox port contributors.
+     SPDX-License-Identifier: MIT. Uses only embedded upstream Open Sans fonts. -->
+<theme>
+  <formatVersion>3</formatVersion>
+  <view name="system, basic, detailed">
+    <helpsystem name="help">
+      <pos>0.05 0.94</pos><textColor>333333</textColor><iconColor>333333</iconColor>
+      <fontPath>:/opensans_hebrew_condensed_regular.ttf</fontPath><fontSize>0.032</fontSize>
+    </helpsystem>
+  </view>
+  <view name="basic, detailed">
+    <text name="logoText">
+      <pos>0.05 0.03</pos><size>0.90 0.10</size><alignment>left</alignment>
+      <fontPath>:/opensans_hebrew_condensed_regular.ttf</fontPath>
+      <fontSize>0.055</fontSize><color>222222</color>
+    </text>
+    <textlist name="gamelist">
+      <pos>0.05 0.18</pos><size>0.90 0.70</size><alignment>left</alignment>
+      <horizontalMargin>0.015</horizontalMargin><fontSize>0.040</fontSize>
+      <fontPath>:/opensans_hebrew_condensed_regular.ttf</fontPath>
+      <primaryColor>222222</primaryColor><secondaryColor>555555</secondaryColor>
+      <selectorColor>175C91</selectorColor><selectedColor>FFFFFF</selectedColor>
+      <forceUppercase>false</forceUppercase><lineSpacing>1.25</lineSpacing>
+    </textlist>
+  </view>
+  <view name="detailed">
+    <textlist name="gamelist"><size>0.53 0.70</size></textlist>
+    <image name="md_image"><pos>0.80 0.24</pos><origin>0.5 0</origin><maxSize>0.30 0.42</maxSize></image>
+    <text name="md_description"><fontSize>0.027</fontSize><color>333333</color></text>
+  </view>
+</theme>

@@ -7,6 +7,7 @@ navigation, with emulator launch and a verified way back to the frontend.
 The earlier custom Games dashboard is a separate project, not this port.
 
 Start with the [build guide](BUILDING.md) and [installation guide](INSTALL.md).
+For installation without a compiler, use the [download package guide](distribution/START-HERE.md).
 See [platform coverage](PLATFORMS.md) and [temporary game return](SESSION_RETURN.md)
 for integration details. Dated evidence below distinguishes past tests from the
 current installed build.

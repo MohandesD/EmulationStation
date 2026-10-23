@@ -3,6 +3,15 @@ EmulationStation
 
 ## Xbox 360 development branch
 
+**Xbox download:** [v0.1.0-preview.1 — ready-to-copy application](https://github.com/MohandesD/EmulationStation/releases/tag/xbox360-v0.1.0-preview.1).
+Choose `EmulationStation-Xbox360-0.1.0-preview.1.zip`, extract it and read
+`START-HERE.md`. No compiler is needed. Salvia is installed separately; configs
+and themes stay editable. [First installation guide](platform/xbox360/distribution/START-HERE.md).
+The Windows/Linux downloads in the original documentation below are desktop
+builds, **not Xbox 360 downloads**. GitHub's automatic source archives are not the
+ready-to-copy app. This preview is manually launched from an existing homebrew
+environment; it does not install an exploit or configure startup.
+
 This fork ports the original EmulationStation application to Xbox 360 using the
 open-source xsdk toolchain, SDL3 input/audio adapters and a native Xenos renderer.
 The full app builds, and its carousel, five system lists, cover art and a fixed
@@ -40,6 +49,9 @@ commercial artwork, console secrets or proprietary Microsoft SDK are included.
 The original project's documentation follows below.
 
 ## Original project
+
+The following is inherited **desktop** documentation. For Xbox files and paths,
+use the release and installation links above.
 
 A cross-platform graphical front-end for emulators with controller navigation.
 

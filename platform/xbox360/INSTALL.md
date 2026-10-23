@@ -1,5 +1,12 @@
 # Installing a development build
 
+For a ready-to-copy download, start with the
+[beginner package guide](distribution/START-HERE.md) and
+[Xbox binary release](https://github.com/MohandesD/EmulationStation/releases/tag/xbox360-v0.1.0-preview.1).
+That package includes the executable, support file, safe starter configs, an
+original Clean theme and license/source notices. Salvia remains separate.
+The instructions below are also useful for a source build or customized layout.
+
 This is an ordinary app-folder installation for an Xbox 360 already able to run
 unsigned XEX files. The tested environment is Trinity, dashboard 17559, temporary
 XeUnshackle with an already-loaded DashLaunch runtime, Salvia 1.0.10 and Aurora.
