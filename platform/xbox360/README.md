@@ -20,8 +20,9 @@ build, three targeted graphics checks and four package checks pass. Twenty-five
 files were deployed with rollback copies/read-back verification while fourteen
 protected files stayed unchanged. The user accepted visual build `1222c78c167d`
 on the TV, reporting that grey labels and system logos both look better.
-The full Tetris roundtrip and runtime-restoration result belongs to the earlier
-`3e3d7dd490bb` build; gameplay on the visual update remains unverified.
+The detailed single-Tetris roundtrip result belongs to the earlier
+`3e3d7dd490bb` build. The visual build now also has the six-game user report and
+independent post-batch cleanup result below.
 See [visual-candidate evidence](tests/image-readability-candidate-2026-10-22.json).
 
 At the user's request, the installed library is now enabled for a single manual
@@ -31,9 +32,17 @@ against fresh archived configuration; listed game/core files exist and are
 nonempty. The missing MAME context was appended without reordering existing
 entries. Two configuration files were backed up and read-back verified, with
 48 protected files unchanged. The accepted application/theme were not replaced.
-This preflight does not prove emulator gameplay. The combined user report and
-post-session restoration check are pending; see
-[batch evidence](tests/manual-library-batch-2026-10-22.json).
+This preflight does not prove emulator gameplay. The user subsequently reported
+that all six games worked, with a control misconfiguration in MAME's EBA X-Men
+entry. Aurora was independently observed before inspection. Archived logs show
+restored game-list selection and clean exit to Aurora, with Kirby 64 selected.
+The inspect-only probe and production comparator verified all 76 runtime options
+byte-identical to the known original baseline. Saved boot settings are unchanged,
+and the probe is disabled. No game was remotely launched. EBA's specific incorrect
+buttons remain to be described; no controls were changed during this check.
+The reply did not separately describe each game's controller actions, sound or
+selected-game return. See [batch setup](tests/manual-library-batch-2026-10-22.json)
+and [hardware results](tests/hardware-library-batch-2026-10-22.json).
 
 The graphics component cross-compiles into `ESGraphicsProbe.xex` and has run on
 the Trinity/17559 console. A native 1280x720 capture shows correct RGB blocks,
@@ -64,9 +73,11 @@ The earlier post-game mismatch remains unexplained; its evidence is preserved in
 [the earlier return record](tests/hardware-tetris-return-2026-10-22.json).
 The newer catalog build has now passed the complete Tetris sequence, including
 menu exit to Aurora and exact post-game restoration of all 76 runtime options.
-Saved boot settings remained unchanged. Other cores and audio acceptance remain
-pending. See [current game-return evidence](tests/hardware-tetris-return-catalog-2026-10-22.json). This is
-**not a finished game frontend yet**.
+Saved boot settings remained unchanged. This earlier, detailed single-game result
+is preserved separately from the newer batch report above. See
+[Tetris return evidence](tests/hardware-tetris-return-catalog-2026-10-22.json).
+The port is still a development build: EBA controls and broader sustained/platform
+testing remain unresolved.
 
 The newer catalog candidate has now passed a 1,200-frame browser-only console
 check: 32 configured sections route 34 emulator sources, and the five populated
@@ -103,12 +114,13 @@ Salvia commands require their explicit context, for example
 rejected beside a Salvia configuration. Commands are parsed as paths, never
 sent to a shell. Salvia ROM data uses its own
 `Hdd:`/`Usb0:` mounts. `XboxLaunchEnabled` defaults to false for a new installation.
-It is now enabled on the test console for the manual library batch; gameplay
-results beyond the separately verified Tetris configuration remain pending.
+It is now enabled on the test console. The combined six-game report is positive
+apart from EBA X-Men's controls, and post-batch runtime cleanup passed.
 Session return is implemented; its no-game console check and a user-operated NES
 Tetris roundtrip with selected-game restoration pass. The current catalog build
-also passed post-game menu exit with exact restoration of all 76 options. The
-earlier build's mismatch remains documented; other cores still need verification.
+also passed post-game menu exit with exact restoration of all 76 options, as did
+the newer batch. The earlier build's mismatch remains documented; neither result
+establishes every game's compatibility or sustained stability.
 
 The hardware probe caught an actual backend defect: the vertex-stream API
 expects the complete buffer byte length, not the per-vertex stride. The adapter
@@ -193,8 +205,8 @@ visits successive system game lists every 180 frames starting at frame 180 and
 captures each list after its transition settles. It calls view navigation only;
 no controller events or ROM launches are injected. A 1,200-frame five-system run
 passed. Both diagnostic options are now disabled in the installed package, so a
-normal manual launch stays open. The installed frontend now permits the library
-for the user-requested combined test; its report is pending.
+normal manual launch stays open. The installed frontend permits the library;
+the user-reported batch outcome and remaining control issue are recorded above.
 
 Rollback: finish through Return to Aurora and resolve any runtime restoration
 error before removing the separately added app folder. Keep restore records
@@ -313,8 +325,8 @@ subsequent session-return probe temporarily changed and restored runtime
 Default/BUT_Y, verified all 76 exposed options and left saved boot files
 unchanged. See [session return](SESSION_RETURN.md) for its precise behavior,
 rollback and scoped gameplay acceptance. PC tests do not establish gameplay or
-justify startup changes. The current manual batch deliberately enables the
-library to collect those game/return observations.
+justify startup changes. The completed manual batch collected the user report
+and post-session restoration evidence recorded above.
 
 1. Verify audio, filesystem/locale behavior and text input;
    dummy SDL text input is only an adapter, not a verified Xbox keyboard UI.

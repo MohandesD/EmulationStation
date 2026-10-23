@@ -79,11 +79,13 @@ launched through the existing permission/context checks. Metadata and saved
 selection retain full physical paths, so duplicate basenames stay separate.
 The grouped routing is installed. A browser-only console check found 44 entries
 across five populated sections while preserving the original metadata. The
-current manual batch separately checks both Arcade launch backends.
+manual batch separately exercised both Arcade launch backends.
 
-Only NES Tetris launching from ES has user-confirmed playability. Prior games
-working through Salvia do not establish every ES launch/return route. New
-platforms must be tested individually. The installed library gate is now enabled
-for one combined manual test across six cores; its gameplay/return report is
-pending. New installations still default to blocked game launching. See the
+The user reports all six batch games work: NES Tetris, SNES Super Mario World,
+Game Boy Kirby's Dream Land, X-Men through FBNeo and MAME, and Nintendo 64 Kirby 64.
+MAME's EBA X-Men entry has a control misconfiguration that remains unresolved.
+Post-batch cleanup independently restored all 76 runtime options exactly. These
+results do not establish every game, multiplayer mode or the remaining platforms.
+New installations still default to blocked game launching. See the
+[hardware evidence](tests/hardware-library-batch-2026-10-22.json) and
 [installation and batch procedure](INSTALL.md#settings-and-a-combined-manual-check).

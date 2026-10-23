@@ -1,0 +1,99 @@
+{
+  "date": "2026-10-22",
+  "console": "Trinity / 17559 / temporary XeUnshackle",
+  "installed_source_commit": "9a15e37cfda015339cf3a8b5887abd533d47ea27",
+  "installed_app_sha256": "1222c78c167d60dedde6809f71d8298d4b4fc047727c0c1e5f7fc0b97eb4408c",
+  "installed_executable_readback_matches": true,
+  "user_report": "all games worked. Just some control misconfiguration on the EBA version of X-Men",
+  "report_scope": "Combined six-core manual test; individual controller actions, sound and selected-game restoration were not separately described in the reply",
+  "games": [
+    {
+      "system": "NES",
+      "title": "Tetris",
+      "core": "Nestopia",
+      "result": "user reports working"
+    },
+    {
+      "system": "SNES",
+      "title": "Super Mario World",
+      "core": "Snes9x2010",
+      "result": "user reports working"
+    },
+    {
+      "system": "Game Boy",
+      "title": "Kirby's Dream Land",
+      "core": "Gambatte",
+      "result": "user reports working"
+    },
+    {
+      "system": "Arcade",
+      "title": "X-Men (4 players)",
+      "core": "FBNeo",
+      "result": "user reports working"
+    },
+    {
+      "system": "Arcade",
+      "title": "X-Men (4 Players ver EBA)",
+      "core": "MAME 2003 Plus",
+      "result": "user reports working; control misconfiguration reported"
+    },
+    {
+      "system": "Nintendo 64",
+      "title": "Kirby 64 - The Crystal Shards",
+      "core": "xbox64",
+      "result": "user reports working"
+    }
+  ],
+  "independent_observation": {
+    "aurora_observed_before_probe": true,
+    "method": "read-only XBDM",
+    "establishes_per_game_controller_actions": false
+  },
+  "archived_logs": {
+    "collected_before_any_subsequent_es_launch": true,
+    "files_preserved": 14,
+    "restored_game_list_selection": true,
+    "saved_selection_system": "n64",
+    "saved_selection_title": "Kirby 64 - The Crystal Shards",
+    "application_clean_shutdown": true,
+    "sdk_exit_status": 0,
+    "sdk_destination": "Aurora"
+  },
+  "post_batch_runtime_inspection": {
+    "mode": "inspect only; no arm or restore operation",
+    "original_matches_known_restored_baseline": true,
+    "options": 76,
+    "snapshot_byte_identical": true,
+    "exact_equal": true,
+    "equivalent_after_reload": true,
+    "changed_option_names": [],
+    "production_comparator_used": true,
+    "liveblock": true,
+    "livestrong": true,
+    "noupdater": true,
+    "saved_boot_unchanged": true,
+    "probe_disabled_after_read": true
+  },
+  "eba_controls": {
+    "status": "unresolved; specific incorrect buttons not yet described",
+    "emulator": "MAME 2003 Plus",
+    "per_game_profile_exists": true,
+    "profile_matches_previously_installed_file": true,
+    "intended_profile_buttons": {
+      "X": "Attack",
+      "A": "Jump",
+      "B": "Mutant Power",
+      "Start": "Start",
+      "Back": "Coin"
+    },
+    "mame_saved_cfg_directory_empty": true,
+    "controls_changed_during_this_check": false,
+    "runtime_correctness_of_mapping_verified": false
+  },
+  "game_remotely_launched": false,
+  "frontend_reopened_after_batch": false,
+  "raw_logs_and_runtime_records_kept_private": true,
+  "all_platforms_or_all_games_verified": false,
+  "sustained_stability_or_four_player_simultaneous_play_verified": false,
+  "automatic_startup_or_native_xbox_game_support_verified": false
+}

@@ -11,9 +11,14 @@ See [current game-return evidence](tests/hardware-tetris-return-catalog-2026-10-
 An earlier build's post-game mismatch remains unexplained and is retained below;
 its separate exit-only check passed. The new successful run does not establish
 the cause of that earlier failure or compatibility with other cores.
-The installed visual follow-up `1222c78c167d` has TV appearance acceptance;
-a combined six-core gameplay/return test and its post-session cleanup check are
-pending. See [installation](INSTALL.md) for the required HDD layout and test flow.
+The installed visual follow-up `1222c78c167d` has TV appearance acceptance and
+a positive user report across six games/cores, with an EBA X-Men control issue.
+Aurora was independently observed before an inspect-only check, which confirmed
+exact restoration of all 76 runtime options and unchanged saved boot settings.
+Logs show clean exit and saved Kirby 64 selection. The user did not separately
+describe each game's exit action or selected-game restoration in this combined
+reply. See [batch evidence](tests/hardware-library-batch-2026-10-22.json) and
+[installation](INSTALL.md) for the required HDD layout and test flow.
 
 ## Behavior
 
@@ -137,8 +142,8 @@ accepted-reload comparisons both passed with no changed option names.
 Liveblock, livestrong and noupdater remained enabled, saved boot settings were
 unchanged, and the probe was disabled afterward. This verifies post-game cleanup
 for this installed NES Tetris configuration. It does not explain the historical
-mismatch. Repeat launch/return for each other core as part of manual acceptance;
-the current combined batch is collecting those results.
+mismatch. The subsequent combined batch extends the user-reported game scope
+and verifies final cleanup separately, as recorded at the top of this document.
 See [catalog evidence](tests/hardware-catalog-2026-10-22.json) and
 [current Tetris return evidence](tests/hardware-tetris-return-catalog-2026-10-22.json).
 
@@ -158,7 +163,8 @@ Reviewed DashLaunch revision `f57eca9ba6dbba15dbdb226059fa94ad0dfaee98`:
 
 The loaded temporary environment may differ from this upstream revision; that is
 why the successful no-game reload check alone does not establish gameplay exit.
-The user-confirmed gameplay result covers the installed NES Tetris configuration;
-compatibility with other cores and softmods remains unverified.
+The detailed single-game result covers the installed NES Tetris configuration;
+the newer combined report covers six specified games. Other configurations,
+platforms and softmods remain unverified.
 
 Plugin marker constants: [`_common.h`](https://github.com/XeFreedom/DashLaunch/blob/f57eca9ba6dbba15dbdb226059fa94ad0dfaee98/_common.h).
