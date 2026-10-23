@@ -25,7 +25,10 @@ def sha(data):
 
 
 def git(root, *args):
-    return subprocess.check_output(['git', '-C', str(root), *args])
+    # Windows checkout shared with WSL: compare normalized content, not filemode
+    # or CRLF checkout representation. No repository/global setting is changed.
+    return subprocess.check_output(['git', '-c', 'core.autocrlf=true', '-c',
+                                    'core.filemode=false', '-C', str(root), *args])
 
 
 def write(root, name, data):
