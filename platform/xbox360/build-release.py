@@ -9,6 +9,8 @@ import csv
 import hashlib
 import io
 import json
+import re
+import shlex
 import subprocess
 import sys
 import zipfile
@@ -117,6 +119,7 @@ def build(args):
     notices = {
         'EmulationStation-MIT.txt':source/'LICENSE.md',
         'OpenSans-notice.txt':source/'opensans_license.txt',
+        'Upstream-credits.txt':source/'CREDITS.md',
         'pugixml-MIT.txt':source/'external/pugixml/pugixml_license.txt',
         'nanosvg-zlib.txt':source/'external/nanosvg/nanosvg_license.txt',
         'xsdk-MIT.txt':sdk/'LICENSE',
@@ -157,6 +160,26 @@ def build(args):
             data = data[:end+2]
         combined.append('===== '+path.relative_to(deps).as_posix()+' =====\n'+data)
     write(app,'licenses/Additional-notices.txt','\n\n'.join(combined)+'\n')
+    # Actual native dependency/source inventory: retain individual attribution
+    # alongside the projects' full licenses, including ISC/BSD contributed code.
+    dependency_paths=set()
+    for line in subprocess.check_output(['ninja','-C',str(builddir),'-t','deps']).decode().splitlines():
+        if line.startswith('    '): dependency_paths.add(line.strip())
+    for line in subprocess.check_output(['ninja','-C',str(builddir),'-t','commands']).decode().splitlines():
+        for token in shlex.split(line):
+            if token.endswith(('.c','.cpp','.cxx')): dependency_paths.add(token)
+    headers=[]
+    for name in sorted(dependency_paths):
+        path=Path(name)
+        if not path.is_absolute(): path=builddir/path
+        path=path.resolve()
+        if not path.is_file() or deps.resolve() not in path.parents: continue
+        prefix=path.read_text(errors='replace')[:16384]
+        blocks=re.findall(r'/\*[\s\S]*?\*/|(?://[^\n]*(?:\n|$))+',prefix)
+        attributed=[b for b in blocks if re.search(r'copyright|license|licence|permission|redistribut',b,re.I)]
+        if attributed: headers.append('===== '+path.relative_to(deps.resolve()).as_posix()+' =====\n'+'\n'.join(attributed))
+    if not headers: raise ValueError('Native dependency attribution inventory is empty')
+    write(app,'licenses/Compiled-source-notices.txt','\n\n'.join(headers)+'\n')
     license_review = (dist/'LICENSE-REVIEW.md').read_text().replace('@SOURCE_COMMIT@',commit)
     write(app,'THIRD-PARTY-NOTICES.md',license_review)
     write(root,'LICENSE-REVIEW.md',license_review)

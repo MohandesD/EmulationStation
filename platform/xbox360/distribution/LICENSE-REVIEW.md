@@ -9,6 +9,9 @@ artwork, music, saved console state or account credential is included.
 The port and original Clean theme use the EmulationStation MIT license. This
 does not replace the component licenses listed below. Their complete notices
 are in the app's `licenses` folder and must accompany copies of the app.
+`Compiled-source-notices.txt` additionally preserves individual copyright and
+license comments from the native build's actual dependency/source inventory.
+Upstream UI credits are retained in `Upstream-credits.txt`.
 
 | Component | License/choice and supplied notice |
 | --- | --- |
