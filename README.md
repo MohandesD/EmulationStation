@@ -23,7 +23,9 @@ through other cores still needs verification. The user accepted the newer visual
 build `1222c78c167d` on the TV: grey labels and system logos both look better.
 Game-name and menu text were already accepted. Gameplay and return on this newer
 visual build remain unverified.
-Game launching is disabled by default. This is not a finished replacement dashboard; do not set it as the
+Game launching is disabled by default. The installed test console now has its
+library enabled for a user-requested batch across six emulator backends; results
+are pending. This is not a finished replacement dashboard; do not set it as the
 console's startup application.
 
 See [Xbox build, tests, installation and limitations](platform/xbox360/README.md)

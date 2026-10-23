@@ -19,6 +19,17 @@ The full Tetris roundtrip and runtime-restoration result belongs to the earlier
 `3e3d7dd490bb` build; gameplay on the visual update remains unverified.
 See [visual-candidate evidence](tests/image-readability-candidate-2026-10-22.json).
 
+At the user's request, the installed library is now enabled for a single manual
+test session across NES, SNES, Game Boy, both Arcade backends and Nintendo 64.
+All 44 current launch commands passed the production parser/context validation
+against fresh archived configuration; listed game/core files exist and are
+nonempty. The missing MAME context was appended without reordering existing
+entries. Two configuration files were backed up and read-back verified, with
+48 protected files unchanged. The accepted application/theme were not replaced.
+This preflight does not prove emulator gameplay. The combined user report and
+post-session restoration check are pending; see
+[batch evidence](tests/manual-library-batch-2026-10-22.json).
+
 The graphics component cross-compiles into `ESGraphicsProbe.xex` and has run on
 the Trinity/17559 console. A native 1280x720 capture shows correct RGB blocks,
 alpha blending, scissors and texture colours; 14 pixel checks and a native line check pass. After 1,800

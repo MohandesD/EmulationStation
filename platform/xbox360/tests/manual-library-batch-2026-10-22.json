@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-22",
+  "reason": "User requested several tests in one TV visit instead of separate trips to the PC",
+  "installed_source_commit": "9a15e37cfda015339cf3a8b5887abd533d47ea27",
+  "installed_app_sha256": "1222c78c167d60dedde6809f71d8298d4b4fc047727c0c1e5f7fc0b97eb4408c",
+  "application_and_accepted_theme_replaced": false,
+  "preflight": {
+    "live_catalog_commands": 44,
+    "populated_sections": 5,
+    "distinct_emulator_programs": 6,
+    "existing_game_and_core_files_listed_nonempty": true,
+    "production_command_parser_and_salvia_validation_passed": true,
+    "host_validation_sanitizers": ["address", "undefined"],
+    "archived_configuration_used": true,
+    "context_validation_proves_gameplay": false
+  },
+  "configuration_changes": {
+    "general_game_launch_enabled": true,
+    "single_game_exception_cleared": true,
+    "session_return_enabled": true,
+    "diagnostic_mode_disabled": true,
+    "salvia_context_appended": "mame",
+    "existing_salvia_context_order_preserved": true,
+    "other_settings_preserved": true,
+    "files_backed_up_and_readback_verified": 2,
+    "protected_files_unchanged": 48,
+    "saved_boot_modified": false
+  },
+  "test_plan": [
+    {"system": "NES", "title": "Tetris", "core": "Nestopia", "result": "pending"},
+    {"system": "SNES", "title": "Super Mario World", "core": "Snes9x2010", "result": "pending"},
+    {"system": "Game Boy", "title": "Kirby's Dream Land", "core": "Gambatte", "result": "pending"},
+    {"system": "Arcade", "title": "X-Men (4 players)", "core": "FBNeo", "result": "pending"},
+    {"system": "Arcade", "title": "X-Men (4 Players ver EBA)", "core": "MAME 2003 Plus", "result": "pending"},
+    {"system": "Nintendo 64", "title": "Kirby 64 - The Crystal Shards", "core": "xbox64", "result": "pending"}
+  ],
+  "user_instructions": "Check play, controls and sound; Guide/Y returns to ES between games. Finish with ES Start -> Quit -> Return to Aurora and report the batch together.",
+  "only_frontend_remotely_launched": true,
+  "game_remotely_launched": false,
+  "manual_test_status": "awaiting one combined user report",
+  "post_batch_runtime_restoration_verified": false,
+  "raw_configuration_and_snapshots_kept_private": true
+}
