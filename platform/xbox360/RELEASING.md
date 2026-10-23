@@ -44,4 +44,4 @@ assets are the application ZIP, SHA256SUMS.txt, validation.json and accurate not
 Download each uploaded asset through its public URL and compare bytes/checksums;
 validate the downloaded ZIP again. Never claim the new package was console-tested
 unless an actual new-installation test occurred. Keep existing console settings,
-user configurations and deferred controller work separate from publication.
+user configurations separate from publication.

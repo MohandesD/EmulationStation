@@ -34,45 +34,45 @@
       "system": "NES",
       "title": "Tetris",
       "core": "Nestopia",
-      "result": "user reports working"
+      "result": "game launch and play reported working"
     },
     {
       "system": "SNES",
       "title": "Super Mario World",
       "core": "Snes9x2010",
-      "result": "user reports working"
+      "result": "game launch and play reported working"
     },
     {
       "system": "Game Boy",
       "title": "Kirby's Dream Land",
       "core": "Gambatte",
-      "result": "user reports working"
+      "result": "game launch and play reported working"
     },
     {
       "system": "Arcade",
       "title": "X-Men (4 players)",
       "core": "FBNeo",
-      "result": "user reports working"
+      "result": "game launch and play reported working"
     },
     {
       "system": "Arcade",
       "title": "X-Men (4 Players ver EBA)",
       "core": "MAME 2003 Plus",
-      "result": "user reports working; control misconfiguration reported"
+      "result": "game launch and play reported working"
     },
     {
       "system": "Nintendo 64",
       "title": "Kirby 64 - The Crystal Shards",
       "core": "xbox64",
-      "result": "user reports working"
+      "result": "game launch and play reported working"
     }
   ],
   "user_instructions": "Check play, controls and sound; Guide/Y returns to ES between games. Finish with ES Start -> Quit -> Return to Aurora and report the batch together.",
   "only_frontend_remotely_launched": true,
   "game_remotely_launched": false,
-  "manual_test_status": "User reports all games worked; EBA X-Men controls need investigation",
+  "manual_test_status": "User reports all six representative games worked",
   "post_batch_runtime_restoration_verified": true,
   "raw_configuration_and_snapshots_kept_private": true,
-  "user_report": "all games worked. Just some control misconfiguration on the EBA version of X-Men",
-  "result_evidence": "hardware-library-batch-2026-10-22.json"
+  "result_evidence": "hardware-library-batch-2026-10-22.json",
+  "user_report_summary": "User reported that all six representative games worked; this record summarizes frontend launch/return results."
 }

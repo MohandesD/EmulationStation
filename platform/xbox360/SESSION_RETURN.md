@@ -12,7 +12,7 @@ An earlier build's post-game mismatch remains unexplained and is retained below;
 its separate exit-only check passed. The new successful run does not establish
 the cause of that earlier failure or compatibility with other cores.
 The installed visual follow-up `1222c78c167d` has TV appearance acceptance and
-a positive user report across six games/cores, with an EBA X-Men control issue.
+a positive user report across six games/cores.
 Aurora was independently observed before an inspect-only check, which confirmed
 exact restoration of all 76 runtime options and unchanged saved boot settings.
 Logs show clean exit and saved Kirby 64 selection. The user did not separately

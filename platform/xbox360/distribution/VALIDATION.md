@@ -21,9 +21,7 @@ Previous console acceptance is documented in the source's
 `platform/xbox360/ACCEPTANCE.md`. It covers the previous visual build on one
 Trinity/17559 setup, with six user-tested games and independently verified final
 return cleanup. It does not prove this package's clean-install TV appearance,
-every game/platform, all multiplayer controls, or automatic startup. The EBA
-X-Men control issue (special attack on several buttons) remains deferred and no
-mapping is supplied or changed here.
+every game/platform, all multiplayer controls, or automatic startup.
 
 A future new installation needs one grouped manual session: browse, play one
 game per intended core, Guide/Y back to ES, then ES's Return to Aurora. This

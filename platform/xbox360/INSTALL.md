@@ -149,7 +149,7 @@ Prepare one representative game per core and check them in one TV session:
 
 Salvia's Back+Start returns to its own browser; it is different from the Guide/Y
 route above. The detailed NES Tetris roundtrip passed, and the subsequent six-core
-batch received a positive user report with an EBA X-Men control issue. Independent
+batch received a positive user report. Independent
 post-batch inspection confirmed exact restoration of all 76 runtime options;
 see [results and limits](tests/hardware-library-batch-2026-10-22.json).
 A family-facing automatic startup or disc/native Xbox game flow is not

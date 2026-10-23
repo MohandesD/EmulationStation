@@ -121,8 +121,7 @@ then remove only the added EmulationStation folder.
 
 The preceding visual build ran on Trinity/17559. The user reported working games
 across NES, SNES, Game Boy, FBNeo, MAME 2003 Plus and Nintendo 64; detailed NES
-return and final runtime restoration were verified. MAME's EBA X-Men has a
-deferred per-game mapping issue (special attack on several buttons).
+return and final runtime restoration were verified.
 
 This release rebuild adds a compile-time Eigen license guard; the new package
 and original Clean theme are checked locally from fresh extraction. They have

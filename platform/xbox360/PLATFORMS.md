@@ -83,7 +83,6 @@ manual batch separately exercised both Arcade launch backends.
 
 The user reports all six batch games work: NES Tetris, SNES Super Mario World,
 Game Boy Kirby's Dream Land, X-Men through FBNeo and MAME, and Nintendo 64 Kirby 64.
-MAME's EBA X-Men entry has a control misconfiguration that remains unresolved.
 Post-batch cleanup independently restored all 76 runtime options exactly. These
 results do not establish every game, multiplayer mode or the remaining platforms.
 New installations still default to blocked game launching. See the

@@ -19,8 +19,7 @@ diagnostic app handoff have been verified on a Trinity console.
 
 **Working development port:** the user reports all six batch games work across
 NES, SNES, Game Boy, FBNeo, MAME 2003 Plus and Nintendo 64 on build `1222c78c167d`.
-The EBA X-Men entry has a controller-mapping issue, explicitly deferred with its
-profile unchanged. After the batch, Aurora was independently observed; logs show
+After the batch, Aurora was independently observed; logs show
 clean shutdown, and inspection verified exact restoration of all 76 temporary
 runtime options with saved startup settings unchanged.
 

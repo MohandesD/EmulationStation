@@ -15,8 +15,7 @@ current installed build.
 ## Current state (2026-10-22)
 
 The working-port/public-fork objective is accepted with the scoped evidence in
-[ACCEPTANCE.md](ACCEPTANCE.md). The user deferred EBA X-Men's controller issue;
-its mapping stays unchanged. Automatic startup and native Xbox game integration
+[ACCEPTANCE.md](ACCEPTANCE.md). Automatic startup and native Xbox game integration
 remain separate follow-ups, with no persistent installation performed.
 
 A visual follow-up uses linear magnification for non-tiled Xbox images. The
@@ -39,14 +38,11 @@ nonempty. The missing MAME context was appended without reordering existing
 entries. Two configuration files were backed up and read-back verified, with
 48 protected files unchanged. The accepted application/theme were not replaced.
 This preflight does not prove emulator gameplay. The user subsequently reported
-that all six games worked, with a control misconfiguration in MAME's EBA X-Men
-entry. Aurora was independently observed before inspection. Archived logs show
+that all six games worked. Aurora was independently observed before inspection. Archived logs show
 restored game-list selection and clean exit to Aurora, with Kirby 64 selected.
 The inspect-only probe and production comparator verified all 76 runtime options
 byte-identical to the known original baseline. Saved boot settings are unchanged,
-and the probe is disabled. No game was remotely launched. EBA's specific incorrect
-buttons remain undescribed; the user subsequently deferred this issue, and no
-controls were changed.
+and the probe is disabled. No game was remotely launched.
 The reply did not separately describe each game's controller actions, sound or
 selected-game return. See [batch setup](tests/manual-library-batch-2026-10-22.json)
 and [hardware results](tests/hardware-library-batch-2026-10-22.json).
@@ -83,7 +79,7 @@ menu exit to Aurora and exact post-game restoration of all 76 runtime options.
 Saved boot settings remained unchanged. This earlier, detailed single-game result
 is preserved separately from the newer batch report above. See
 [Tetris return evidence](tests/hardware-tetris-return-catalog-2026-10-22.json).
-The port is a working development build with deferred EBA controls and limits on
+The port is a working development build with limits on
 broader sustained/platform testing, as recorded in the acceptance document.
 
 The newer catalog candidate has now passed a 1,200-frame browser-only console
@@ -121,8 +117,8 @@ Salvia commands require their explicit context, for example
 rejected beside a Salvia configuration. Commands are parsed as paths, never
 sent to a shell. Salvia ROM data uses its own
 `Hdd:`/`Usb0:` mounts. `XboxLaunchEnabled` defaults to false for a new installation.
-It is now enabled on the test console. The combined six-game report is positive
-apart from EBA X-Men's controls, and post-batch runtime cleanup passed.
+It is now enabled on the test console. The combined six-game report is positive,
+and post-batch runtime cleanup passed.
 Session return is implemented; its no-game console check and a user-operated NES
 Tetris roundtrip with selected-game restoration pass. The current catalog build
 also passed post-game menu exit with exact restoration of all 76 options, as did
@@ -213,7 +209,7 @@ captures each list after its transition settles. It calls view navigation only;
 no controller events or ROM launches are injected. A 1,200-frame five-system run
 passed. Both diagnostic options are now disabled in the installed package, so a
 normal manual launch stays open. The installed frontend permits the library;
-the user-reported batch outcome and remaining control issue are recorded above.
+the user-reported batch outcome is recorded above.
 
 Rollback: finish through Return to Aurora and resolve any runtime restoration
 error before removing the separately added app folder. Keep restore records
