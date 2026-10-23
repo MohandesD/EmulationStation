@@ -1,6 +1,6 @@
 # Temporary emulator return: Tetris roundtrip and restoration confirmed
 
-Status on 2026-10-22: the installed catalog build passes a complete user-operated
+Status on 2026-10-22: catalog build `3e3d7dd490bb` passed a complete user-operated
 NES Tetris roundtrip on Trinity/17559 with temporary XeUnshackle. Tetris plays,
 Xbox Guide/Y returns to ES with Tetris selected, and the menu returns to Aurora.
 Read-only XBDM observed ES and then Aurora before any probe launch. Logs confirm
@@ -11,6 +11,9 @@ See [current game-return evidence](tests/hardware-tetris-return-catalog-2026-10-
 An earlier build's post-game mismatch remains unexplained and is retained below;
 its separate exit-only check passed. The new successful run does not establish
 the cause of that earlier failure or compatibility with other cores.
+The installed visual follow-up `1222c78c167d` has TV appearance acceptance;
+a combined six-core gameplay/return test and its post-session cleanup check are
+pending. See [installation](INSTALL.md) for the required HDD layout and test flow.
 
 ## Behavior
 
@@ -134,13 +137,15 @@ accepted-reload comparisons both passed with no changed option names.
 Liveblock, livestrong and noupdater remained enabled, saved boot settings were
 unchanged, and the probe was disabled afterward. This verifies post-game cleanup
 for this installed NES Tetris configuration. It does not explain the historical
-mismatch. Repeat launch/return separately for other cores before enabling them.
+mismatch. Repeat launch/return for each other core as part of manual acceptance;
+the current combined batch is collecting those results.
 See [catalog evidence](tests/hardware-catalog-2026-10-22.json) and
 [current Tetris return evidence](tests/hardware-tetris-return-catalog-2026-10-22.json).
 
-The user reports that game names and ES menu text look good, while faint grey
-labels look fuzzy and system logos are not smooth. Visual follow-up changes are
-separate from this tested binary and have no TV acceptance result yet.
+On this game-tested binary the user reported good game names and menu text, but
+fuzzy grey labels and unsmoothed logos. The later visual follow-up received TV
+acceptance: both labels and logos look better. That result is separate from the
+completed gameplay/restoration check above.
 
 ## Source basis
 

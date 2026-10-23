@@ -6,6 +6,11 @@ running the existing system carousel, game lists, themes, artwork and controller
 navigation, with emulator launch and a verified way back to the frontend.
 The earlier custom Games dashboard is a separate project, not this port.
 
+Start with the [build guide](BUILDING.md) and [installation guide](INSTALL.md).
+See [platform coverage](PLATFORMS.md) and [temporary game return](SESSION_RETURN.md)
+for integration details. Dated evidence below distinguishes past tests from the
+current installed build.
+
 ## Current state (2026-10-22)
 
 A visual follow-up uses linear magnification for non-tiled Xbox images. The
@@ -97,9 +102,9 @@ Salvia commands require their explicit context, for example
 `salvia nes "hdd:/Emulators/Salvia/Nestopia.xex" %ROM%`; the generic form is
 rejected beside a Salvia configuration. Commands are parsed as paths, never
 sent to a shell. Salvia ROM data uses its own
-`Hdd:`/`Usb0:` mounts. `XboxLaunchEnabled` remains false during initial frontend
-bring-up; it must be removed as a bring-up gate or deliberately enabled and
-hardware-tested before claiming the port works as a general game frontend.
+`Hdd:`/`Usb0:` mounts. `XboxLaunchEnabled` defaults to false for a new installation.
+It is now enabled on the test console for the manual library batch; gameplay
+results beyond the separately verified Tetris configuration remain pending.
 Session return is implemented; its no-game console check and a user-operated NES
 Tetris roundtrip with selected-game restoration pass. The current catalog build
 also passed post-game menu exit with exact restoration of all 76 options. The
@@ -122,20 +127,9 @@ The SDK's patches match the already working C-only compiler from the earlier
 dashboard. The separate full C/C++ toolchain completed its built-in ABI checks;
 the installed C-only compiler remains intact.
 
-On a Linux/WSL host, from the repository root:
-
-```sh
-cmake -S platform/xbox360/tests -B build-es-tests -G Ninja \
-  -DES_STB="$DEPS/stb" -DES_MODEL_DEPS="$DEPS"
-cmake --build build-es-tests
-ctest --test-dir build-es-tests --output-on-failure
-make -C "$SDK" -j4 build/libxsdk.a build/host/libxsc.so
-make -C platform/xbox360 -f Makefile.graphics SDK="$SDK" TC="$TC" BUILD="$BUILD"
-```
-
-Set SDK to the pinned SDK checkout, TC to the compiler prefix ending in
-`powerpc-xsdk-elf-`, and BUILD to a separate output directory. The Makefile's
-defaults match the current local WSL environment. C17 builds use warnings as
+The [build guide](BUILDING.md) defines the paths, pins the SDK/toolchain and
+provides commands for host tests, the full application and optional probes.
+It explicitly passes the selected compiler to the SDK Makefile. C17 builds use warnings as
 errors. Host tests enable address/undefined-behaviour sanitizers and keep asserts
 enabled in release builds. Tests check actual ES array formats, nonzero draw
 offsets, unaligned/interleaved floats, projection/translation, alpha atlas padding
@@ -158,31 +152,19 @@ The SDK's instruction scanner reports three skipped instructions in the small
 graphics probe and 164 in the current full application/dependencies. Xenia results in
 those functions are unreliable; Xenia is not a substitute for a console run.
 
-## Full application build (integration in progress)
+## Full application build
 
-`dependencies.json` pins the exact source commits. On the tested Debian 13 host,
-install Boost 1.83 headers (`libboost1.83-dev` 1.83.0-4.2) and the usual build
-tools, then prepare dependencies without resetting any existing checkout:
-
-```sh
-python3 platform/xbox360/prepare-deps.py "$DEPS" --boost-include /usr/include
-cmake -S . -B "$BUILD" -G Ninja \
-  -DCMAKE_TOOLCHAIN_FILE="$SDK/cmake/xsdk.cmake" \
-  -DXSDK_TOOLCHAIN="$TOOLCHAIN" -DES_DEPS="$DEPS" \
-  -DCMAKE_BUILD_TYPE=Release
-cmake --build "$BUILD" -j4
-```
-
-Build the pinned SDK and its shader compiler first, using its documented
-toolchain script. TOOLCHAIN is the compiler installation directory, not its
-executable prefix. Shader compilation locates `glslangValidator` or `glslang`; override with `-DES_GLSLANG=/path/to/tool` if needed.
-The resulting target is `es-app/emulationstation.xex`. These full-build commands
-have produced a native XEX; it remains a development build pending the runtime
-acceptance checks below. No ROMs,
-commercial artwork or BIOS are fetched by the dependency script.
+Follow [BUILDING.md](BUILDING.md) for host prerequisites, the full C/C++ compiler,
+pinned dependencies and the native application build. The resulting runtime
+files are `es-app/emulationstation.xex` and `cacert.pem` in the build directory.
+The full application has built successfully, and a fresh configure using the
+documented command passed on 2026-10-22. It remains a development build with the
+runtime acceptance limits recorded above.
 
 ## Display bring-up and installation
 
+The [installation guide](INSTALL.md) provides the complete folder layout, initial
+settings, a system configuration example and a combined manual test procedure.
 The current test installation is an ordinary `Hdd1:/Apps/EmulationStation` folder.
 Its `.emulationstation/es_systems.cfg` points at the existing ROM folders; artwork
 is referenced from the existing Salvia assets. App-local gamelists keep metadata
@@ -200,8 +182,8 @@ under both Boost filesystem and the native C++17 filesystem implementation.
 For a bounded display-only run, set `XboxDiagnosticFrames` to 600 in the app's
 settings. Frame 120 is captured to `game:/es-frame.raw` after presentation and
 before clearing; after 600 main-loop frames the app exits cleanly to Aurora.
-The default is zero, which leaves the frontend open normally. Game launching
-remains gated by `XboxLaunchEnabled=false`. Hotplugged Xbox pads receive defaults;
+The default is zero, which leaves the frontend open normally. For a display-only
+run, keep `XboxLaunchEnabled=false` and `XboxTestRom` empty. Hotplugged Xbox pads receive defaults;
 an unplugged controller no longer strands startup in the desktop setup wizard.
 Physical navigation and the menu's Return to Aurora action passed the later
 user-operated test documented below.
@@ -211,11 +193,13 @@ visits successive system game lists every 180 frames starting at frame 180 and
 captures each list after its transition settles. It calls view navigation only;
 no controller events or ROM launches are injected. A 1,200-frame five-system run
 passed. Both diagnostic options are now disabled in the installed package, so a
-normal manual launch stays open. The installed frontend retains the single-Tetris
-launch gate after the successful manual return test.
+normal manual launch stays open. The installed frontend now permits the library
+for the user-requested combined test; its report is pending.
 
-Rollback: while Aurora is running, remove only the separately added app folder
-if desired. Existing emulators, ROMs, assets and startup settings are independent.
+Rollback: finish through Return to Aurora and resolve any runtime restoration
+error before removing the separately added app folder. Keep restore records
+while a return session is active; see [removal](INSTALL.md#updates-evidence-and-removal).
+Existing emulators, ROMs, assets and startup settings are independent.
 Do not set this development build as the default dashboard.
 
 ## Next integration work
@@ -328,16 +312,17 @@ The earlier receiver/read-only diagnostics changed no return settings. The
 subsequent session-return probe temporarily changed and restored runtime
 Default/BUT_Y, verified all 76 exposed options and left saved boot files
 unchanged. See [session return](SESSION_RETURN.md) for its precise behavior,
-rollback and scoped gameplay acceptance. Do not enable
-general game launching or change startup configuration based on PC tests.
+rollback and scoped gameplay acceptance. PC tests do not establish gameplay or
+justify startup changes. The current manual batch deliberately enables the
+library to collect those game/return observations.
 
 1. Verify audio, filesystem/locale behavior and text input;
    dummy SDL text input is only an adapter, not a verified Xbox keyboard UI.
 2. Extend the passed game-list, cover and input checks to sustained browsing
    and memory lifetime on the Trinity/17559 temporary XeUnshackle session.
-3. Add native XEX and Salvia handoff with documented launch data. The earlier
-   Games direct-ROM handoff crashed: do not recycle it as a proven implementation.
-   Prove emulator start and return without changing saved boot configuration.
+3. Extend the verified NES launch/return path to the other emulator cores,
+   including controls, sound and post-session restoration. Keep saved boot
+   configuration unchanged during these checks.
 4. Maintain the published Xbox fork with reproducible builds, notices,
    installation/rollback instructions and explicit hardware results.
 
@@ -350,7 +335,7 @@ Do not set it as the default dashboard.
 No ROM, BIOS, commercial artwork, console keys or recovery data belongs in this
 branch. Preserve upstream LICENSE.md; new port sources use the same MIT terms.
 
-## Offline work on 2026-10-22
+## Earlier offline work on 2026-10-22
 
 The catalog now derives systems from emulator definitions independently of games;
 see [platform coverage](PLATFORMS.md). The local package provides 35 profiles and
@@ -358,7 +343,8 @@ see [platform coverage](PLATFORMS.md). The local package provides 35 profiles an
 minification/magnification to retain grayscale antialiasing when text is scaled.
 Font sizes, layout and other platforms are unchanged. A PC sampling comparison
 illustrates the effect; TV legibility and system-logo artwork need separate
-visual acceptance. Seven host test groups pass. The new build is offline only.
+visual acceptance. Seven host test groups passed at that checkpoint, when the
+candidate was still offline. Later deployment and TV acceptance are recorded above.
 
 ## Resumed console checks on 2026-10-22
 

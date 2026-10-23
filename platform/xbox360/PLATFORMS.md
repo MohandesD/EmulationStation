@@ -43,10 +43,11 @@ for scraping, while keeping their existing sections. Unknown future profiles
 retain browser/launch entries and disable scraping until explicitly mapped.
 It inherits upstream labels and declared formats; these have not all been
 corrected or validated. Themes without a platform asset use ES's existing
-fallback. The online package helper uses this same catalog instead of its old
-five-system list; it was syntax-checked but not run against the console during
-offline work. Cached snapshots can become stale and must be compared with the
-live configuration before any future deployment.
+fallback. The private deployment helper uses this same catalog; the resulting
+32-section catalog is installed and has passed a browser-only console check.
+The public offline generator above is sufficient to produce the configuration;
+it does not require that deployment helper. Cached snapshots can become stale
+and must be compared with the live configuration before any future deployment.
 
 ## Multiple sources in one section
 
@@ -76,9 +77,13 @@ the local inventory. Route roots must be disjoint descendants of the common
 root. Only their matching files are scanned, flattened into one game list and
 launched through the existing permission/context checks. Metadata and saved
 selection retain full physical paths, so duplicate basenames stay separate.
-The new routing is an offline candidate and is not installed on the console
-while the single-game return test is pending.
+The grouped routing is installed. A browser-only console check found 44 entries
+across five populated sections while preserving the original metadata. The
+current manual batch separately checks both Arcade launch backends.
 
 Only NES Tetris launching from ES has user-confirmed playability. Prior games
 working through Salvia do not establish every ES launch/return route. New
-platforms must be tested individually; general game launching remains gated.
+platforms must be tested individually. The installed library gate is now enabled
+for one combined manual test across six cores; its gameplay/return report is
+pending. New installations still default to blocked game launching. See the
+[installation and batch procedure](INSTALL.md#settings-and-a-combined-manual-check).
