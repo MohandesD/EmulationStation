@@ -8,27 +8,33 @@ open-source xsdk toolchain, SDL3 input/audio adapters and a native Xenos rendere
 The full app builds, and its carousel, five system lists, cover art and a fixed
 diagnostic app handoff have been verified on a Trinity console.
 
-**Development status:** controller navigation and a full NES Tetris roundtrip
-have passed on console build `3e3d7dd490bb`: Tetris plays, Xbox Guide/Y returns to EmulationStation
-with Tetris selected, and the menu returns to Aurora. A subsequent read-only
-comparison verified exact restoration of all 76 runtime options; saved boot
-settings were unchanged. The earlier post-game mismatch remains documented as
-an unexplained historical run. See [current game-return evidence](platform/xbox360/tests/hardware-tetris-return-catalog-2026-10-22.json).
+**Working development port:** the user reports all six batch games work across
+NES, SNES, Game Boy, FBNeo, MAME 2003 Plus and Nintendo 64 on build `1222c78c167d`.
+The EBA X-Men entry has a controller-mapping issue, explicitly deferred with its
+profile unchanged. After the batch, Aurora was independently observed; logs show
+clean shutdown, and inspection verified exact restoration of all 76 temporary
+runtime options with saved startup settings unchanged.
+
+The earlier detailed NES Tetris test separately confirmed Xbox Guide/Y returns
+to EmulationStation with Tetris selected, followed by menu exit to Aurora.
+Historical failures remain documented. See the [acceptance record and limits](platform/xbox360/ACCEPTANCE.md)
+and [six-game evidence](platform/xbox360/tests/hardware-library-batch-2026-10-22.json).
 
 The platform catalog covers 32 configured sections and 34 Salvia sources,
 independently of installed games. Native catalog browsing passed with five
 populated lists and preserved metadata. Grouped sources retain each backend's
-directory and command inside one Arcade or Neo Geo Pocket section; gameplay
-through other cores still needs verification. The user accepted the newer visual
+directory and command inside one Arcade or Neo Geo Pocket section. Unpopulated
+systems are prepared and hidden until games exist; the six-game report does not
+verify every core, game or multiplayer mode. The user accepted the current visual
 build `1222c78c167d` on the TV: grey labels and system logos both look better.
-Game-name and menu text were already accepted. Gameplay and return on this newer
-visual build remain unverified.
-Game launching is disabled by default. The installed test console now has its
-library enabled for a user-requested batch across six emulator backends; results
-are pending. This is not a finished replacement dashboard; do not set it as the
-console's startup application.
+Game-name and menu text were already accepted. Game launching is disabled by
+default for a new installation; the tested console has its library enabled.
+Automatic console startup and Xbox 360 disc/native-game integration remain
+separate future work. The current app is launched manually from Aurora.
 
-See [Xbox build, tests, installation and limitations](platform/xbox360/README.md)
+See the [build guide](platform/xbox360/BUILDING.md),
+[installation guide](platform/xbox360/INSTALL.md),
+[Xbox implementation and test history](platform/xbox360/README.md)
 and [pinned dependencies](platform/xbox360/dependencies.json). No ROMs, BIOS,
 commercial artwork, console secrets or proprietary Microsoft SDK are included.
 The original project's documentation follows below.

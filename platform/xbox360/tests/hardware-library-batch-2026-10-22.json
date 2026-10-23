@@ -75,7 +75,7 @@
     "probe_disabled_after_read": true
   },
   "eba_controls": {
-    "status": "unresolved; specific incorrect buttons not yet described",
+    "status": "deferred by user through coordinating chat; mapping remains unchanged",
     "emulator": "MAME 2003 Plus",
     "per_game_profile_exists": true,
     "profile_matches_previously_installed_file": true,
@@ -88,12 +88,14 @@
     },
     "mame_saved_cfg_directory_empty": true,
     "controls_changed_during_this_check": false,
-    "runtime_correctness_of_mapping_verified": false
+    "runtime_correctness_of_mapping_verified": false,
+    "deferred": true
   },
   "game_remotely_launched": false,
   "frontend_reopened_after_batch": false,
   "raw_logs_and_runtime_records_kept_private": true,
   "all_platforms_or_all_games_verified": false,
   "sustained_stability_or_four_player_simultaneous_play_verified": false,
-  "automatic_startup_or_native_xbox_game_support_verified": false
+  "automatic_startup_or_native_xbox_game_support_verified": false,
+  "acceptance_record": "../ACCEPTANCE.md"
 }

@@ -1,4 +1,4 @@
-# EmulationStation for Xbox 360 — port in progress
+# EmulationStation for Xbox 360 — working development port
 
 This branch ports **Aloshi/EmulationStation itself**, based on
 `9cc42adff67946175d2b7e25c6ae69cc374e98a0`. The final target is a native `.xex`
@@ -12,6 +12,11 @@ for integration details. Dated evidence below distinguishes past tests from the
 current installed build.
 
 ## Current state (2026-10-22)
+
+The working-port/public-fork objective is accepted with the scoped evidence in
+[ACCEPTANCE.md](ACCEPTANCE.md). The user deferred EBA X-Men's controller issue;
+its mapping stays unchanged. Automatic startup and native Xbox game integration
+remain separate follow-ups, with no persistent installation performed.
 
 A visual follow-up uses linear magnification for non-tiled Xbox images. The
 local Simple-theme variant uses regular-weight metadata labels and darker system
@@ -39,7 +44,8 @@ restored game-list selection and clean exit to Aurora, with Kirby 64 selected.
 The inspect-only probe and production comparator verified all 76 runtime options
 byte-identical to the known original baseline. Saved boot settings are unchanged,
 and the probe is disabled. No game was remotely launched. EBA's specific incorrect
-buttons remain to be described; no controls were changed during this check.
+buttons remain undescribed; the user subsequently deferred this issue, and no
+controls were changed.
 The reply did not separately describe each game's controller actions, sound or
 selected-game return. See [batch setup](tests/manual-library-batch-2026-10-22.json)
 and [hardware results](tests/hardware-library-batch-2026-10-22.json).
@@ -76,8 +82,8 @@ menu exit to Aurora and exact post-game restoration of all 76 runtime options.
 Saved boot settings remained unchanged. This earlier, detailed single-game result
 is preserved separately from the newer batch report above. See
 [Tetris return evidence](tests/hardware-tetris-return-catalog-2026-10-22.json).
-The port is still a development build: EBA controls and broader sustained/platform
-testing remain unresolved.
+The port is a working development build with deferred EBA controls and limits on
+broader sustained/platform testing, as recorded in the acceptance document.
 
 The newer catalog candidate has now passed a 1,200-frame browser-only console
 check: 32 configured sections route 34 emulator sources, and the five populated
